@@ -1,0 +1,26 @@
+#include "ArcadeHardGameScene.h"
+#include "LayoutController.h"
+
+using namespace cocos2d;
+
+ArcadeHardGameScene::ArcadeHardGameScene(GameContext* gameContext)   
+  : ArcadeGameScene(gameContext, ARCADE_HARD_GAME_SCENE, 5)
+{ 
+  m_challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_FIVE_BUTTONS;
+  m_challengePointScoreDefinition.maxTimeBonus = CORRECT_BUTTON_SCORE_FIVE_BUTTONS_MAX_TIME_BONUS;
+  m_challengePointScoreDefinition.clickTimeThreshold = FIVE_BUTTON_CLICK_TIME_THRESHOLD;
+  m_challengePointScoreDefinition.levelBonus = CORRECT_BUTTON_SCORE_FIVE_BUTTONS_LEVEL_BONUS;
+  m_challengePointScoreDefinition.maxLevelTimeBonus = CORRECT_BUTTON_SCORE_FIVE_BUTTONS_MAX_LEVEL_TIME_BONUS;
+}
+void ArcadeHardGameScene::onLoadLayout()
+{  
+  this->m_buttons = LayoutController::createFiveButtons(this->m_gameContext, this->m_debugDraw, this->m_anchor, this
+    , callfuncO_selector( ArcadeHardGameScene::buttonTouchEndedCallback )
+    , callfuncO_selector( ArcadeHardGameScene::buttonLoadedCallback )
+    , callfuncO_selector( ArcadeHardGameScene::buttonBlinkCallback ));         
+}
+void ArcadeHardGameScene::onGameOver()
+{  
+  if ((int)m_gameScore.totalPoints > m_gameContext->getHighscoreHard())
+    m_gameContext->setHighscoreHard((int)m_gameScore.totalPoints);
+}

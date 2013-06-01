@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{08a6c03c-0a54-4e94-8b8a-425c8369e8f3}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{bbf08b15-d5a4-482c-88c7-d5c7d2477e34}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{811fc18e-e78a-4a64-be8b-d6b4bd2f6a4f}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;png;manifest</Extensions>
+    </Filter>
+    <Filter Include="include\Layers">
+      <UniqueIdentifier>{5c1cd4ff-184d-4f03-a95d-05c5505557b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Scenes">
+      <UniqueIdentifier>{56a0a6a2-31ba-4cad-ba79-ce3b8f416b7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource\s240x320">
+      <UniqueIdentifier>{b2adbd13-e78a-4f75-a214-e6dc4cc88a3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource\s320x480">
+      <UniqueIdentifier>{f83a98ee-ce9f-441c-9060-cf9a915f866d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Scenes\Challenges">
+      <UniqueIdentifier>{1b08d3a6-020e-457c-8426-7d804d87cea8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Scenes\Arcade">
+      <UniqueIdentifier>{de697f54-e3dc-4b2e-9e1f-4017fd800d53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Controls">
+      <UniqueIdentifier>{432809b5-b577-4375-bcaa-5a782d25378d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Controls\Buttons">
+      <UniqueIdentifier>{a241d314-9c1f-4672-b546-91f9aa4ef4d7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\ColorMemory.ico">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\Resources\s320x480\bg_classic.png">
+      <Filter>resource\s320x480</Filter>
+    </None>
+    <None Include="..\Resources\s320x480\bg_loading.png">
+      <Filter>resource\s320x480</Filter>
+    </None>
+    <None Include="..\Resources\s320x480\buttonmap.plist">
+      <Filter>resource\s320x480</Filter>
+    </None>
+    <None Include="..\Resources\s320x480\buttonmap.png">
+      <Filter>resource\s320x480</Filter>
+    </None>
+    <None Include="..\Resources\s240x320\bg_classic.png">
+      <Filter>resource\s240x320</Filter>
+    </None>
+    <None Include="..\Resources\s240x320\bg_loading.png">
+      <Filter>resource\s240x320</Filter>
+    </None>
+    <None Include="..\Resources\s240x320\buttonmap.plist">
+      <Filter>resource\s240x320</Filter>
+    </None>
+    <None Include="..\Resources\s240x320\buttonmap.png">
+      <Filter>resource\s240x320</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ColorMemory.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseSprite.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="VisibleRect.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseLayer.h">
+      <Filter>include\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuScene.h">
+      <Filter>include\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseScene.h">
+      <Filter>include\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GameConstants.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="NavigationManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugDraw.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuButton.h">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseTileMap.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="GameButton.h">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageButton.h">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="GameContext.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Stopwatch.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteFrameCache.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseChallengeScene.h">
+      <Filter>include\Scenes\Challenges</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcadeHardGameScene.h">
+      <Filter>include\Scenes\Arcade</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcadeClassicGameScene.h">
+      <Filter>include\Scenes\Arcade</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcadeEasyGameScene.h">
+      <Filter>include\Scenes\Arcade</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcadeGameScene.h">
+      <Filter>include\Scenes\Arcade</Filter>
+    </ClInclude>
+    <ClInclude Include="ReachLevelChallengeScene.h">
+      <Filter>include\Scenes\Challenges</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEngineIncludes.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="TopBar.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="WildcardPopup.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScorePopup.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="LayoutController.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptionPopup.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="ModalControl.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\main.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="AppDelegate.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="RepeatOneOffSequenceChallengeScene.h">
+      <Filter>include\Scenes\Challenges</Filter>
+    </ClInclude>
+    <ClInclude Include="OptionsScene.h">
+      <Filter>include\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="HighscoreScene.h">
+      <Filter>include\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="TextToggleButton.h">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="TextButton.h">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BaseScene.cpp">
+      <Filter>include\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuScene.cpp">
+      <Filter>include\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseLayer.cpp">
+      <Filter>include\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="VisibleRect.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseSprite.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="NavigationManager.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugDraw.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuButton.cpp">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseTileMap.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="GameButton.cpp">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageButton.cpp">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="GameContext.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="Stopwatch.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteFrameCache.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseChallengeScene.cpp">
+      <Filter>include\Scenes\Challenges</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcadeClassicGameScene.cpp">
+      <Filter>include\Scenes\Arcade</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcadeEasyGameScene.cpp">
+      <Filter>include\Scenes\Arcade</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcadeGameScene.cpp">
+      <Filter>include\Scenes\Arcade</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcadeHardGameScene.cpp">
+      <Filter>include\Scenes\Arcade</Filter>
+    </ClCompile>
+    <ClCompile Include="ReachLevelChallengeScene.cpp">
+      <Filter>include\Scenes\Challenges</Filter>
+    </ClCompile>
+    <ClCompile Include="TopBar.cpp">
+      <Filter>include\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScorePopup.cpp">
+      <Filter>include\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="WildcardPopup.cpp">
+      <Filter>include\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="LayoutController.cpp">
+      <Filter>include\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptionPopup.cpp">
+      <Filter>include\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="ModalControl.cpp">
+      <Filter>include\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="AppDelegate.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\main.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="RepeatOneOffSequenceChallengeScene.cpp">
+      <Filter>include\Scenes\Challenges</Filter>
+    </ClCompile>
+    <ClCompile Include="OptionsScene.cpp">
+      <Filter>include\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="HighscoreScene.cpp">
+      <Filter>include\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="TextToggleButton.cpp">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="TextButton.cpp">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

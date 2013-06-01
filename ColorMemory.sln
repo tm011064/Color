@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorMemory.win32", "proj.win32\ColorMemory.win32.vcxproj", "{832A0E98-1692-4DB7-BCC6-394748A2D1FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{832A0E98-1692-4DB7-BCC6-394748A2D1FF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{832A0E98-1692-4DB7-BCC6-394748A2D1FF}.Debug|Win32.Build.0 = Debug|Win32
+		{832A0E98-1692-4DB7-BCC6-394748A2D1FF}.Release|Win32.ActiveCfg = Release|Win32
+		{832A0E98-1692-4DB7-BCC6-394748A2D1FF}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

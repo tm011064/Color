@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{832A0E98-1692-4DB7-BCC6-394748A2D1FF}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration).win32\</OutDir>
+    <IntDir>$(Configuration).win32\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration).win32\</OutDir>
+    <IntDir>$(Configuration).win32\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\Classes;$(SolutionDir)cocos2dx;$(SolutionDir)cocos2dx\include;$(SolutionDir)cocos2dx\kazmath\include;$(SolutionDir)cocos2dx\platform\win32;$(SolutionDir)cocos2dx\platform\third_party\win32;$(SolutionDir)cocos2dx\platform\third_party\win32\OGLES;$(SolutionDir)external;$(SolutionDir)CocosDenshion\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MinimalRebuild>true</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;STRICT;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS_DEBUG;COCOS2D_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcocos2d.lib;opengl32.lib;glew32.lib;libBox2d.lib;libCocosDenshion.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <HeaderFileName>ColorMemory.h</HeaderFileName>
+      <InterfaceIdentifierFileName>ColorMemory_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>ColorMemory_p.c</ProxyFileName>
+      <GenerateStublessProxies>true</GenerateStublessProxies>
+      <TypeLibraryName>$(IntDir)/ColorMemory.tlb</TypeLibraryName>
+      <DllDataFileName>
+      </DllDataFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\Classes;$(SolutionDir)cocos2dx;$(SolutionDir)cocos2dx\include;$(SolutionDir)cocos2dx\kazmath\include;$(SolutionDir)cocos2dx\platform\win32;$(SolutionDir)cocos2dx\platform\third_party\win32;$(SolutionDir)cocos2dx\platform\third_party\win32\OGLES;$(SolutionDir)external;$(SolutionDir)CocosDenshion\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;STRICT;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGSNDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcocos2d.lib;opengl32.lib;glew32.lib;libBox2d.lib;libCocosDenshion.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <HeaderFileName>ColorMemory.h</HeaderFileName>
+      <InterfaceIdentifierFileName>ColorMemory_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>ColorMemory_p.c</ProxyFileName>
+      <GenerateStublessProxies>true</GenerateStublessProxies>
+      <TypeLibraryName>$(IntDir)/ColorMemory.tlb</TypeLibraryName>
+      <DllDataFileName>
+      </DllDataFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\Resources\s240x320\bg_classic.png" />
+    <None Include="..\Resources\s240x320\bg_loading.png" />
+    <None Include="..\Resources\s240x320\buttonmap.plist" />
+    <None Include="..\Resources\s240x320\buttonmap.png" />
+    <None Include="..\Resources\s320x480\bg_classic.png" />
+    <None Include="..\Resources\s320x480\bg_loading.png" />
+    <None Include="..\Resources\s320x480\buttonmap.plist" />
+    <None Include="..\Resources\s320x480\buttonmap.png" />
+    <None Include="res\ColorMemory.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ColorMemory.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Classes\main.h" />
+    <ClInclude Include="AppDelegate.h" />
+    <ClInclude Include="ArcadeClassicGameScene.h" />
+    <ClInclude Include="ArcadeEasyGameScene.h" />
+    <ClInclude Include="ArcadeGameScene.h" />
+    <ClInclude Include="ArcadeHardGameScene.h" />
+    <ClInclude Include="BaseChallengeScene.h" />
+    <ClInclude Include="BaseLayer.h" />
+    <ClInclude Include="BaseScene.h" />
+    <ClInclude Include="BaseSprite.h" />
+    <ClInclude Include="BaseTileMap.h" />
+    <ClInclude Include="DescriptionPopup.h" />
+    <ClInclude Include="GameButton.h" />
+    <ClInclude Include="DebugDraw.h" />
+    <ClInclude Include="GameConstants.h" />
+    <ClInclude Include="GameContext.h" />
+    <ClInclude Include="GameEngineIncludes.h" />
+    <ClInclude Include="GameScorePopup.h" />
+    <ClInclude Include="HighscoreScene.h" />
+    <ClInclude Include="ImageButton.h" />
+    <ClInclude Include="LayoutController.h" />
+    <ClInclude Include="MenuButton.h" />
+    <ClInclude Include="MenuScene.h" />
+    <ClInclude Include="ModalControl.h" />
+    <ClInclude Include="NavigationManager.h" />
+    <ClInclude Include="OptionsScene.h" />
+    <ClInclude Include="ReachLevelChallengeScene.h" />
+    <ClInclude Include="RepeatOneOffSequenceChallengeScene.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SpriteFrameCache.h" />
+    <ClInclude Include="Stopwatch.h" />
+    <ClInclude Include="TextButton.h" />
+    <ClInclude Include="TextToggleButton.h" />
+    <ClInclude Include="TopBar.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="VisibleRect.h" />
+    <ClInclude Include="WildcardPopup.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Classes\main.cpp" />
+    <ClCompile Include="AppDelegate.cpp" />
+    <ClCompile Include="ArcadeClassicGameScene.cpp" />
+    <ClCompile Include="ArcadeEasyGameScene.cpp" />
+    <ClCompile Include="ArcadeGameScene.cpp" />
+    <ClCompile Include="ArcadeHardGameScene.cpp" />
+    <ClCompile Include="BaseChallengeScene.cpp" />
+    <ClCompile Include="BaseLayer.cpp" />
+    <ClCompile Include="BaseScene.cpp" />
+    <ClCompile Include="BaseSprite.cpp" />
+    <ClCompile Include="BaseTileMap.cpp" />
+    <ClCompile Include="DescriptionPopup.cpp" />
+    <ClCompile Include="GameButton.cpp" />
+    <ClCompile Include="DebugDraw.cpp" />
+    <ClCompile Include="GameContext.cpp" />
+    <ClCompile Include="GameScorePopup.cpp" />
+    <ClCompile Include="HighscoreScene.cpp" />
+    <ClCompile Include="ImageButton.cpp" />
+    <ClCompile Include="LayoutController.cpp" />
+    <ClCompile Include="MenuButton.cpp" />
+    <ClCompile Include="MenuScene.cpp" />
+    <ClCompile Include="ModalControl.cpp" />
+    <ClCompile Include="NavigationManager.cpp" />
+    <ClCompile Include="OptionsScene.cpp" />
+    <ClCompile Include="ReachLevelChallengeScene.cpp" />
+    <ClCompile Include="RepeatOneOffSequenceChallengeScene.cpp" />
+    <ClCompile Include="SpriteFrameCache.cpp" />
+    <ClCompile Include="Stopwatch.cpp" />
+    <ClCompile Include="TextButton.cpp" />
+    <ClCompile Include="TextToggleButton.cpp" />
+    <ClCompile Include="TopBar.cpp" />
+    <ClCompile Include="VisibleRect.cpp" />
+    <ClCompile Include="WildcardPopup.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
