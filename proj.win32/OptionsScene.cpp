@@ -27,26 +27,25 @@ void OptionsScene::onEnter()
     CCLabelBMFont* label = CCLabelBMFont::create("Sound", m_gameContext->getFontNormalPath().c_str());
     label->setPosition(leftX + label->getContentSize().width/2, topY - 100);
     this->addChild(label);
-        
+
+    label = CCLabelBMFont::create("Off", m_gameContext->getFontNormalPath().c_str());
+    CCSize size = label->getContentSize();
+    
+    size.setSize(size.width + this->m_gameContext->getDefaultPadding() * 12, size.width + this->m_gameContext->getDefaultPadding() * 3); 
+
+    label->release();
+
     ccColor3B toggleColorTextOn = { 0, 0, 0 };
     ccColor3B toggleColorTextOff = { 255, 255, 255 };
-    ccColor3B toggleColorBorder = { 255, 255, 255 };
-    ccColor4F toggleColorBackgroundOn;
-    toggleColorBackgroundOn.r = 255;
-    toggleColorBackgroundOn.g = 255;
-    toggleColorBackgroundOn.b = 255;
-    toggleColorBackgroundOn.a = 255;
-    ccColor4F toggleColorBackgroundOff;
-    toggleColorBackgroundOff.r = 0;
-    toggleColorBackgroundOff.g = 0;
-    toggleColorBackgroundOff.b = 0;
-    toggleColorBackgroundOff.a = 255;
+    ccColor4F toggleColorBorder = { 1,1,1,1};
+    ccColor4F toggleColorBackgroundOn = { 1,1,1,1 };
+    ccColor4F toggleColorBackgroundOff = { 0,0,0,1 };
 
     this->m_soundToggleButtonOn = new TextToggleButton(toggleColorBorder, toggleColorBorder, toggleColorBackgroundOn
       , toggleColorBackgroundOff, toggleColorTextOn, toggleColorTextOff
       , "On"
       , m_gameContext->getIsSoundOn() ? ON : OFF
-      , CCSizeMake(50, 30), 2
+      , size
       , m_gameContext, callfuncO_selector(OptionsScene::onSoundToggleOnChanged), this);
     this->m_soundToggleButtonOn->setPosition(rightX - 120, topY - 100);
     this->addChild(this->m_soundToggleButtonOn);
@@ -55,7 +54,7 @@ void OptionsScene::onEnter()
       , toggleColorBackgroundOff, toggleColorTextOn, toggleColorTextOff
       , "Off"
       , m_gameContext->getIsSoundOn() ? OFF : ON
-      , CCSizeMake(50, 30), 2
+      , size
       , m_gameContext, callfuncO_selector(OptionsScene::onSoundToggleOffChanged), this);
     this->m_soundToggleButtonOff->setPosition(rightX - 60, topY - 100);
     this->addChild(this->m_soundToggleButtonOff);
@@ -68,7 +67,7 @@ void OptionsScene::onEnter()
       , toggleColorBackgroundOff, toggleColorTextOn, toggleColorTextOff
       , "On"
       , m_gameContext->getIsVibrateOn() ? ON : OFF
-      , CCSizeMake(50, 30), 2
+      , size
       , m_gameContext, callfuncO_selector(OptionsScene::onVibrateToggleOnChanged), this);
     this->m_vibrateToggleButtonOn->setPosition(rightX - 120, topY - 200);
     this->addChild(this->m_vibrateToggleButtonOn);
@@ -77,7 +76,7 @@ void OptionsScene::onEnter()
       , toggleColorBackgroundOff, toggleColorTextOn, toggleColorTextOff
       , "Off"
       , m_gameContext->getIsVibrateOn() ? OFF : ON
-      , CCSizeMake(50, 30), 2
+      , size
       , m_gameContext, callfuncO_selector(OptionsScene::onVibrateToggleOffChanged), this);
     this->m_vibrateToggleButtonOff->setPosition(rightX - 60, topY - 200);
     this->addChild(this->m_vibrateToggleButtonOff);

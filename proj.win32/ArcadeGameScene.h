@@ -15,9 +15,12 @@ class ArcadeGameScene : public BaseScene
 private:
 
   bool m_bIsFirstDraw;  
-
+  
   std::vector<GameButton*> m_buttonSequence;
   
+  GameButton* m_lastButtonPressed;
+  GameButton* m_nextSequenceButton;
+
   void update(float delta);
   void runSequenceAnimation(bool doAddButton, int startIndex, int endIndex);
 
@@ -37,6 +40,16 @@ private:
   void newGameCallback(CCObject* pSender);
   void mainMenuCallback(CCObject* pSender); 
 
+  float m_eogElaspedTime, m_eogElapsedTimeWrongButton;
+  float m_eogTargetTime, m_eogTargetTimeLastButton;
+  int m_eogTotalWrongButtonBlinks;
+  void eogGrayOutButtons(float dt);
+  void eogBlinkCorrectButton(float dt);
+  void eogGrayOutLastButton(float dt);
+  void eogReleaseLastButton(float dt);
+  void eogAnimationFinish(float dt);
+  void eogResetButtons(float dt);
+  
   void replaySequenceCallback(CCObject* pSender);
   void showNextSequenceItemCallback(CCObject* pSender);
   void replayFromCurrentCallback(CCObject* pSender); 

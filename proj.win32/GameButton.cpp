@@ -16,6 +16,7 @@ GameButton* GameButton::createThirdButton(const ccColor3B& color, CCNode *pTarge
       NavigationManager::getPath(gameContext, "buttonmap.plist")
       , NavigationManager::getPath(gameContext, "buttonmap.png")));    
 
+  gameButton->setOriginalColor(color);
   gameButton->setColor(color);
   
   gameButton->setAlphaMapStillFrameIndex(0);
@@ -41,7 +42,8 @@ GameButton* GameButton::createQuarterButton(const ccColor3B& color, CCNode *pTar
   gameButton->setAnimationFrames(gameContext->getSpriteFrameCache()->getSpriteFramesForKey(
       NavigationManager::getPath(gameContext, "buttonmap.plist")
       , NavigationManager::getPath(gameContext, "buttonmap.png"))); 
-
+  
+  gameButton->setOriginalColor(color);
   gameButton->setColor(color);
   
   gameButton->setAlphaMapStillFrameIndex(11);
@@ -68,7 +70,8 @@ GameButton* GameButton::createFifthButton(const ccColor3B& color, CCNode *pTarge
   gameButton->setAnimationFrames(gameContext->getSpriteFrameCache()->getSpriteFramesForKey(
       NavigationManager::getPath(gameContext, "buttonmap.plist")
       , NavigationManager::getPath(gameContext, "buttonmap.png")));   
-
+  
+  gameButton->setOriginalColor(color);
   gameButton->setColor(color);
   
   gameButton->setAlphaMapStillFrameIndex(22);
@@ -84,13 +87,19 @@ GameButton* GameButton::createFifthButton(const ccColor3B& color, CCNode *pTarge
   return gameButton;
 }
 
+void GameButton::playSound()
+{
+  if (m_gameContext->getIsSoundOn())
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(this->m_soundPath.c_str()); 
+}
+
 void GameButton::playAnimation(int animationIndex)
 {
   switch (animationIndex)
   {
   case BLINK: 
-  case RELEASING:
-    CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(this->m_soundPath.c_str());    
+    if (m_gameContext->getIsSoundOn())
+      CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(this->m_soundPath.c_str());    
   break;
   }
   BaseSprite::playAnimation(animationIndex);
@@ -138,8 +147,11 @@ bool GameButton::containsTouchLocation(CCTouch* touch)
 
 bool GameButton::ccTouchBegan(CCTouch* touch, CCEvent* event)
 {
-    if (((BaseScene*)this->getParent())->getSceneState() != AWAITING_INPUT)
+    if (((BaseScene*)this->getParent())->getSceneState() != AWAITING_INPUT
+        || !this->m_isEnabled)
+    {
       return false;
+    }
 
     if (containsTouchLocation(touch))
     {      
@@ -166,12 +178,12 @@ void GameButton::ccTouchMoved(CCTouch* touch, CCEvent* event)
 }
 void GameButton::ccTouchEnded(CCTouch* touch, CCEvent* event)
 {
+    setButtonState(UNGRABBED);
+    
     if (containsTouchLocation(touch))
     {      
       // TODO (Roman): wait for animation end
       if(m_pTarget != 0 && m_fnpTouchEndedDelegate != 0)
           (m_pTarget->*m_fnpTouchEndedDelegate)(this);      
     }
-
-    setButtonState(UNGRABBED);
 } 

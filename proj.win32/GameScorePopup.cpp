@@ -19,11 +19,9 @@ void GameScorePopup::onEnter()
 
     float verticalSpacing = m_gameContext->getFontHeightNormal() + m_padding;
     float verticalSpacingLarge = m_gameContext->getFontHeightLarge() + m_padding*3;
-
-    float scaleX = m_gameContext->getHorizontalScaleFactor();
-        
-    m_dialogRectLeftTop = ccp ( 0, m_visibleRectRightTop.y * .875);
-    m_dialogRectLeftBottom = ccp ( 0, m_visibleRectRightTop.y * .16 );
+            
+    m_dialogRectLeftTop = ccpRounded ( 0, m_visibleRectRightTop.y * .825);
+    m_dialogRectLeftBottom = ccpRounded ( 0, m_visibleRectRightTop.y * .26 );
     m_dialogRectRightTop = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftTop.y);
     m_dialogRectRightBottom = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftBottom.y);
 
@@ -31,22 +29,22 @@ void GameScorePopup::onEnter()
     m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightBottom.y - m_borderThickness);
       
     // now we have the border thickness and padding, so we can set the boundaries 
-    float indentLeft = m_visibleRectLeftBottom.x + (visibleRect.size.width * .15);
-    float indentRight = m_visibleRectLeftBottom.x + (visibleRect.size.width * .85);
+    float indentLeft = round ( m_visibleRectLeftBottom.x + (visibleRect.size.width * .15) );
+    float indentRight = round ( m_visibleRectLeftBottom.x + (visibleRect.size.width * .85) ) ;
     m_dialogRectInnerLeftBottom = ccp( indentLeft + this->m_borderThickness, m_dialogRectLeftBottom.y + this->m_borderThickness );
     m_dialogRectInnerRightTop = ccp( indentRight - this->m_borderThickness, m_dialogRectRightTop.y - this->m_borderThickness );
 
     this->m_textIndentLeft = m_dialogRectInnerLeftBottom.x + m_padding * 3;
     this->m_textIndentRight = m_dialogRectInnerRightTop.x - m_padding * 3;
     
-    float posY = m_dialogRectInnerRightTop.y - verticalSpacingLarge/2;
+    float posY = m_dialogRectInnerRightTop.y - verticalSpacingLarge/2 - this->m_padding * 4;
     CCLabelBMFont* label = CCLabelBMFont::create("GAME OVER", m_gameContext->getFontLargePath().c_str());
     label->setPosition(center.x, posY );
     this->addChild(label);
     
     char str[256];        
 
-    posY -= (verticalSpacingLarge/2 + verticalSpacing/2 + this->m_padding);
+    posY -= (verticalSpacingLarge/2 + verticalSpacing/2 + this->m_padding * 8);
 
     m_pointsLabelDescription = CCLabelBMFont::create("Points", m_gameContext->getFontNormalPath().c_str());
     m_pointsLabelDescription->setPosition(this->m_textIndentLeft + m_pointsLabelDescription->getContentSize().width/2, posY);
@@ -74,11 +72,11 @@ void GameScorePopup::onEnter()
     m_timeBonusLabel->setPosition(this->m_textIndentRight - m_timeBonusLabel->getContentSize().width/2, posY);
     this->addChild(m_timeBonusLabel);
     
-    posY -= (verticalSpacing/2 + this->m_padding);
+    posY -= (verticalSpacing/2);
     m_separatorLineLeftBottom = ccp ( this->m_textIndentLeft, posY - this->m_borderThickness );
     m_separatorLineRightTop = ccp ( this->m_textIndentRight, posY );
   
-    posY -= (verticalSpacing/2 + this->m_padding);
+    posY -= (verticalSpacing/2 + this->m_padding * 6);
     label = CCLabelBMFont::create("Total Points", m_gameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY);
     this->addChild(label);
@@ -107,7 +105,7 @@ void GameScorePopup::onEnter()
       , this);
     textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
     textButton->setPosition(this->m_textIndentLeft + textButton->getSize().width/2
-      , m_dialogRectInnerLeftBottom.y + this->m_padding * 3 + textButton->getSize().height/2);
+      , m_dialogRectInnerLeftBottom.y + this->m_padding * 5 + textButton->getSize().height/2);
     this->addChild(textButton);
     
     textButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
@@ -121,7 +119,7 @@ void GameScorePopup::onEnter()
       , this);
     textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
     textButton->setPosition(this->m_textIndentRight - textButton->getSize().width/2
-      , m_dialogRectInnerLeftBottom.y + this->m_padding * 3 + textButton->getSize().height/2);
+      , m_dialogRectInnerLeftBottom.y + this->m_padding * 5 + textButton->getSize().height/2);
     this->addChild(textButton);
         
     m_backgroundColor.a = .7f;

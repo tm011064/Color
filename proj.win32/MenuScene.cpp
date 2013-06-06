@@ -66,13 +66,14 @@ void MenuScene::onEnter()
 
     
     /*************** ARCADE ***************/
+    counter = 1;
     m_arcadeEasy = new MenuButton(
       m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
       , "EASY", m_gameContext, menu_selector(MenuScene::startArcadeEasyGameCallback), this);
-    m_arcadeEasy->setPosition(center.x + visibleRect.size.width, top);
+    m_arcadeEasy->setPosition(center.x + visibleRect.size.width, top - spacing*counter++);
     this->addChild(m_arcadeEasy);
 
     m_arcadeClassic = new MenuButton(
@@ -81,7 +82,7 @@ void MenuScene::onEnter()
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
       , "CLASSIC", m_gameContext, menu_selector(MenuScene::startArcadeClassicGameCallback), this);
-    m_arcadeClassic->setPosition(center.x + visibleRect.size.width, top - spacing);
+    m_arcadeClassic->setPosition(center.x + visibleRect.size.width, top - spacing*counter++);
     this->addChild(m_arcadeClassic);
 
     m_arcadeHard = new MenuButton(
@@ -90,9 +91,10 @@ void MenuScene::onEnter()
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
       , "HARD", m_gameContext, menu_selector(MenuScene::startArcadeHardGameCallback), this);
-    m_arcadeHard->setPosition(center.x + visibleRect.size.width, top - spacing*2);
+    m_arcadeHard->setPosition(center.x + visibleRect.size.width, top - spacing*counter++);
     this->addChild(m_arcadeHard);    
 
+#if GAME_VERSION > 1
     /*************** STORY MODE ***************/
     int nextReleasingFrames[] = { 24 };
     int nextPressingFrames[] = { 24 };
@@ -227,21 +229,21 @@ void MenuScene::onEnter()
           imageButton->setVisible(false);
           this->m_challengeButtons.push_back(imageButton);
           index++;
-          CCLOG("loop end %i %i %i %i", i, j, k, index);
         }
       }
     }
 
-    CCLOG("set image button null");
     imageButton = NULL;
-
+#endif
     CCLOG("finished initializing MenuScene");
   }
 }
 
 void MenuScene::resetHomeButtons(bool isVisible)
-{
+{  
+#if GAME_VERSION > 1
   m_homeStoryMode->setVisible(isVisible);
+#endif
   m_homeArcade->setVisible(isVisible);
   m_homeOptions->setVisible(isVisible);
   m_homeHighscore->setVisible(isVisible);
@@ -256,6 +258,7 @@ void MenuScene::resetArcadeButtons(bool isVisible)
 
 void MenuScene::resetChallengeButtons(bool isVisible, bool areNavigationButtonsVisible)
 {
+#if GAME_VERSION > 1
   m_storyModeNextPage->setVisible(areNavigationButtonsVisible);
   m_storyModePreviousPage->setVisible(areNavigationButtonsVisible);
 
@@ -285,6 +288,7 @@ void MenuScene::resetChallengeButtons(bool isVisible, bool areNavigationButtonsV
     }
   }
   imageButton = NULL;
+#endif
 }
 
 void MenuScene::showView(MenuViewType menuViewType)

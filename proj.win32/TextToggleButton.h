@@ -28,8 +28,8 @@ private:
   CCLabelBMFont* m_textLabel;
   std::string m_text;
 
-  ccColor3B m_borderColorOn;
-  ccColor3B m_borderColorOff;
+  ccColor4F m_borderColorOn;
+  ccColor4F m_borderColorOff;
   
   ccColor4F m_backgroundColorOn;
   ccColor4F m_backgroundColorOff;
@@ -42,14 +42,13 @@ private:
   CCNode* m_pTarget;
   bool m_isEnabled;
   bool m_isInitialized;
-    
-  float m_borderWidth;
+
   CCPoint m_borderOrigin;
   CCPoint m_borderDestination;
   CCPoint m_backgroundOrigin;
   CCPoint m_backgroundDestination;
   ccColor4F m_currentBackgroundColor;
-  ccColor3B m_currentBorderColor;
+  ccColor4F m_currentBorderColor;
   
   GameContext* m_gameContext; 
   SEL_CallFuncO m_fnpToggleChangedDelegate;
@@ -57,9 +56,9 @@ private:
   void refresh();
 
 public:  
-  TextToggleButton(ccColor3B borderColorOn, ccColor3B borderColorOff, ccColor4F backgroundColorOn
+  TextToggleButton(ccColor4F borderColorOn, ccColor4F borderColorOff, ccColor4F backgroundColorOn
     , ccColor4F backgroundColorOff, ccColor3B textColorOn, ccColor3B textColorOff
-    , std::string text, ToggleState toggleState, CCSize size, float borderWidth
+    , std::string text, ToggleState toggleState, CCSize size
     , GameContext* gameContext, SEL_CallFuncO m_fnpToggleChangedDelegate, CCNode *pTarget);
   ~TextToggleButton() { }
   

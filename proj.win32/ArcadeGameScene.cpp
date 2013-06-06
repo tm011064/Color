@@ -1,4 +1,5 @@
 #include "ArcadeGameScene.h"
+#include "SimpleAudioEngine.h"
 #include <cstdlib>
 
 using namespace cocos2d;
@@ -19,6 +20,8 @@ ArcadeGameScene::ArcadeGameScene(GameContext* gameContext, SceneType sceneType, 
   , m_topBar(NULL)
   , m_wildcardPopup(NULL)
   , m_gameScorePopup(NULL)
+  , m_lastButtonPressed(NULL)
+  , m_nextSequenceButton(NULL)
 { 
   m_gameScore.totalPoints = 0;
   m_gameScore.totalLevelBonus = 0;
@@ -34,6 +37,9 @@ ArcadeGameScene::~ArcadeGameScene()
     CC_SAFE_FREE(m_buttons);    
     CC_SAFE_DELETE(m_lastButtonPressedTime);
     CC_SAFE_DELETE(m_lastLevelStartTime);    
+
+    m_lastButtonPressed = NULL;    
+    m_nextSequenceButton = NULL;    
   }
 }
 
@@ -158,6 +164,11 @@ void ArcadeGameScene::runSequenceAnimation(bool doAddButton, int startIndex, int
   {
     std::srand(time(NULL));
     GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    while (!button->getIsEnabled())
+    {
+      button = NULL;
+      button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    }
     m_buttonSequence.push_back(button);
   }
 
@@ -252,12 +263,14 @@ float ArcadeGameScene::updateTimeVal(cc_timeval* time)
 }
 
 void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
-{
-  GameButton* bSeq = m_buttonSequence.at(m_buttonSequenceIndex);
-  GameButton* button = ((GameButton*)pSender);
+{  
+  m_lastButtonPressed = ((GameButton*)pSender);
+  m_nextSequenceButton = m_buttonSequence.at(m_buttonSequenceIndex);
     
-  if (bSeq == button)
+  if (m_nextSequenceButton == m_lastButtonPressed)
   {// correct click
+    m_lastButtonPressed->playSound();
+
     this->m_buttonSequenceIndex++;
 
     float deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
@@ -300,15 +313,132 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
   }
   else
   {// incorrect
+    this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION;
     
     m_topBar->setScore((long)this->m_gameScore.totalPoints);
     m_gameContext->setGameScore( m_gameScore );
     
     onGameOver();
 
-    m_gameScorePopup->show();
+    if (this->m_gameContext->getIsSoundOn())
+    {      
+      // TODO (Roman): global path
+      std::string s = m_gameContext->getSoundPath() + "button_wrong.wav";
+      CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(s.c_str());      
+    }
+      
+    float wrongDelay = 1.6f;
+    float correctBlinkDelay = 2.3f;
+    this->m_eogTotalWrongButtonBlinks = 3;
+    this->m_eogElaspedTime = 0;
+    this->m_eogTargetTime = .8;
+    this->m_eogTargetTimeLastButton = .55;
+    this->m_eogElapsedTimeWrongButton = -wrongDelay;
+          
+    m_lastButtonPressed->playAnimation(PRESSED);
+
+    this->schedule(schedule_selector(ArcadeGameScene::eogGrayOutButtons), 0.021f); // framerate: 1/48
+    this->schedule(schedule_selector(ArcadeGameScene::eogGrayOutLastButton), 0.021f, -1, wrongDelay); // framerate: 1/48
+    this->schedule(schedule_selector(ArcadeGameScene::eogReleaseLastButton), 0.021f, 0, wrongDelay); // framerate: 1/48
+    this->schedule(schedule_selector(ArcadeGameScene::eogBlinkCorrectButton), 0.2f, -1, correctBlinkDelay); // framerate: 1/48    
   }
 }
+void ArcadeGameScene::eogReleaseLastButton(float dt)
+{
+  m_lastButtonPressed->playAnimation(RELEASING);
+}
+void ArcadeGameScene::eogBlinkCorrectButton(float dt)
+{
+  this->m_eogTotalWrongButtonBlinks--;
+  if (this->m_eogTotalWrongButtonBlinks < 0)
+  {
+    this->m_nextSequenceButton->setColor(BUTTON_COLOR_BLACK);
+    this->unschedule(schedule_selector(ArcadeGameScene::eogBlinkCorrectButton)); 
+    this->schedule(schedule_selector(ArcadeGameScene::eogAnimationFinish), 0, 0, .65); // framerate: 1/48        
+  }
+  else
+  {
+    this->m_nextSequenceButton->setColor(this->m_nextSequenceButton->getOriginalColor());
+    this->m_nextSequenceButton->playAnimation(BLINK);
+  }
+}
+void ArcadeGameScene::eogAnimationFinish(float dt)
+{
+  m_gameScorePopup->show();
+
+  this->m_eogElaspedTime = 0;
+  this->schedule(schedule_selector(ArcadeGameScene::eogResetButtons), 0.021f); // framerate: 1/48
+}
+void ArcadeGameScene::eogResetButtons(float dt)
+{
+  m_eogElaspedTime += dt;
+  float percentageDone = this->m_eogElaspedTime / this->m_eogTargetTime;
+  if (percentageDone >= 1.0)
+  {
+    percentageDone = 1.0;
+    this->unschedule(schedule_selector(ArcadeGameScene::eogResetButtons));              
+  }
+  
+  CCObject* o;
+  ccColor3B orignialColor;
+  ccColor3B currentColor;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    orignialColor = ((GameButton*)o)->getOriginalColor();
+    
+    currentColor.r = BUTTON_COLOR_BLACK.r + (float)(orignialColor.r - BUTTON_COLOR_BLACK.r) * percentageDone;
+    currentColor.g = BUTTON_COLOR_BLACK.g + (float)(orignialColor.g - BUTTON_COLOR_BLACK.g) * percentageDone;
+    currentColor.b = BUTTON_COLOR_BLACK.b + (float)(orignialColor.b - BUTTON_COLOR_BLACK.b) * percentageDone;
+
+    ((GameButton*)o)->setColor(currentColor);
+  }
+}
+void ArcadeGameScene::eogGrayOutLastButton(float dt)
+{  
+  m_eogElapsedTimeWrongButton += dt;
+  float percentageDone = this->m_eogElapsedTimeWrongButton / this->m_eogTargetTimeLastButton;
+  if (percentageDone >= 1.0)
+  {
+    percentageDone = 1.0;
+    this->unschedule(schedule_selector(ArcadeGameScene::eogGrayOutLastButton));              
+  }
+  
+  ccColor3B  orignialColor = m_lastButtonPressed->getOriginalColor();    
+  ccColor3B currentColor;
+  currentColor.r = orignialColor.r + (float)(BUTTON_COLOR_BLACK.r - orignialColor.r) * percentageDone;
+  currentColor.g = orignialColor.g + (float)(BUTTON_COLOR_BLACK.g - orignialColor.g) * percentageDone;
+  currentColor.b = orignialColor.b + (float)(BUTTON_COLOR_BLACK.b - orignialColor.b) * percentageDone;
+
+  m_lastButtonPressed->setColor(currentColor);  
+}
+void ArcadeGameScene::eogGrayOutButtons(float dt)
+{
+  m_eogElaspedTime += dt;
+  float percentageDone = this->m_eogElaspedTime / this->m_eogTargetTime;
+  if (percentageDone >= 1.0)
+  {
+    percentageDone = 1.0;
+    this->unschedule(schedule_selector(ArcadeGameScene::eogGrayOutButtons));              
+  }
+  
+  CCObject* o;
+  ccColor3B orignialColor;
+  ccColor3B currentColor;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    if ( ((GameButton*)o) == m_lastButtonPressed )
+      continue;
+
+    orignialColor = ((GameButton*)o)->getOriginalColor();
+    
+    currentColor.r = orignialColor.r + (float)(BUTTON_COLOR_BLACK.r - orignialColor.r) * percentageDone;
+    currentColor.g = orignialColor.g + (float)(BUTTON_COLOR_BLACK.g - orignialColor.g) * percentageDone;
+    currentColor.b = orignialColor.b + (float)(BUTTON_COLOR_BLACK.b - orignialColor.b) * percentageDone;
+
+    ((GameButton*)o)->setColor(currentColor);
+  }
+}
+
 void ArcadeGameScene::buttonLoadedCallback(CCObject* pSender)
 {  
   CCObject* o;

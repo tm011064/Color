@@ -11,11 +11,13 @@ class GameButton : public BaseSprite
 {
 private:
   ButtonState m_buttonState;
-
+  
+  bool m_isEnabled;
   void setButtonState(ButtonState buttonState);
 
   GameContext* m_gameContext;
   std::string m_soundPath;
+  ccColor3B m_originalColor;
 
 public:
   GameButton(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, GameContext* gameContext
@@ -24,6 +26,7 @@ public:
     , m_buttonState(UNGRABBED)
     , m_gameContext(gameContext)
     , m_soundPath(soundPath)
+    , m_isEnabled(true)
   {
 
   }
@@ -32,6 +35,9 @@ public:
 
   }
   
+  int getIsEnabled() { return this->m_isEnabled; }
+  void setIsEnabled(bool isEnabled) { this->m_isEnabled = isEnabled; }
+
   static GameButton* createQuarterButton(const ccColor3B& color, CCNode *pTarget
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate, std::string soundPath, GameContext* gameContext);
   static GameButton* createThirdButton(const ccColor3B& color, CCNode *pTarget
@@ -39,6 +45,11 @@ public:
   static GameButton* createFifthButton(const ccColor3B& color, CCNode *pTarget
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate, std::string soundPath, GameContext* gameContext);
     
+  void playSound();
+
+  ccColor3B getOriginalColor() { return m_originalColor; }
+  void setOriginalColor(ccColor3B color) { this->m_originalColor = color; }
+
   virtual void playAnimation(int animationIndex);
 
   virtual bool ccTouchBegan(CCTouch* touch, CCEvent* event);

@@ -9,6 +9,8 @@ using namespace cocos2d;
 class ModalControl : public cocos2d::CCNode, public cocos2d::CCTargetedTouchDelegate
 {  
 protected:  
+  bool m_isLayoutInitialized;
+
   CCPoint m_dialogRectLeftBottom;
   CCPoint m_dialogRectRightTop;
 
@@ -18,12 +20,22 @@ protected:
   CCPoint m_visibleRectLeftBottom;
   CCPoint m_visibleRectRightTop;
   
+  CCPoint m_separatorTopRight;
+  CCPoint m_separatorBottomRight;
+  
+  float m_borderThickness, m_textIndentRight, m_textIndentLeft, m_padding;
+
+  ccColor4F m_bgLight, m_bgDark;
+  ccColor4F m_separatorColor;
+
   ccColor4F m_backgroundColor;
   ccColor4F m_dialogColor;
   ccColor4F m_dialogBorderColor;
 
 public:
-  ModalControl() { }
+  ModalControl() 
+  : m_isLayoutInitialized(false)
+  { }
   ~ModalControl() { }
   
   virtual void onEnter();

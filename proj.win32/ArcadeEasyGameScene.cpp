@@ -4,7 +4,7 @@
 using namespace cocos2d;
 
 ArcadeEasyGameScene::ArcadeEasyGameScene(GameContext* gameContext)   
-  : ArcadeGameScene(gameContext, ARCADE_EASY_GAME_SCENE, 3)
+  : ArcadeGameScene(gameContext, ARCADE_EASY_GAME_SCENE, 4)
 { 
   m_challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_THREE_BUTTONS;
   m_challengePointScoreDefinition.maxTimeBonus = CORRECT_BUTTON_SCORE_THREE_BUTTONS_MAX_TIME_BONUS;

@@ -29,6 +29,7 @@ enum SceneState
   PAUSED = 2,
   LOADING = 3,
   UNLOADED = 4,
+  RUNNING_END_OF_GAME_ANIMATION = 5,
 };
 
 enum SceneRenderMode

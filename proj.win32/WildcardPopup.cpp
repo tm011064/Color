@@ -5,112 +5,122 @@ void WildcardPopup::onEnter()
   ModalControl::onEnter();
 
   if (!this->m_isLayoutInitialized)
-  {
+  {    
     CCPoint center = VisibleRect::center();
-
-    m_padding = 4;
-    float leftX, rightX;
-    float topY, bottomY;
-
-    int replaySequenceReleasingFrames[] = { 21 };
-    int replaySequencePressingFrames[] = { 21 };
-    ImageButton* replaySequence = ImageButton::create(
-      this
-      , callfuncO_selector(WildcardPopup::replaySequenceCallback)
-      , NULL
-      , m_gameContext
-      , this->m_gameContext->getImageMapPListPath()
-      , this->m_gameContext->getImageMapPngPath()
-      , -1
-      , 21
-      , replaySequencePressingFrames, 1
-      , replaySequenceReleasingFrames, 1
-      , 21
-      , 21
-      , TOUCH_PRIORITY_MODAL_ITEM);
-    CCSize size = replaySequence->getSpriteFrameSize(21);
-
-    leftX = center.x - size.width - m_padding;
-    replaySequence->setPosition(ccp(leftX, center.y));
-    leftX = leftX - size.width/2 - m_padding;
-
-    topY = center.y + size.height/2;
-    bottomY = center.y - size.height/2;
-
-    int nextButtonHelpReleasingFrames[] = { 22 };
-    int nextButtonHelpPressingFrames[] = { 22 };
-    ImageButton* nextButtonHelp = ImageButton::create(
-      this
-      , callfuncO_selector(WildcardPopup::showNextSequenceItemCallback)
-      , NULL
-      , m_gameContext
-      , this->m_gameContext->getImageMapPListPath()
-      , this->m_gameContext->getImageMapPngPath()
-      , -1
-      , 22
-      , nextButtonHelpPressingFrames, 1
-      , nextButtonHelpReleasingFrames, 1
-      , 22
-      , 22
-      , TOUCH_PRIORITY_MODAL_ITEM);
-    nextButtonHelp->setPosition(ccp(center.x, center.y));
-    
-    int replayFromCurrentReleasingFrames[] = { 23 };
-    int replayFromCurrentPressingFrames[] = { 23 };
-    ImageButton* replayFromCurrent = ImageButton::create(
-      this
-      , callfuncO_selector(WildcardPopup::replayFromCurrentCallback)
-      , NULL
-      , m_gameContext
-      , this->m_gameContext->getImageMapPListPath()
-      , this->m_gameContext->getImageMapPngPath()
-      , -1
-      , 23
-      , replayFromCurrentPressingFrames, 1
-      , replayFromCurrentReleasingFrames, 1
-      , 23
-      , 23
-      , TOUCH_PRIORITY_MODAL_ITEM);
         
-    size = replaySequence->getSpriteFrameSize(23);
-    rightX = center.x + size.width + m_padding;
-    replayFromCurrent->setPosition(ccp(rightX, center.y));
-    rightX = rightX + size.width/2 + m_padding;
-    
-    CCLabelBMFont* coinsTextLabel = CCLabelBMFont::create("Coins:", m_gameContext->getFontNormalPath().c_str());
-    CCSize fontSize = coinsTextLabel->getContentSize();
-
-    coinsTextLabel->setPosition(ccp(leftX + m_padding + fontSize.width/2, topY + fontSize.height/2 + m_padding));
-    this->addChild(coinsTextLabel);
-            
-    char str[10];
-    sprintf(str, "%i", m_gameContext->getTotalCoins());
-
-    m_coinsLabel = CCLabelBMFont::create(str, m_gameContext->getFontNormalPath().c_str());
-    fontSize = m_coinsLabel->getContentSize();
-    m_coinsLabel->setPosition(ccp(rightX - m_padding - fontSize.width/2, coinsTextLabel->getPositionY()));
-    this->addChild(m_coinsLabel);
-    
-    leftX -= m_padding;
-    rightX += m_padding;
-    topY = coinsTextLabel->getPositionY() + fontSize.height/2 + m_padding*2;
-    bottomY = bottomY - m_padding*2;
-
-    m_dialogRectLeftBottom.setPoint(leftX, bottomY);
-    m_dialogRectRightTop.setPoint(rightX, topY);
-
+    CCRect visibleRect = VisibleRect::getVisibleRect();
     m_visibleRectLeftBottom = VisibleRect::leftBottom();
     m_visibleRectRightTop = VisibleRect::rightTop();
+                
+    this->m_padding = m_gameContext->getDefaultPadding();
+    this->m_borderThickness = m_gameContext->getDefaultBorderThickness();
 
-    m_backgroundColor.a = .7;
+    float verticalSpacing = m_gameContext->getFontHeightNormal() + m_padding;
+    float verticalSpacingLarge = m_gameContext->getFontHeightLarge() + m_padding*3;
+            
+    m_dialogRectLeftTop = ccp ( 0, m_visibleRectRightTop.y * .875);
+    m_dialogRectLeftBottom = ccp ( 0, m_visibleRectRightTop.y * .16 );
+    m_dialogRectRightTop = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftTop.y);
+    m_dialogRectRightBottom = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftBottom.y);
+    
+    m_separatorTopRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightTop.y + m_borderThickness);
+    m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightBottom.y - m_borderThickness);
+
+    // now we have the border thickness and padding, so we can set the boundaries 
+    float indentLeft = m_visibleRectLeftBottom.x + (visibleRect.size.width * .15);
+    float indentRight = m_visibleRectLeftBottom.x + (visibleRect.size.width * .85);
+    m_dialogRectInnerLeftBottom = ccp( indentLeft + this->m_borderThickness, m_dialogRectLeftBottom.y + this->m_borderThickness );
+    m_dialogRectInnerRightTop = ccp( indentRight - this->m_borderThickness, m_dialogRectRightTop.y - this->m_borderThickness );
+
+    this->m_textIndentLeft = m_dialogRectInnerLeftBottom.x + m_padding * 3;
+    this->m_textIndentRight = m_dialogRectInnerRightTop.x - m_padding * 3;
+    
+    float posY = m_dialogRectInnerRightTop.y - verticalSpacingLarge/2;
+    CCLabelBMFont* label = CCLabelBMFont::create("WILDCARDS", m_gameContext->getFontLargePath().c_str());
+    label->setPosition(center.x, posY );
+    this->addChild(label);
+
+    m_coinsLabel = CCLabelBMFont::create("NA", m_gameContext->getFontNormalPath().c_str());
+    m_coinsLabel->setPosition(ccp(this->m_textIndentRight - m_coinsLabel->getContentSize().width/2, posY));
+    this->addChild(m_coinsLabel);
+    
+    posY -= (verticalSpacingLarge/2 + verticalSpacing/2 + this->m_padding);
+
+    m_replaySequence = CCLabelBMFont::create("REPLAY SEQUENCE", m_gameContext->getFontNormalPath().c_str());
+    m_replaySequence->setPosition(this->m_textIndentLeft + m_replaySequence->getContentSize().width/2, posY);
+    this->addChild(m_replaySequence);
+    m_replaySequenceButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+      , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
+      , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
+      , "50c"
+      , m_gameContext->getDefaultButtonSize()
+      , this->m_borderThickness
+      , this->m_gameContext
+      , callfuncO_selector(WildcardPopup::replaySequenceCallback)
+      , this);
+    m_replaySequenceButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
+    m_replaySequenceButton->setPosition(this->m_textIndentRight - m_replaySequenceButton->getSize().width/2, posY);
+    this->addChild(m_replaySequenceButton);
+
+    posY -= verticalSpacing;
+    m_showNext = CCLabelBMFont::create("SHOW NEXT", m_gameContext->getFontNormalPath().c_str());
+    m_showNext->setPosition(this->m_textIndentLeft + m_showNext->getContentSize().width/2, posY);
+    this->addChild(m_showNext);
+    m_showNextButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+      , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
+      , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
+      , "100c"
+      , m_gameContext->getDefaultButtonSize()
+      , this->m_borderThickness
+      , this->m_gameContext
+      , callfuncO_selector(WildcardPopup::showNextSequenceItemCallback)
+      , this);
+    m_showNextButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
+    m_showNextButton->setPosition(this->m_textIndentRight - m_showNextButton->getSize().width/2, posY);
+    this->addChild(m_showNextButton);
+        
+    posY -= verticalSpacing;
+    m_replayFromCurrent = CCLabelBMFont::create("REPLAY REMAINING", m_gameContext->getFontNormalPath().c_str());
+    m_replayFromCurrent->setPosition(this->m_textIndentLeft + m_replayFromCurrent->getContentSize().width/2, posY);
+    this->addChild(m_replayFromCurrent);
+    m_replayFromCurrentButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+      , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
+      , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
+      , "150c"
+      , m_gameContext->getDefaultButtonSize()
+      , this->m_borderThickness
+      , this->m_gameContext
+      , callfuncO_selector(WildcardPopup::replayFromCurrentCallback)
+      , this);
+    m_replayFromCurrentButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
+    m_replayFromCurrentButton->setPosition(this->m_textIndentRight - m_replayFromCurrentButton->getSize().width/2, posY);
+    this->addChild(m_replayFromCurrentButton);
+    
+        
+    m_backgroundColor.a = .7f;
     m_backgroundColor.r = 0;
     m_backgroundColor.g = 0;
     m_backgroundColor.b = 0;
-    
     m_dialogColor.a = 1;
-    m_dialogColor.r = 0;
-    m_dialogColor.g = 0;
-    m_dialogColor.b = 0;
+    m_dialogColor.r = .1;
+    m_dialogColor.g = .1;
+    m_dialogColor.b = .1;
+    m_dialogBorderColor.a = 1; 
+    m_dialogBorderColor.r = 0; 
+    m_dialogBorderColor.g = 0; 
+    m_dialogBorderColor.b = 0; 
+    m_bgLight.a = .6f; 
+    m_bgLight.r = 0; 
+    m_bgLight.g = 0; 
+    m_bgLight.b = 0;
+    m_bgDark.a = .8f; 
+    m_bgDark.r = 0; 
+    m_bgDark.g = 0; 
+    m_bgDark.b = 0;
+    m_separatorColor.a = 1; 
+    m_separatorColor.r = 1; 
+    m_separatorColor.g = 1; 
+    m_separatorColor.b = 1; 
   }
 }
 
@@ -123,13 +133,17 @@ void WildcardPopup::refresh()
 }
 
 void WildcardPopup::draw()
-{  
+{ 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   
-  ccDrawSolidRect(m_visibleRectLeftBottom, m_visibleRectRightTop, m_backgroundColor);
-  ccDrawSolidRect(m_dialogRectLeftBottom, m_dialogRectRightTop, m_dialogColor);
-  
+  ccDrawSolidRect(m_dialogRectLeftTop, m_visibleRectRightTop, m_bgLight);
+  ccDrawSolidRect(m_dialogRectLeftBottom, m_dialogRectRightTop, m_bgDark);
+  ccDrawSolidRect(m_visibleRectLeftBottom, m_dialogRectRightBottom, m_bgLight);
+
   glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+  ccDrawSolidRect(m_dialogRectLeftTop, m_separatorTopRight, m_separatorColor);
+  ccDrawSolidRect(m_dialogRectLeftBottom, m_separatorBottomRight, m_separatorColor);
 }
 
 void WildcardPopup::replaySequenceCallback(CCObject* pSender)

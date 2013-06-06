@@ -92,9 +92,10 @@ bool AppDelegate::applicationDidFinishLaunching()
   SimpleAudioEngine::sharedEngine()->preloadEffect( (gameContext->getSoundPath() + "button_s3.wav").c_str() );
   SimpleAudioEngine::sharedEngine()->preloadEffect( (gameContext->getSoundPath() + "button_s4.wav").c_str() );
   SimpleAudioEngine::sharedEngine()->preloadEffect( (gameContext->getSoundPath() + "button_s5.wav").c_str() );
+  SimpleAudioEngine::sharedEngine()->preloadEffect( (gameContext->getSoundPath() + "button_wrong.wav").c_str() );
 
   gameContext->initImageMap(gameContext->getImageMapPListPath().c_str(), gameContext->getImageMapPngPath().c_str());
-  
+    
   std::string normalPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(NavigationManager::getPath(gameContext, FONT_MENU_NORMAL).c_str());
   std::string largePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(NavigationManager::getPath(gameContext, FONT_MENU_LARGE).c_str());
   gameContext->setFontNormalPath(normalPath);

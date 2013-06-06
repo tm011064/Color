@@ -28,6 +28,7 @@ static const float CORRECT_BUTTON_SCORE_FIVE_BUTTONS_MAX_LEVEL_TIME_BONUS = 1300
 
 static const cocos2d::ccColor4B BACKGROUND_COLOR={0,0,0,1};
 
+static const cocos2d::ccColor3B BUTTON_COLOR_BLACK = {50, 50, 50};
 static const cocos2d::ccColor3B BUTTON_COLOR_YELLOW = {255, 255, 0};
 static const cocos2d::ccColor3B BUTTON_COLOR_BLUE   = {0  , 80 , 255};
 static const cocos2d::ccColor3B BUTTON_COLOR_RED    = {255, 0  , 0};
@@ -47,8 +48,12 @@ static ResourceDefinition SIZE_720x960    =  { cocos2d::CCSizeMake(720, 960),   
 static ResourceDefinition SIZE_960x1280   =  { cocos2d::CCSizeMake(960, 1280),  "s960x1280"   };
 static ResourceDefinition SIZE_1536x2048  =  { cocos2d::CCSizeMake(1536, 2048), "s1536x2048"   };
 
-static const char* FONT_MENU_LARGE = "MyriadProLarge.fnt";
-static const char* FONT_MENU_NORMAL = "MyriadProNormal.fnt";
+static const char* FONT_MENU_LARGE = "RussoOneLarge.fnt";
+static const char* FONT_MENU_NORMAL = "RussoOne_Normal.fnt";
+/*
+static const char* FONT_MENU_LARGE = "SquareFontLarge.fnt";
+static const char* FONT_MENU_NORMAL = "SquareFont.fnt";
+*/
 static const int FONT_SPACE_WIDTH = 8;
 
 static const float BUTTON_QUARTER_SCALE = .98f;

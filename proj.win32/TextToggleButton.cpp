@@ -4,9 +4,9 @@
 #include "Types.h"
 #include <cstring> 
 
- TextToggleButton::TextToggleButton(ccColor3B borderColorOn, ccColor3B borderColorOff, ccColor4F backgroundColorOn
+ TextToggleButton::TextToggleButton(ccColor4F borderColorOn, ccColor4F borderColorOff, ccColor4F backgroundColorOn
     , ccColor4F backgroundColorOff, ccColor3B textColorOn, ccColor3B textColorOff
-    , std::string text, ToggleState toggleState, CCSize size, float borderWidth
+    , std::string text, ToggleState toggleState, CCSize size
     , GameContext* gameContext, SEL_CallFuncO fnpToggleChangedDelegate, CCNode *pTarget)
   : m_buttonState(UNGRABBED)
   , m_gameContext(gameContext)
@@ -23,7 +23,6 @@
   , m_text(text)
   , m_toggleState(toggleState)
   , m_size(size)
-  , m_borderWidth(borderWidth)
  {
 
  }
@@ -68,12 +67,12 @@ void TextToggleButton::onExit()
 void TextToggleButton::refresh()
 {
   this->m_textLabel->setString(this->m_text.c_str());
-
-  this->m_borderOrigin.setPoint(-this->m_size.width/2,-this->m_size.height/2); 
-  this->m_borderDestination.setPoint(this->m_size.width/2,this->m_size.height/2);
+  
+  this->m_borderOrigin.setPoint(round(-this->m_size.width/2),round(-this->m_size.height/2)); 
+  this->m_borderDestination.setPoint(round(this->m_size.width/2),round(this->m_size.height/2));
         
-  this->m_backgroundOrigin.setPoint(-this->m_size.width/2 + this->m_borderWidth,-this->m_size.height/2 + this->m_borderWidth); 
-  this->m_backgroundDestination.setPoint(this->m_size.width/2 - this->m_borderWidth,this->m_size.height/2 - this->m_borderWidth);
+  this->m_backgroundOrigin.setPoint(round(this->m_borderOrigin.x + this->m_gameContext->getDefaultBorderThickness()),round(this->m_borderOrigin.y + this->m_gameContext->getDefaultBorderThickness())); 
+  this->m_backgroundDestination.setPoint(round(this->m_borderDestination.x - this->m_gameContext->getDefaultBorderThickness()),round(this->m_borderDestination.y - this->m_gameContext->getDefaultBorderThickness()));
 
   switch (this->m_toggleState)
   {
@@ -91,10 +90,9 @@ void TextToggleButton::refresh()
 }
 
 void TextToggleButton::draw()
-{ 
+{
+  ccDrawSolidRect(m_borderOrigin, m_borderDestination, m_currentBorderColor);
   ccDrawSolidRect(m_backgroundOrigin, m_backgroundDestination, m_currentBackgroundColor);
-  ccDrawColor4B(m_currentBorderColor.r, m_currentBorderColor.g,m_currentBorderColor.b,255);
-  ccDrawRect(m_borderOrigin, m_borderDestination);
 }
 
 void TextToggleButton::setButtonState(ButtonState buttonState)

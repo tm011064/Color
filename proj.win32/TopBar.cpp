@@ -24,7 +24,7 @@ void TopBar::onEnter()
 
     // TODO (Roman): round all points
 
-    m_rectOrigin = ccpRounded (leftTop.x, leftTop.y - m_gameContext->getFontHeightNormal() - padding * 2);
+    m_rectOrigin = ccpRounded (leftTop.x, leftTop.y - m_gameContext->getFontHeightNormal() - padding * 3);
     m_rectDestination = ccpRounded (rightTop.x, rightTop.y);
     
     m_borderOrigin = ccp (m_rectOrigin.x, m_rectOrigin.y - borderThickness);
