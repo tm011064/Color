@@ -14,7 +14,7 @@ ArcadeEasyGameScene::ArcadeEasyGameScene(GameContext* gameContext)
 }
 void ArcadeEasyGameScene::onLoadLayout()
 {  
-  this->m_buttons = LayoutController::createThreeButtons(this->m_gameContext, this->m_debugDraw, this->m_anchor, this
+  this->m_buttons = LayoutController::createTwoButtons(this->m_gameContext, this->m_debugDraw, this->m_anchor, this
     , callfuncO_selector( ArcadeEasyGameScene::buttonTouchEndedCallback )
     , callfuncO_selector( ArcadeEasyGameScene::buttonLoadedCallback )
     , callfuncO_selector( ArcadeEasyGameScene::buttonBlinkCallback ));         

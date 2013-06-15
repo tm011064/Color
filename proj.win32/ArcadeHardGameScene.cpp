@@ -4,7 +4,7 @@
 using namespace cocos2d;
 
 ArcadeHardGameScene::ArcadeHardGameScene(GameContext* gameContext)   
-  : ArcadeGameScene(gameContext, ARCADE_HARD_GAME_SCENE, 5)
+  : ArcadeGameScene(gameContext, ARCADE_HARD_GAME_SCENE, 4)
 { 
   m_challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_FIVE_BUTTONS;
   m_challengePointScoreDefinition.maxTimeBonus = CORRECT_BUTTON_SCORE_FIVE_BUTTONS_MAX_TIME_BONUS;
@@ -14,7 +14,7 @@ ArcadeHardGameScene::ArcadeHardGameScene(GameContext* gameContext)
 }
 void ArcadeHardGameScene::onLoadLayout()
 {  
-  this->m_buttons = LayoutController::createFiveButtons(this->m_gameContext, this->m_debugDraw, this->m_anchor, this
+  this->m_buttons = LayoutController::createFourButtons(this->m_gameContext, this->m_debugDraw, this->m_anchor, this
     , callfuncO_selector( ArcadeHardGameScene::buttonTouchEndedCallback )
     , callfuncO_selector( ArcadeHardGameScene::buttonLoadedCallback )
     , callfuncO_selector( ArcadeHardGameScene::buttonBlinkCallback ));         

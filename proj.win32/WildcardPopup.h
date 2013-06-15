@@ -20,6 +20,8 @@ private:
   CCLabelBMFont* m_showNext;
   CCLabelBMFont* m_replayFromCurrent;
 
+  CCSprite* m_availableCoinsCoin;
+
   TextButton* m_replaySequenceButton;
   TextButton* m_showNextButton;
   TextButton* m_replayFromCurrentButton;
@@ -57,6 +59,7 @@ public:
     , m_replaySequenceButton(NULL)
     , m_showNextButton(NULL)
     , m_replayFromCurrentButton(NULL)
+    , m_availableCoinsCoin(NULL)
   { }
   ~WildcardPopup() { }
   

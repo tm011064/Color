@@ -138,7 +138,7 @@
   <ItemGroup>
     <ClInclude Include="..\Classes\main.h" />
     <ClInclude Include="AppDelegate.h" />
-    <ClInclude Include="ArcadeClassicGameScene.h" />
+    <ClInclude Include="ArcadeNormalGameScene.h" />
     <ClInclude Include="ArcadeEasyGameScene.h" />
     <ClInclude Include="ArcadeGameScene.h" />
     <ClInclude Include="ArcadeHardGameScene.h" />
@@ -163,6 +163,7 @@
     <ClInclude Include="NavigationManager.h" />
     <ClInclude Include="OptionsScene.h" />
     <ClInclude Include="ReachLevelChallengeScene.h" />
+    <ClInclude Include="RepeatingSprite.h" />
     <ClInclude Include="RepeatOneOffSequenceChallengeScene.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SpriteFrameCache.h" />
@@ -172,12 +173,13 @@
     <ClInclude Include="TopBar.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="VisibleRect.h" />
+    <ClInclude Include="WildcardButton.h" />
     <ClInclude Include="WildcardPopup.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\main.cpp" />
     <ClCompile Include="AppDelegate.cpp" />
-    <ClCompile Include="ArcadeClassicGameScene.cpp" />
+    <ClCompile Include="ArcadeNormalGameScene.cpp" />
     <ClCompile Include="ArcadeEasyGameScene.cpp" />
     <ClCompile Include="ArcadeGameScene.cpp" />
     <ClCompile Include="ArcadeHardGameScene.cpp" />
@@ -200,6 +202,7 @@
     <ClCompile Include="NavigationManager.cpp" />
     <ClCompile Include="OptionsScene.cpp" />
     <ClCompile Include="ReachLevelChallengeScene.cpp" />
+    <ClCompile Include="RepeatingSprite.cpp" />
     <ClCompile Include="RepeatOneOffSequenceChallengeScene.cpp" />
     <ClCompile Include="SpriteFrameCache.cpp" />
     <ClCompile Include="Stopwatch.cpp" />
@@ -207,6 +210,7 @@
     <ClCompile Include="TextToggleButton.cpp" />
     <ClCompile Include="TopBar.cpp" />
     <ClCompile Include="VisibleRect.cpp" />
+    <ClCompile Include="WildcardButton.cpp" />
     <ClCompile Include="WildcardPopup.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

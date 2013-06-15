@@ -10,6 +10,7 @@
 #include "SpriteFrameCache.h"
 #include "BaseTileMap.h"
 #include "BaseSprite.h"
+#include "RepeatingSprite.h"
 
 #include "VisibleRect.h"
 #include "NavigationManager.h"
@@ -20,5 +21,6 @@
 #include "MenuButton.h"
 #include "TextToggleButton.h"
 #include "TextButton.h"
+#include "WildcardButton.h"
 
 #endif // __GAME_ENGINE_INCLUDES_H__

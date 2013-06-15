@@ -37,7 +37,6 @@ protected:
   int m_challengeIndex;
 
   CCSprite* m_loadingScreen;
-  CCSprite* m_backgroundNormal;
   CCSprite* m_consoleBackground;
 
   WildcardPopup* m_wildcardPopup; 

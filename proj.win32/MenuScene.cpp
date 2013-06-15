@@ -12,12 +12,26 @@ void MenuScene::onEnter()
 
     CCLOG("initializing MenuScene");
     CCPoint center = VisibleRect::center();
-
-    CCSprite* bg = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(0));
+    CCPoint rightTop = VisibleRect::rightTop();
+    CCRect visibleRect = VisibleRect::getVisibleRect();
+    
+    RepeatingSprite* bg = new RepeatingSprite(
+      m_gameContext
+      , m_gameContext->getImageMap()->getTile(0)
+      , HORIZONTAL
+      , NORMAL
+      , visibleRect.size);
     bg->setPosition(center);
     this->addChild(bg, 0);
-    
-    CCRect visibleRect = VisibleRect::getVisibleRect();
+    bg = NULL;
+        
+    CCSprite* header = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(10));
+    CCSize headerSize = header->getContentSize();
+    header->setScale(visibleRect.size.width / headerSize.height); 
+    header->setRotation(-90);
+    header->setPosition(ccp(center.x, rightTop.y - (headerSize.width / 2) * header->getScale()));
+    this->addChild(header);
+
     float top = visibleRect.size.height * .6f;
     float spacing = 50.0f;
     float buttonWidth = visibleRect.size.width * .75;
@@ -72,25 +86,25 @@ void MenuScene::onEnter()
       , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
-      , "EASY", m_gameContext, menu_selector(MenuScene::startArcadeEasyGameCallback), this);
+      , "TWO", m_gameContext, menu_selector(MenuScene::startArcadeEasyGameCallback), this);
     m_arcadeEasy->setPosition(center.x + visibleRect.size.width, top - spacing*counter++);
     this->addChild(m_arcadeEasy);
 
-    m_arcadeClassic = new MenuButton(
+    m_arcadeNormal = new MenuButton(
       m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
-      , "CLASSIC", m_gameContext, menu_selector(MenuScene::startArcadeClassicGameCallback), this);
-    m_arcadeClassic->setPosition(center.x + visibleRect.size.width, top - spacing*counter++);
-    this->addChild(m_arcadeClassic);
+      , "THREE", m_gameContext, menu_selector(MenuScene::startArcadeNormalGameCallback), this);
+    m_arcadeNormal->setPosition(center.x + visibleRect.size.width, top - spacing*counter++);
+    this->addChild(m_arcadeNormal);
 
     m_arcadeHard = new MenuButton(
       m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
-      , "HARD", m_gameContext, menu_selector(MenuScene::startArcadeHardGameCallback), this);
+      , "FOUR", m_gameContext, menu_selector(MenuScene::startArcadeHardGameCallback), this);
     m_arcadeHard->setPosition(center.x + visibleRect.size.width, top - spacing*counter++);
     this->addChild(m_arcadeHard);    
 
@@ -252,7 +266,7 @@ void MenuScene::resetHomeButtons(bool isVisible)
 void MenuScene::resetArcadeButtons(bool isVisible)
 {
   m_arcadeEasy->setVisible(isVisible);
-  m_arcadeClassic->setVisible(isVisible);
+  m_arcadeNormal->setVisible(isVisible);
   m_arcadeHard->setVisible(isVisible);
 }
 
@@ -338,7 +352,7 @@ void MenuScene::showView(MenuViewType menuViewType)
       m_homeHighscore->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));    
     
       m_arcadeEasy->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
-      m_arcadeClassic->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
+      m_arcadeNormal->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
       m_arcadeHard->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
       break;
     }
@@ -357,11 +371,11 @@ void MenuScene::showView(MenuViewType menuViewType)
     m_homeHighscore->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
     
     m_arcadeEasy->setPositionX(posRight);
-    m_arcadeClassic->setPositionX(posRight);
+    m_arcadeNormal->setPositionX(posRight);
     m_arcadeHard->setPositionX(posRight);
 
     m_arcadeEasy->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
-    m_arcadeClassic->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
+    m_arcadeNormal->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
     m_arcadeHard->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
 
     break;
@@ -397,9 +411,9 @@ void MenuScene::startArcadeHardGameCallback(CCObject* pSender)
 { 
   NavigationManager::showScene(ARCADE_HARD_GAME_SCENE, m_gameContext, NEW);
 }
-void MenuScene::startArcadeClassicGameCallback(CCObject* pSender)
+void MenuScene::startArcadeNormalGameCallback(CCObject* pSender)
 { 
-  NavigationManager::showScene(ARCADE_CLASSIC_GAME_SCENE, m_gameContext, NEW);
+  NavigationManager::showScene(ARCADE_NORMAL_GAME_SCENE, m_gameContext, NEW);
 }
 
 void MenuScene::showStoryModeMenu(CCObject* pSender)

@@ -18,8 +18,8 @@ void WildcardPopup::onEnter()
     float verticalSpacing = m_gameContext->getFontHeightNormal() + m_padding;
     float verticalSpacingLarge = m_gameContext->getFontHeightLarge() + m_padding*3;
             
-    m_dialogRectLeftTop = ccp ( 0, m_visibleRectRightTop.y * .875);
-    m_dialogRectLeftBottom = ccp ( 0, m_visibleRectRightTop.y * .16 );
+    m_dialogRectLeftTop = ccp ( 0, m_visibleRectRightTop.y * .825);
+    m_dialogRectLeftBottom = ccp ( 0, m_visibleRectRightTop.y * .26 );
     m_dialogRectRightTop = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftTop.y);
     m_dialogRectRightBottom = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftBottom.y);
     
@@ -27,88 +27,115 @@ void WildcardPopup::onEnter()
     m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightBottom.y - m_borderThickness);
 
     // now we have the border thickness and padding, so we can set the boundaries 
-    float indentLeft = m_visibleRectLeftBottom.x + (visibleRect.size.width * .15);
-    float indentRight = m_visibleRectLeftBottom.x + (visibleRect.size.width * .85);
+    float indentLeft = m_visibleRectLeftBottom.x + (visibleRect.size.width * .1);
+    float indentRight = m_visibleRectLeftBottom.x + (visibleRect.size.width * .9);
     m_dialogRectInnerLeftBottom = ccp( indentLeft + this->m_borderThickness, m_dialogRectLeftBottom.y + this->m_borderThickness );
     m_dialogRectInnerRightTop = ccp( indentRight - this->m_borderThickness, m_dialogRectRightTop.y - this->m_borderThickness );
 
     this->m_textIndentLeft = m_dialogRectInnerLeftBottom.x + m_padding * 3;
     this->m_textIndentRight = m_dialogRectInnerRightTop.x - m_padding * 3;
-    
-    float posY = m_dialogRectInnerRightTop.y - verticalSpacingLarge/2;
-    CCLabelBMFont* label = CCLabelBMFont::create("WILDCARDS", m_gameContext->getFontLargePath().c_str());
-    label->setPosition(center.x, posY );
-    this->addChild(label);
 
+    float posY = round( m_dialogRectInnerRightTop.y + verticalSpacing/2 + m_padding*2 );
+    CCLabelBMFont* label = CCLabelBMFont::create("coins available", m_gameContext->getFontNormalPath().c_str());
+    label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY );
+    this->addChild(label);
+       
     m_coinsLabel = CCLabelBMFont::create("NA", m_gameContext->getFontNormalPath().c_str());
     m_coinsLabel->setPosition(ccp(this->m_textIndentRight - m_coinsLabel->getContentSize().width/2, posY));
     this->addChild(m_coinsLabel);
     
-    posY -= (verticalSpacingLarge/2 + verticalSpacing/2 + this->m_padding);
+    m_availableCoinsCoin = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(11));
+    m_availableCoinsCoin->setPosition(ccpRounded(m_coinsLabel->getPositionX() - m_coinsLabel->getContentSize().width/2 - m_padding, posY));
+    this->addChild(m_availableCoinsCoin);
 
-    m_replaySequence = CCLabelBMFont::create("REPLAY SEQUENCE", m_gameContext->getFontNormalPath().c_str());
-    m_replaySequence->setPosition(this->m_textIndentLeft + m_replaySequence->getContentSize().width/2, posY);
-    this->addChild(m_replaySequence);
-    m_replaySequenceButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
-      , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
+    posY = round( m_dialogRectInnerRightTop.y - (verticalSpacingLarge/2 + verticalSpacing/2 + this->m_padding) );
+    label = CCLabelBMFont::create("use coins to buy cheats", m_gameContext->getFontNormalPath().c_str());
+    label->setPosition(center.x, posY );
+    this->addChild(label);
+
+    CCSize wildCardButtonSize = CCSizeMake(round( m_textIndentRight - m_textIndentLeft)
+                                           , round( m_gameContext->getFontHeightNormal() * 2 + m_padding*4));
+    posY -= round( (verticalSpacingLarge/2 + verticalSpacing/2 + this->m_padding + wildCardButtonSize.height/2) );
+    
+    WildcardButton* wildcardButton = new WildcardButton(
+      WILDCARD_BUTTON_BORDER_COLOR_ON, WILDCARD_BUTTON_BORDER_COLOR_OFF
+      , WILDCARD_BUTTON_BACKGROUND_COLOR_ON, WILDCARD_BUTTON_BACKGROUND_COLOR_OFF
+      , WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_ON, WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_OFF
       , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
-      , "50c"
-      , m_gameContext->getDefaultButtonSize()
-      , this->m_borderThickness
-      , this->m_gameContext
+      , "REPLAY\nSEQUENCE"
+      , "25"
+      , wildCardButtonSize
+      , m_gameContext->getDefaultBorderThickness()
+      , m_gameContext
       , callfuncO_selector(WildcardPopup::replaySequenceCallback)
       , this);
-    m_replaySequenceButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-    m_replaySequenceButton->setPosition(this->m_textIndentRight - m_replaySequenceButton->getSize().width/2, posY);
-    this->addChild(m_replaySequenceButton);
+    wildcardButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
+    wildcardButton->setPosition(center.x, posY);
+    this->addChild(wildcardButton);
 
-    posY -= verticalSpacing;
-    m_showNext = CCLabelBMFont::create("SHOW NEXT", m_gameContext->getFontNormalPath().c_str());
-    m_showNext->setPosition(this->m_textIndentLeft + m_showNext->getContentSize().width/2, posY);
-    this->addChild(m_showNext);
-    m_showNextButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
-      , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
+    posY -= round( (this->m_padding*4 + wildCardButtonSize.height) );
+    wildcardButton = new WildcardButton(
+      WILDCARD_BUTTON_BORDER_COLOR_ON, WILDCARD_BUTTON_BORDER_COLOR_OFF
+      , WILDCARD_BUTTON_BACKGROUND_COLOR_ON, WILDCARD_BUTTON_BACKGROUND_COLOR_OFF
+      , WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_ON, WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_OFF
       , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
-      , "100c"
-      , m_gameContext->getDefaultButtonSize()
-      , this->m_borderThickness
-      , this->m_gameContext
+      , "SHOW NEXT"
+      , "50"
+      , wildCardButtonSize
+      , m_gameContext->getDefaultBorderThickness()
+      , m_gameContext
       , callfuncO_selector(WildcardPopup::showNextSequenceItemCallback)
       , this);
-    m_showNextButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-    m_showNextButton->setPosition(this->m_textIndentRight - m_showNextButton->getSize().width/2, posY);
-    this->addChild(m_showNextButton);
+    wildcardButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
+    wildcardButton->setPosition(center.x, posY);
+    this->addChild(wildcardButton);
+
+    posY -= round( (this->m_padding*4 + wildCardButtonSize.height) );
+    wildcardButton = new WildcardButton(
+      WILDCARD_BUTTON_BORDER_COLOR_ON, WILDCARD_BUTTON_BORDER_COLOR_OFF
+      , WILDCARD_BUTTON_BACKGROUND_COLOR_ON, WILDCARD_BUTTON_BACKGROUND_COLOR_OFF
+      , WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_ON, WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_OFF
+      , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
+      , "REPLAY\nREMAINING"
+      , "100"
+      , wildCardButtonSize
+      , m_gameContext->getDefaultBorderThickness()
+      , m_gameContext
+      , callfuncO_selector(WildcardPopup::replayFromCurrentCallback)
+      , this);
+    wildcardButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
+    wildcardButton->setPosition(center.x, posY);
+    this->addChild(wildcardButton);
         
-    posY -= verticalSpacing;
-    m_replayFromCurrent = CCLabelBMFont::create("REPLAY REMAINING", m_gameContext->getFontNormalPath().c_str());
-    m_replayFromCurrent->setPosition(this->m_textIndentLeft + m_replayFromCurrent->getContentSize().width/2, posY);
-    this->addChild(m_replayFromCurrent);
-    m_replayFromCurrentButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+    posY -= round( (verticalSpacingLarge/2 + verticalSpacing/2 + this->m_padding + wildCardButtonSize.height/2) );
+
+    TextButton* textButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
       , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
-      , "150c"
+      , "back"
       , m_gameContext->getDefaultButtonSize()
       , this->m_borderThickness
       , this->m_gameContext
-      , callfuncO_selector(WildcardPopup::replayFromCurrentCallback)
+      , callfuncO_selector(WildcardPopup::closeCallback)
       , this);
-    m_replayFromCurrentButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-    m_replayFromCurrentButton->setPosition(this->m_textIndentRight - m_replayFromCurrentButton->getSize().width/2, posY);
-    this->addChild(m_replayFromCurrentButton);
+    textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
+    textButton->setPosition(this->m_textIndentLeft + textButton->getSize().width/2, posY);
+    this->addChild(textButton);
     
-        
-    m_backgroundColor.a = .7f;
-    m_backgroundColor.r = 0;
-    m_backgroundColor.g = 0;
-    m_backgroundColor.b = 0;
-    m_dialogColor.a = 1;
-    m_dialogColor.r = .1;
-    m_dialogColor.g = .1;
-    m_dialogColor.b = .1;
-    m_dialogBorderColor.a = 1; 
-    m_dialogBorderColor.r = 0; 
-    m_dialogBorderColor.g = 0; 
-    m_dialogBorderColor.b = 0; 
+    textButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+      , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
+      , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
+      , "+ coins"
+      , m_gameContext->getDefaultButtonSize()
+      , this->m_borderThickness
+      , this->m_gameContext
+      , callfuncO_selector(WildcardPopup::closeCallback)
+      , this);
+    textButton->setEnabled(false);
+    textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
+    textButton->setPosition(this->m_textIndentRight - textButton->getSize().width/2, posY);
+    this->addChild(textButton);
+    
     m_bgLight.a = .6f; 
     m_bgLight.r = 0; 
     m_bgLight.g = 0; 
@@ -129,7 +156,10 @@ void WildcardPopup::refresh()
   char str[10];
   sprintf(str, "%i", m_gameContext->getTotalCoins());
   m_coinsLabel->setString(str);  
-  m_coinsLabel->setPositionX(m_dialogRectRightTop.x - m_padding*2 - m_coinsLabel->getContentSize().width/2);
+  m_coinsLabel->setPositionX(round(m_textIndentRight - m_padding*2 - m_coinsLabel->getContentSize().width/2));
+  m_availableCoinsCoin->setPositionX(round(m_coinsLabel->getPositionX() - m_coinsLabel->getContentSize().width/2 
+                                                                        - m_padding
+                                                                        - m_availableCoinsCoin->getContentSize().width/2));
 }
 
 void WildcardPopup::draw()

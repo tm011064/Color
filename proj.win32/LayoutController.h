@@ -12,7 +12,11 @@ public:
     
   LayoutController() { }
   ~LayoutController() { }
-
+    
+  static CCArray* createTwoButtons(GameContext* gameContext, DebugDraw* debugDraw, CCPoint anchor
+    , CCNode *pTarget
+    , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate);
+  
   static CCArray* createThreeButtons(GameContext* gameContext, DebugDraw* debugDraw, CCPoint anchor
     , CCNode *pTarget
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate);

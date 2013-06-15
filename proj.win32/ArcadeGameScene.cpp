@@ -12,6 +12,7 @@ ArcadeGameScene::ArcadeGameScene(GameContext* gameContext, SceneType sceneType, 
   , m_buttonScale(.0f)
   , m_buttons(0)
   , m_loadingScreen(0)
+  , m_loadingScreenText(NULL)
   , m_lastButtonPressedTime(0)
   , m_lastLevelStartTime(0)
   , m_totalButtons(totalButtons)
@@ -37,7 +38,8 @@ ArcadeGameScene::~ArcadeGameScene()
     CC_SAFE_FREE(m_buttons);    
     CC_SAFE_DELETE(m_lastButtonPressedTime);
     CC_SAFE_DELETE(m_lastLevelStartTime);    
-
+    CC_SAFE_DELETE(m_loadingScreen);    
+    
     m_lastButtonPressed = NULL;    
     m_nextSequenceButton = NULL;    
   }
@@ -58,17 +60,27 @@ void ArcadeGameScene::onEnter()
     float availableWidth = visibleRect.size.width / 2;         
 
     // TODO (Roman): loading screen
-    m_loadingScreen = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(0));
+    m_loadingScreenText = CCLabelBMFont::create("LOADING", m_gameContext->getFontLargePath().c_str());
+    m_loadingScreenText->setPosition(center);
+    this->addChild(m_loadingScreenText, 1001);
+    m_loadingScreen = new RepeatingSprite(
+      m_gameContext
+      , m_gameContext->getImageMap()->getTile(0)
+      , HORIZONTAL
+      , NORMAL
+      , visibleRect.size);    
     m_loadingScreen->setPosition(center);
-    m_loadingScreen->setVisible(true);
-
-    this->addChild(m_loadingScreen, 1000);        
-
-    m_backgroundNormal = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(0));
-    m_backgroundNormal->setPosition(center);
-    m_loadingScreen->setVisible(true);
-    this->addChild(m_backgroundNormal, 0);              
+    this->addChild(m_loadingScreen, 1000);
     
+    RepeatingSprite* bg = new RepeatingSprite(
+      m_gameContext
+      , m_gameContext->getImageMap()->getTile(0)
+      , HORIZONTAL
+      , NORMAL
+      , visibleRect.size);    
+    bg->setPosition(center);
+    this->addChild(bg, 0);
+    bg = NULL;
         
     /********** TOP BAR **********/
     m_topBar = new TopBar(m_gameContext);
@@ -86,7 +98,11 @@ void ArcadeGameScene::onEnter()
     float consoleBackgroundScale = availableWidth * 1.12 / (consoleBackgroundSize.height/2);
 
     m_consoleBackground->setScale(consoleBackgroundScale);
-        
+            
+    CCSprite* consoleButtonBackground = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(2));
+    consoleButtonBackground->setScale(consoleBackgroundScale);
+    this->addChild(consoleButtonBackground);    
+
     int releasingFrames[] = { 9 };
     int pressingFrames[] = { 9 };
     m_consoleButton = ImageButton::create(this
@@ -108,10 +124,11 @@ void ArcadeGameScene::onEnter()
     CCSize consoleSize = m_consoleBackground->getContentSize();
     
     // we have the top bar, so we can get the border...
-    this->m_anchor = ccp(
+    this->m_anchor = ccpRounded(
       center.x
-      , topBarBoundingBox.origin.y - (consoleBackgroundScale * consoleSize.height)/2 - topBarBoundingBox.size.height/8.0f);
+      , (topBarBoundingBox.origin.y - (consoleBackgroundScale * consoleSize.height)/2 - topBarBoundingBox.size.height/8.0f));
     
+    consoleButtonBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
     m_consoleBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
     m_consoleButton->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
 
@@ -447,7 +464,8 @@ void ArcadeGameScene::buttonLoadedCallback(CCObject* pSender)
     if (!((GameButton*)o)->getIsLoaded())
       return;
   }
-
+  
+  //this->scheduleOnce(schedule_selector(ArcadeGameScene::startNewGame), 3.0f);
   // GAME START
   this->startNewGame();
 }
@@ -520,6 +538,7 @@ void ArcadeGameScene::startNewGame()
   this->m_topBar->setLevel(1);
 
   this->m_loadingScreen->setVisible(false);  
+  this->m_loadingScreenText->setVisible(false);    
   runSequenceAnimation(true, 0, -1);
 }
 

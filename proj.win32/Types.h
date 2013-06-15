@@ -8,7 +8,7 @@ using namespace cocos2d;
 enum SceneType
 {
   MENU_SCENE = 0,
-  ARCADE_CLASSIC_GAME_SCENE = 1,
+  ARCADE_NORMAL_GAME_SCENE = 1,
   ARCADE_EASY_GAME_SCENE = 2,
   ARCADE_HARD_GAME_SCENE = 3,
   CHALLENGE = 4,

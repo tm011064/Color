@@ -2,7 +2,7 @@
 #include "GameConstants.h"
 #include "BaseLayer.h"
 #include "MenuScene.h"
-#include "ArcadeClassicGameScene.h"
+#include "ArcadeNormalGameScene.h"
 #include "ArcadeEasyGameScene.h"
 #include "ArcadeHardGameScene.h"
 #include "ReachLevelChallengeScene.h"
@@ -24,7 +24,7 @@ std::string NavigationManager::getPath(GameContext* gameContext, const char* fil
 CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameContext* gameContext)
 {  
   BaseLayer* pLayer;
-  ArcadeClassicGameScene* classicGameScene;
+  ArcadeNormalGameScene* normalGameScene;
   ArcadeEasyGameScene* arcadeEasyGameScene;
   ArcadeHardGameScene* arcadeHardGameScene;
   MenuScene* menuScene;
@@ -48,17 +48,17 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     menuScene->addChild(pLayer);
     return menuScene;
 
-  case ARCADE_CLASSIC_GAME_SCENE: 
+  case ARCADE_NORMAL_GAME_SCENE: 
     
-    classicGameScene = new ArcadeClassicGameScene(gameContext);
-    classicGameScene->init();
+    normalGameScene = new ArcadeNormalGameScene(gameContext);
+    normalGameScene->init();
     
-    pLayer = new BaseLayer(classicGameScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer = new BaseLayer(normalGameScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
     pLayer->init(); 
     pLayer->autorelease();
 
-    classicGameScene->addChild(pLayer); 
-    return classicGameScene;
+    normalGameScene->addChild(pLayer); 
+    return normalGameScene;
 
   case ARCADE_EASY_GAME_SCENE: 
 

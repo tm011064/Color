@@ -63,8 +63,8 @@ protected:
   bool m_isLayoutInitialized;
   float m_buttonScale;
 
-  CCSprite* m_loadingScreen;
-  CCSprite* m_backgroundNormal;
+  CCLabelBMFont* m_loadingScreenText;
+  RepeatingSprite* m_loadingScreen;
   CCSprite* m_consoleBackground;
   
   CCArray *m_buttons;

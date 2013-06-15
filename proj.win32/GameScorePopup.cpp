@@ -122,18 +122,6 @@ void GameScorePopup::onEnter()
       , m_dialogRectInnerLeftBottom.y + this->m_padding * 5 + textButton->getSize().height/2);
     this->addChild(textButton);
         
-    m_backgroundColor.a = .7f;
-    m_backgroundColor.r = 0;
-    m_backgroundColor.g = 0;
-    m_backgroundColor.b = 0;
-    m_dialogColor.a = 1;
-    m_dialogColor.r = .1;
-    m_dialogColor.g = .1;
-    m_dialogColor.b = .1;
-    m_dialogBorderColor.a = 1; 
-    m_dialogBorderColor.r = 0; 
-    m_dialogBorderColor.g = 0; 
-    m_dialogBorderColor.b = 0; 
     m_bgLight.a = .6f; 
     m_bgLight.r = 0; 
     m_bgLight.g = 0; 

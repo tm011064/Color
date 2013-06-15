@@ -24,7 +24,7 @@ private:
   MenuButton* m_homeOptions;
   MenuButton* m_homeHighscore;
   MenuButton* m_arcadeEasy;
-  MenuButton* m_arcadeClassic;
+  MenuButton* m_arcadeNormal;
   MenuButton* m_arcadeHard;
 
   ImageButton* m_storyModeNextPage;
@@ -52,7 +52,7 @@ public:
     , m_homeOptions(NULL)
     , m_homeHighscore(NULL)
     , m_arcadeEasy(NULL)
-    , m_arcadeClassic(NULL)
+    , m_arcadeNormal(NULL)
     , m_arcadeHard(NULL)
   {
 
@@ -66,7 +66,7 @@ public:
   virtual void showOptions(CCObject* pSender);
   virtual void showHighscore(CCObject* pSender);
 
-  virtual void startArcadeClassicGameCallback(CCObject* pSender);
+  virtual void startArcadeNormalGameCallback(CCObject* pSender);
   virtual void startArcadeEasyGameCallback(CCObject* pSender);
   virtual void startArcadeHardGameCallback(CCObject* pSender);
   

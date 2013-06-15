@@ -31,9 +31,16 @@ static const cocos2d::ccColor4B BACKGROUND_COLOR={0,0,0,1};
 static const cocos2d::ccColor3B BUTTON_COLOR_BLACK = {50, 50, 50};
 static const cocos2d::ccColor3B BUTTON_COLOR_YELLOW = {255, 255, 0};
 static const cocos2d::ccColor3B BUTTON_COLOR_BLUE   = {0  , 80 , 255};
-static const cocos2d::ccColor3B BUTTON_COLOR_RED    = {255, 0  , 0};
-static const cocos2d::ccColor3B BUTTON_COLOR_GREEN  = {0  , 255, 0};
+static const cocos2d::ccColor3B BUTTON_COLOR_RED    = {255, 50  , 0};
+static const cocos2d::ccColor3B BUTTON_COLOR_GREEN  = {0  , 255, 50};
 static const cocos2d::ccColor3B BUTTON_COLOR_PURPLE  = {255, 0, 255};
+
+static const cocos2d::ccColor4F WILDCARD_BUTTON_BORDER_COLOR_ON  = {1, 1, 1, 1};
+static const cocos2d::ccColor4F WILDCARD_BUTTON_BORDER_COLOR_OFF  = {1, 1, 1, 1};
+static const cocos2d::ccColor4F WILDCARD_BUTTON_BACKGROUND_COLOR_ON  = {.1, .1, .1, 1};
+static const cocos2d::ccColor4F WILDCARD_BUTTON_BACKGROUND_COLOR_OFF  = {0, 0, 0, 1};
+static const cocos2d::ccColor4F WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_ON  = {.1, .1, .1, 1};
+static const cocos2d::ccColor4F WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_OFF  = {.133, .133, .133, 1};
 
 static const cocos2d::ccColor3B TEXT_BUTTON_BORDER_COLOR_ON  = {255, 255, 255};
 static const cocos2d::ccColor3B TEXT_BUTTON_BORDER_COLOR_OFF = {255, 255, 255};

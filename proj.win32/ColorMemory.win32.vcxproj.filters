@@ -130,9 +130,6 @@
     <ClInclude Include="ArcadeHardGameScene.h">
       <Filter>include\Scenes\Arcade</Filter>
     </ClInclude>
-    <ClInclude Include="ArcadeClassicGameScene.h">
-      <Filter>include\Scenes\Arcade</Filter>
-    </ClInclude>
     <ClInclude Include="ArcadeEasyGameScene.h">
       <Filter>include\Scenes\Arcade</Filter>
     </ClInclude>
@@ -184,6 +181,15 @@
     <ClInclude Include="TextButton.h">
       <Filter>include\Controls\Buttons</Filter>
     </ClInclude>
+    <ClInclude Include="RepeatingSprite.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="WildcardButton.h">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcadeNormalGameScene.h">
+      <Filter>include\Scenes\Arcade</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseScene.cpp">
@@ -230,9 +236,6 @@
     </ClCompile>
     <ClCompile Include="BaseChallengeScene.cpp">
       <Filter>include\Scenes\Challenges</Filter>
-    </ClCompile>
-    <ClCompile Include="ArcadeClassicGameScene.cpp">
-      <Filter>include\Scenes\Arcade</Filter>
     </ClCompile>
     <ClCompile Include="ArcadeEasyGameScene.cpp">
       <Filter>include\Scenes\Arcade</Filter>
@@ -284,6 +287,15 @@
     </ClCompile>
     <ClCompile Include="TextButton.cpp">
       <Filter>include\Controls\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="RepeatingSprite.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="WildcardButton.cpp">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcadeNormalGameScene.cpp">
+      <Filter>include\Scenes\Arcade</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

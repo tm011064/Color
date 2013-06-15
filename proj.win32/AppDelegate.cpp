@@ -37,7 +37,7 @@ bool AppDelegate::applicationDidFinishLaunching()
   GameContext* gameContext = new GameContext();
   gameContext->init(27);
   
-  gameContext->setResolutionPolicy(kResolutionNoBorder);
+  gameContext->setResolutionPolicy(kResolutionNoBorder); // kResolutionShowAll
   gameContext->setOriginalSize(pEGLView->getDesignResolutionSize());
     
   CCSize frameSize = pEGLView->getFrameSize();

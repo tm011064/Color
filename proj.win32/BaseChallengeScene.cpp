@@ -56,10 +56,15 @@ void BaseChallengeScene::onEnter()
     m_loadingScreen->setVisible(true);
 
     this->addChild(m_loadingScreen, 1000);        
-
-    m_backgroundNormal = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(0));
-    m_backgroundNormal->setPosition(center);
-    this->addChild(m_backgroundNormal, 0);
+        
+    RepeatingSprite* bg = new RepeatingSprite(
+      m_gameContext
+      , m_gameContext->getImageMap()->getTile(0)
+      , HORIZONTAL
+      , NORMAL
+      , visibleRect.size);
+    this->addChild(bg, 0);
+    bg = NULL;
 
     /********** CONSOLE **********/    
     m_consoleBackground = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(1));
