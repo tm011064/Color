@@ -30,7 +30,7 @@ BaseSprite::~BaseSprite()
 
   if (m_alphaMap)
   {
-    for (int i = 0; i < m_alphaMapCols; i++)
+    for (unsigned int i = 0; i < m_alphaMapCols; i++)
       free((void *)m_alphaMap[i]);
 
     free((void *)m_alphaMap);
@@ -445,7 +445,7 @@ void BaseSprite::refreshAlphaMap(CCSize originalSize, ResolutionPolicy resolutio
 
   if (m_alphaMap)
   {
-    for (int i = 0; i < m_alphaMapCols; i++)
+    for (unsigned int i = 0; i < m_alphaMapCols; i++)
       free((void *)m_alphaMap[i]);
 
     free((void *)m_alphaMap);

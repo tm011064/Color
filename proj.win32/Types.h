@@ -84,6 +84,7 @@ typedef struct
   float totalLevelBonus;
   float totalButtonBonus;
   int level;
+  int coinsEarned;
   float totalTimeElapsed;
 } GameScore;
 
@@ -94,6 +95,8 @@ typedef struct
   float clickTimeThreshold;
   float levelBonus;
   float maxLevelTimeBonus;
+
+  float coinsEarnedMultiplier;
 
   int MininimumPointsForThreeStars;
   int MininimumPointsForTwoStars;

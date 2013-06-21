@@ -32,7 +32,7 @@ private:
 
   ccColor3B m_textColorOn;
   ccColor3B m_textColorOff;
-    
+
   CCSize m_size;
 
   CCNode* m_pTarget;
@@ -60,8 +60,6 @@ private:
   
   int m_touchPriority;
 
-  void refresh();
-
 public:  
   WildcardButton(ccColor4F borderColorOn, ccColor4F borderColorOff
     , ccColor4F backgroundColorOn, ccColor4F backgroundColorOff
@@ -71,7 +69,7 @@ public:
     , GameContext* gameContext, SEL_CallFuncO m_fnpChangedDelegate, CCNode *pTarget);
   ~WildcardButton() { }
   
-  void setEnabled(bool isEnabled) { this->m_isEnabled = isEnabled; }
+  void setEnabled(bool isEnabled);
   CCSize getSize() { return this->m_size; }    
 
   virtual bool ccTouchBegan(CCTouch* touch, CCEvent* event);

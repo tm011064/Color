@@ -6,11 +6,12 @@ using namespace cocos2d;
 ArcadeHardGameScene::ArcadeHardGameScene(GameContext* gameContext)   
   : ArcadeGameScene(gameContext, ARCADE_HARD_GAME_SCENE, 4)
 { 
-  m_challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_FIVE_BUTTONS;
-  m_challengePointScoreDefinition.maxTimeBonus = CORRECT_BUTTON_SCORE_FIVE_BUTTONS_MAX_TIME_BONUS;
-  m_challengePointScoreDefinition.clickTimeThreshold = FIVE_BUTTON_CLICK_TIME_THRESHOLD;
-  m_challengePointScoreDefinition.levelBonus = CORRECT_BUTTON_SCORE_FIVE_BUTTONS_LEVEL_BONUS;
-  m_challengePointScoreDefinition.maxLevelTimeBonus = CORRECT_BUTTON_SCORE_FIVE_BUTTONS_MAX_LEVEL_TIME_BONUS;
+  m_challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_FOUR_BUTTONS;
+  m_challengePointScoreDefinition.maxTimeBonus = CORRECT_BUTTON_SCORE_FOUR_BUTTONS_MAX_TIME_BONUS;
+  m_challengePointScoreDefinition.clickTimeThreshold = FOUR_BUTTON_CLICK_TIME_THRESHOLD;
+  m_challengePointScoreDefinition.levelBonus = CORRECT_BUTTON_SCORE_FOUR_BUTTONS_LEVEL_BONUS;
+  m_challengePointScoreDefinition.maxLevelTimeBonus = CORRECT_BUTTON_SCORE_FOUR_BUTTONS_MAX_LEVEL_TIME_BONUS;
+  m_challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_FOUR_BUTTONS_MULTIPLIER;
 }
 void ArcadeHardGameScene::onLoadLayout()
 {  

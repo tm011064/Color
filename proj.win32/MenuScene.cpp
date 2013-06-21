@@ -26,86 +26,93 @@ void MenuScene::onEnter()
     bg = NULL;
         
     CCSprite* header = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(10));
-    CCSize headerSize = header->getContentSize();
-    header->setScale(visibleRect.size.width / headerSize.height); 
+    CCSize size = header->getContentSize();
+    header->setScale(visibleRect.size.width / size.height); 
     header->setRotation(-90);
-    header->setPosition(ccp(center.x, rightTop.y - (headerSize.width / 2) * header->getScale()));
+    header->setPosition(ccp(center.x, rightTop.y - (size.width / 2) * header->getScale()));
     this->addChild(header);
 
-    float top = visibleRect.size.height * .6f;
-    float spacing = 50.0f;
+    float startPosY = round( rightTop.y - size.width*header->getScale() - size.width*header->getScale()*.1 );
+    float posY = startPosY;
     float buttonWidth = visibleRect.size.width * .75;
 
     /*************** HOME ***************/
-    int counter = 0;
     m_homeStoryMode = new MenuButton(
       m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
       , "STORY MODE", m_gameContext, menu_selector(MenuScene::showStoryModeMenu), this);
-    m_homeStoryMode->setPosition(center.x, top - spacing*counter++);
+    m_homeStoryMode->setPosition(center.x, posY);
     this->addChild(m_homeStoryMode);
+    size = this->m_homeStoryMode->getContentSize();
+    float spacing = size.height * 1.38f;
 
 #if GAME_VERSION < 2
     m_homeStoryMode->setVisible(false);
 #endif
 
+    posY -= spacing;
     m_homeArcade = new MenuButton(
       m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
       , "ARCADE", m_gameContext, menu_selector(MenuScene::showArcadeMenu), this);
-    m_homeArcade->setPosition(center.x, top - spacing*counter++);
+    m_homeArcade->setPosition(center.x, posY);
     this->addChild(m_homeArcade);
-
+    
+    posY -= spacing;
     m_homeHighscore = new MenuButton(
       m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
       , "HIGHSCORE", m_gameContext, menu_selector(MenuScene::showHighscore), this);
-    m_homeHighscore->setPosition(center.x, top - spacing*counter++);
+    m_homeHighscore->setPosition(center.x, posY);
     this->addChild(m_homeHighscore);
     
+    posY -= spacing;
     m_homeOptions = new MenuButton(
       m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
       , "OPTIONS", m_gameContext, menu_selector(MenuScene::showOptions), this);
-    m_homeOptions->setPosition(center.x, top - spacing*counter++);
+    m_homeOptions->setPosition(center.x, posY);
     this->addChild(m_homeOptions);
 
-    
+    posY = startPosY;
+
     /*************** ARCADE ***************/
-    counter = 1;
+    posY -= spacing;
     m_arcadeEasy = new MenuButton(
       m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
-      , "TWO", m_gameContext, menu_selector(MenuScene::startArcadeEasyGameCallback), this);
-    m_arcadeEasy->setPosition(center.x + visibleRect.size.width, top - spacing*counter++);
+      , "EASY", m_gameContext, menu_selector(MenuScene::startArcadeEasyGameCallback), this);
+    m_arcadeEasy->setPosition(center.x + visibleRect.size.width, posY);
     this->addChild(m_arcadeEasy);
 
+    posY -= spacing;
     m_arcadeNormal = new MenuButton(
       m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
-      , "THREE", m_gameContext, menu_selector(MenuScene::startArcadeNormalGameCallback), this);
-    m_arcadeNormal->setPosition(center.x + visibleRect.size.width, top - spacing*counter++);
+      , "NORMAL", m_gameContext, menu_selector(MenuScene::startArcadeNormalGameCallback), this);
+    m_arcadeNormal->setPosition(center.x + visibleRect.size.width, posY);
     this->addChild(m_arcadeNormal);
 
+    posY -= spacing;
     m_arcadeHard = new MenuButton(
       m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
       , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
       , buttonWidth, buttonWidth, buttonWidth
-      , "FOUR", m_gameContext, menu_selector(MenuScene::startArcadeHardGameCallback), this);
-    m_arcadeHard->setPosition(center.x + visibleRect.size.width, top - spacing*counter++);
+      , "HARD", m_gameContext, menu_selector(MenuScene::startArcadeHardGameCallback), this);
+    m_arcadeHard->setPosition(center.x + visibleRect.size.width, posY);
     this->addChild(m_arcadeHard);    
 
 #if GAME_VERSION > 1
@@ -308,8 +315,8 @@ void MenuScene::resetChallengeButtons(bool isVisible, bool areNavigationButtonsV
 void MenuScene::showView(MenuViewType menuViewType)
 {
   CCLOG("Show scene");
-  CCActionInterval* moveLeft = CCMoveBy::create(.3, ccp(-(VisibleRect::getVisibleRect().size.width),0));
-  CCActionInterval* moveRight = CCMoveBy::create(.3, ccp((VisibleRect::getVisibleRect().size.width),0));
+  CCActionInterval* moveLeft = CCMoveBy::create(.3f, ccp(-(VisibleRect::getVisibleRect().size.width),0));
+  CCActionInterval* moveRight = CCMoveBy::create(.3f, ccp((VisibleRect::getVisibleRect().size.width),0));
   
   CCPoint center = VisibleRect::center();
   CCRect visibleRect = VisibleRect::getVisibleRect();
@@ -448,8 +455,8 @@ void MenuScene::nextStoryModePage(CCObject* pSender)
   CCRect visibleRect = VisibleRect::getVisibleRect();
 
   float easeRate = .5f;
-  CCActionInterval* moveLeft = CCMoveBy::create(.3, ccp(-(visibleRect.size.width),0));
-  CCActionInterval* moveRight = CCMoveBy::create(.3, ccp((visibleRect.size.width),0));
+  CCActionInterval* moveLeft = CCMoveBy::create(.3f, ccp(-(visibleRect.size.width),0));
+  CCActionInterval* moveRight = CCMoveBy::create(.3f, ccp((visibleRect.size.width),0));
     
   ImageButton* imageButton;
   
@@ -484,8 +491,8 @@ void MenuScene::previousStoryModePage(CCObject* pSender)
   CCRect visibleRect = VisibleRect::getVisibleRect();
 
   float easeRate = .5f;
-  CCActionInterval* moveLeft = CCMoveBy::create(.3, ccp(-(visibleRect.size.width),0));
-  CCActionInterval* moveRight = CCMoveBy::create(.3, ccp((visibleRect.size.width),0));
+  CCActionInterval* moveLeft = CCMoveBy::create(.3f, ccp(-(visibleRect.size.width),0));
+  CCActionInterval* moveRight = CCMoveBy::create(.3f, ccp((visibleRect.size.width),0));
     
   ImageButton* imageButton;
   

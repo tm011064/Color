@@ -144,6 +144,7 @@
     <ClInclude Include="ArcadeHardGameScene.h" />
     <ClInclude Include="BaseChallengeScene.h" />
     <ClInclude Include="BaseLayer.h" />
+    <ClInclude Include="BaseNode.h" />
     <ClInclude Include="BaseScene.h" />
     <ClInclude Include="BaseSprite.h" />
     <ClInclude Include="BaseTileMap.h" />
@@ -175,6 +176,8 @@
     <ClInclude Include="VisibleRect.h" />
     <ClInclude Include="WildcardButton.h" />
     <ClInclude Include="WildcardPopup.h" />
+    <ClInclude Include="WildcardPopupButtonPanel.h" />
+    <ClInclude Include="WildcardPopupBuyCoinsPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\main.cpp" />
@@ -185,6 +188,7 @@
     <ClCompile Include="ArcadeHardGameScene.cpp" />
     <ClCompile Include="BaseChallengeScene.cpp" />
     <ClCompile Include="BaseLayer.cpp" />
+    <ClCompile Include="BaseNode.cpp" />
     <ClCompile Include="BaseScene.cpp" />
     <ClCompile Include="BaseSprite.cpp" />
     <ClCompile Include="BaseTileMap.cpp" />
@@ -212,6 +216,8 @@
     <ClCompile Include="VisibleRect.cpp" />
     <ClCompile Include="WildcardButton.cpp" />
     <ClCompile Include="WildcardPopup.cpp" />
+    <ClCompile Include="WildcardPopupButtonPanel.cpp" />
+    <ClCompile Include="WildcardPopupBuyCoinsPanel.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

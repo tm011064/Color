@@ -46,6 +46,16 @@ GameButton* GameButton::createQuarterButton(const ccColor3B& color, CCNode *pTar
   gameButton->setOriginalColor(color);
   gameButton->setColor(color);
   
+  gameButton->setAlphaMapStillFrameIndex(0);
+  gameButton->registerStillFrame(IDLE, 0, 0, false);  
+  int pressingFrames[] = { 0,2,4,6,10 };
+  gameButton->registerAnimation(PRESSING, pressingFrames, 5, 1, 0, 30, false, false);  
+  int releasingFrames[] = { 7,5,2,0 };
+  gameButton->registerAnimation(RELEASING, releasingFrames, 4, 1, 0, 30, false, false);  
+  gameButton->registerStillFrame(PRESSED, 10, 0, false);  
+  int blinkFrames[] = { 2,5,8,10,9,6,4,3,2,1,0 };
+  gameButton->registerAnimation(BLINK, blinkFrames, 11, 1, blinkEndedDelegate, 30, false, false);
+  /*
   gameButton->setAlphaMapStillFrameIndex(11);
   gameButton->registerStillFrame(IDLE, 11, 0, false);  
   int pressingFrames[] = { 11,13,15,17,21 };
@@ -55,7 +65,7 @@ GameButton* GameButton::createQuarterButton(const ccColor3B& color, CCNode *pTar
   gameButton->registerStillFrame(PRESSED, 21, 0, false);  
   int blinkFrames[] = { 13,16,19,21,20,17,15,14,13,12,11 };
   gameButton->registerAnimation(BLINK, blinkFrames, 11, 1, blinkEndedDelegate, 30, false, false);
-
+  */
   return gameButton;
 }
 
@@ -95,37 +105,19 @@ void GameButton::playSound()
 
 void GameButton::playAnimation(int animationIndex)
 {
+  this->playAnimation(animationIndex, false);
+}
+
+void GameButton::playAnimation(int animationIndex, bool suppressSound)
+{
   switch (animationIndex)
   {
   case BLINK: 
-    if (m_gameContext->getIsSoundOn())
+    if (!suppressSound && m_gameContext->getIsSoundOn())
       CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(this->m_soundPath.c_str());    
   break;
   }
   BaseSprite::playAnimation(animationIndex);
-}
-
-void GameButton::setButtonState(ButtonState buttonState)
-{ 
-  ButtonState oldButtonState = this->m_buttonState;
-  this->m_buttonState = buttonState;
-
-  switch (buttonState)
-  {
-  case GRABBED:
-    if (oldButtonState == UNGRABBED)
-    {     
-      this->playAnimation(PRESSING);      
-    }
-    break;
-  case UNGRABBED:
-    if (oldButtonState == GRABBED)
-    {
-      this->playAnimation(RELEASING);
-    }
-    break;
-  }
-
 }
 
 bool GameButton::containsTouchLocation(CCTouch* touch)
@@ -154,36 +146,15 @@ bool GameButton::ccTouchBegan(CCTouch* touch, CCEvent* event)
     }
 
     if (containsTouchLocation(touch))
-    {      
-      setButtonState(GRABBED);
+    { 
+      this->playAnimation(BLINK, true); // we don't play the sound here as this will be played only on a correct click
+
+      // we react on the begin event...
+      if(m_pTarget != 0 && m_fnpTouchEndedDelegate != 0)
+          (m_pTarget->*m_fnpTouchEndedDelegate)(this);
+      
       return true;     
-    }
-    else
-    {
-      setButtonState(UNGRABBED);
     }
 
     return false;
 }
-void GameButton::ccTouchMoved(CCTouch* touch, CCEvent* event)
-{
-    if (containsTouchLocation(touch))
-    {      
-      setButtonState(GRABBED);
-    }
-    else
-    {
-      setButtonState(UNGRABBED);
-    }
-}
-void GameButton::ccTouchEnded(CCTouch* touch, CCEvent* event)
-{
-    setButtonState(UNGRABBED);
-    
-    if (containsTouchLocation(touch))
-    {      
-      // TODO (Roman): wait for animation end
-      if(m_pTarget != 0 && m_fnpTouchEndedDelegate != 0)
-          (m_pTarget->*m_fnpTouchEndedDelegate)(this);      
-    }
-} 

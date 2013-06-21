@@ -6,7 +6,7 @@
 
 using namespace cocos2d;
 
-class ModalControl : public cocos2d::CCNode, public cocos2d::CCTargetedTouchDelegate
+class ModalControl : public BaseNode, public cocos2d::CCTargetedTouchDelegate
 {  
 protected:  
   bool m_isLayoutInitialized;
@@ -41,8 +41,5 @@ public:
   virtual void onEnter();
   virtual void onExit();
   virtual bool ccTouchBegan(CCTouch* pTouch, CCEvent* pEvent);
-
-  virtual void show();
-  virtual void hide();
 };
 #endif  // __MODALLAYER_SCENE_H__

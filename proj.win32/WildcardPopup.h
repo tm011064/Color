@@ -2,8 +2,16 @@
 #define __WILDCARD_POPUP_H__
 
 #include "ModalControl.h"
+#include "WildcardPopupButtonPanel.h"
+#include "WildcardPopupBuyCoinsPanel.h"
 
 using namespace cocos2d;
+
+enum WildcardPopupPanel
+{
+  WILDCARD_BUTTONS,
+  WILDCARD_MORE_COINS,
+};
 
 class WildcardPopup : public ModalControl
 {  
@@ -15,21 +23,20 @@ private:
   GameContext* m_gameContext; 
 
   CCLabelBMFont* m_coinsLabel;
-  
-  CCLabelBMFont* m_replaySequence;
-  CCLabelBMFont* m_showNext;
-  CCLabelBMFont* m_replayFromCurrent;
-
   CCSprite* m_availableCoinsCoin;
+    
+  TextButton* m_moreCoinsTextButton;
 
-  TextButton* m_replaySequenceButton;
-  TextButton* m_showNextButton;
-  TextButton* m_replayFromCurrentButton;
-      
+  WildcardPopupButtonPanel* m_wildcardPopupButtonPanel;
+  WildcardPopupBuyCoinsPanel* m_wildcardPopupBuyCoinsPanel;
+
   void replaySequenceCallback(CCObject* pSender);
   void showNextSequenceItemCallback(CCObject* pSender);
   void replayFromCurrentCallback(CCObject* pSender); 
   void closeCallback(CCObject* pSender); 
+
+  void moreCoinsCallback(CCObject* pSender); 
+  void wildcardPanelCallback(CCObject* pSender);
 
   ccColor4F m_dialogColor;
 
@@ -39,6 +46,9 @@ private:
   SEL_CallFuncO m_fnpCloseCallbackDelegate;
   
   CCNode *m_pTarget;
+
+  WildcardPopupPanel m_activeWildcardPopupPanel;
+  void activatePanel(WildcardPopupPanel wildcardPopupPanel);
 
 public:
   WildcardPopup(GameContext* gameContext
@@ -53,19 +63,19 @@ public:
     , m_fnpSaveTryCallbackDelegate(replayFromCurrentCallbackDelegate)
     , m_fnpCloseCallbackDelegate(closeCallbackDelegate)
     , m_pTarget(callbackTarget)
-    , m_replaySequence(NULL)
-    , m_showNext(NULL)
-    , m_replayFromCurrent(NULL)
-    , m_replaySequenceButton(NULL)
-    , m_showNextButton(NULL)
-    , m_replayFromCurrentButton(NULL)
+    , m_coinsLabel(NULL)
     , m_availableCoinsCoin(NULL)
+    , m_wildcardPopupButtonPanel(NULL)
+    , m_wildcardPopupBuyCoinsPanel(NULL)
+    , m_moreCoinsTextButton(NULL)
+    , m_activeWildcardPopupPanel(WILDCARD_BUTTONS)
   { }
   ~WildcardPopup() { }
   
   void refresh();
   virtual void onEnter();
   virtual void draw();
+  virtual void show();
   virtual bool ccTouchBegan(CCTouch* pTouch, CCEvent* pEvent) { return ModalControl::ccTouchBegan(pTouch, pEvent); }
 };
 #endif  // __WILDCARD_POPUP_H__

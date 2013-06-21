@@ -35,14 +35,12 @@
  }
 
 bool WildcardButton::containsTouchLocation(CCTouch* touch)
-{
-  float posX, posY;
-  this->getPosition(&posX, &posY);
-
+{  
   CCPoint location = touch->getLocationInView();
   location = CCDirector::sharedDirector()->convertToGL(location);
+  CCPoint fromOrigin = CCNode::convertToNodeSpace(location);  
 
-  return CCRectMake(posX - m_size.width / 2, posY - m_size.height / 2, m_size.width, m_size.height).containsPoint(location);
+  return CCRectMake(-m_size.width / 2, -m_size.height / 2, m_size.width, m_size.height).containsPoint(fromOrigin);
 }
 
 void WildcardButton::onEnter()
@@ -57,6 +55,19 @@ void WildcardButton::onEnter()
     this->m_isInitialized = true;
     this->m_isEnabled = true;
 
+    this->m_borderOrigin.setPoint(round(-this->m_size.width/2), round(-this->m_size.height/2)); 
+    this->m_borderDestination.setPoint(round(this->m_size.width/2), round(this->m_size.height/2));
+  
+    float leftWidth = m_size.width * .7;
+  
+    this->m_backgroundOrigin.setPoint(round(this->m_borderOrigin.x + this->m_borderWidth), round(this->m_borderOrigin.y + this->m_borderWidth)); 
+    this->m_backgroundDestination.setPoint(round(this->m_borderDestination.x - this->m_borderWidth), round(this->m_borderDestination.y - this->m_borderWidth));
+  
+    this->m_coinBorderOrigin.setPoint(round(this->m_borderOrigin.x + (m_size.width * .65)), round(this->m_backgroundOrigin.y));
+    this->m_coinBorderDestination.setPoint(round(this->m_coinBorderOrigin.x + this->m_borderWidth), round(this->m_backgroundDestination.y));
+  
+    this->m_coinBackgroundOrigin.setPoint(round(this->m_coinBorderDestination.x + this->m_borderWidth), round(m_backgroundOrigin.y));
+    
     m_textLabel = CCLabelBMFont::create(m_text.c_str(), m_gameContext->getFontNormalPath().c_str());
     m_textLabel->setPosition(-m_size.width/2 + m_gameContext->getDefaultPadding()*4 
                                              + m_textLabel->getContentSize().width/2, 0);
@@ -68,11 +79,9 @@ void WildcardButton::onEnter()
     this->addChild(m_totalCoinsLabel);
         
     CCSprite* coin = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(11));
-    coin->setPosition(ccpRounded(m_totalCoinsLabel->getPositionX() - m_totalCoinsLabel->getContentSize().width/2 
-                                                                   - coin->getContentSize().width/2, 0));
+    coin->setPosition(ccpRounded(m_coinBorderDestination.x + m_gameContext->getDefaultPadding()*4 + coin->getContentSize().width/2, 0));
     this->addChild(coin);
-  
-    refresh();
+    
     this->setButtonState(UNGRABBED);
   }
 }
@@ -84,22 +93,9 @@ void WildcardButton::onExit()
   CCNode::onExit();
 }    
 
-void WildcardButton::refresh()
-{
-  this->m_textLabel->setString(this->m_text.c_str());
-
-  this->m_borderOrigin.setPoint(round(-this->m_size.width/2), round(-this->m_size.height/2)); 
-  this->m_borderDestination.setPoint(round(this->m_size.width/2), round(this->m_size.height/2));
-  
-  float leftWidth = m_size.width * .7;
-  
-  this->m_backgroundOrigin.setPoint(round(this->m_borderOrigin.x + this->m_borderWidth), round(this->m_borderOrigin.y + this->m_borderWidth)); 
-  this->m_backgroundDestination.setPoint(round(this->m_borderDestination.x - this->m_borderWidth), round(this->m_borderDestination.y - this->m_borderWidth));
-  
-  this->m_coinBorderOrigin.setPoint(round(this->m_borderOrigin.x + (m_size.width * .65)), round(this->m_backgroundOrigin.y));
-  this->m_coinBorderDestination.setPoint(round(this->m_coinBorderOrigin.x + this->m_borderWidth), round(this->m_backgroundDestination.y));
-  
-  this->m_coinBackgroundOrigin.setPoint(round(this->m_coinBorderDestination.x + this->m_borderWidth), round(m_backgroundOrigin.y));
+void WildcardButton::setEnabled(bool isEnabled) 
+{ 
+  this->m_isEnabled = isEnabled; 
 }
 
 void WildcardButton::draw()
@@ -108,11 +104,6 @@ void WildcardButton::draw()
   ccDrawSolidRect(m_backgroundOrigin, m_backgroundDestination, m_currentBackgroundColor);
   ccDrawSolidRect(m_coinBackgroundOrigin, m_backgroundDestination, m_currentCoinBackgroundColor);  
   ccDrawSolidRect(m_coinBorderOrigin, m_coinBorderDestination, m_currentBorderColor);
-
-  /*
-  ccDrawSolidRect(m_backgroundOrigin, m_backgroundDestination, m_currentBackgroundColor);
-  ccDrawColor4B(m_currentBorderColor.r, m_currentBorderColor.g,m_currentBorderColor.b,255);
-  ccDrawRect(m_borderOrigin, m_borderDestination);*/
 }
 
 void WildcardButton::setButtonState(ButtonState buttonState)
@@ -135,7 +126,7 @@ void WildcardButton::setButtonState(ButtonState buttonState)
     this->m_textLabel->setColor(this->m_textColorOff);
     this->m_totalCoinsLabel->setColor(this->m_textColorOff);
     break;
-  }   
+  }
 }
 
 bool WildcardButton::ccTouchBegan(CCTouch* touch, CCEvent* event)

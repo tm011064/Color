@@ -8,52 +8,142 @@ void HighscoreScene::onEnter()
 
   if (!this->m_isInitialized)
   {  
-    this->m_isInitialized = true;    
-
+    this->m_isInitialized = true;
+    
     CCPoint center = VisibleRect::center();
-    CCRect rect = VisibleRect::getVisibleRect();
+    CCPoint rightTop = VisibleRect::rightTop();
+    CCRect visibleRect = VisibleRect::getVisibleRect();
+    m_visibleRectLeftBottom = VisibleRect::leftBottom();
+    m_visibleRectRightTop = VisibleRect::rightTop();
+    
+    RepeatingSprite* bg = new RepeatingSprite(
+      m_gameContext
+      , m_gameContext->getImageMap()->getTile(0)
+      , HORIZONTAL
+      , NORMAL
+      , visibleRect.size);
+    bg->setPosition(center);
+    this->addChild(bg, -1);
+    bg = NULL;
+        
+    float padding = m_gameContext->getDefaultPadding();
+    float borderThickness = m_gameContext->getDefaultBorderThickness();
 
-    this->m_padding = m_gameContext->getDefaultPadding();
-    float verticalSpacing = m_gameContext->getFontHeightNormal() + m_padding;
+    float verticalSpacing = m_gameContext->getFontHeightNormal() + padding;
+    float verticalSpacingLarge = m_gameContext->getFontHeightLarge() + padding*3;
+            
+    m_panelRectLeftTop = ccp ( 0, m_visibleRectRightTop.y * .825);
+    m_panelRectLeftBottom = ccp ( 0, m_visibleRectRightTop.y * .26 );
+    m_panelRectRightTop = ccp ( m_visibleRectRightTop.x, m_panelRectLeftTop.y);
+    m_panelRectRightBottom = ccp ( m_visibleRectRightTop.x, m_panelRectLeftBottom.y);
+    
+    m_separatorTopRight = ccp ( m_visibleRectRightTop.x, m_panelRectRightTop.y + borderThickness);
+    m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_panelRectRightBottom.y - borderThickness);
 
-    float leftX, rightX;
-    float topY, bottomY;
+    // now we have the border thickness and padding, so we can set the boundaries 
+    float indentLeft = m_visibleRectLeftBottom.x + (visibleRect.size.width * .05);
+    float indentRight = m_visibleRectLeftBottom.x + (visibleRect.size.width * .9);
+    m_panelRectInnerLeftBottom = ccp( indentLeft + borderThickness, m_panelRectLeftBottom.y + borderThickness );
+    m_panelRectInnerRightTop = ccp( indentRight - borderThickness, m_panelRectRightTop.y - borderThickness );
 
-    leftX = rect.size.width * .15;
-    rightX = rect.size.width - leftX;
-    topY = rect.size.height * .7;
+    this->m_textIndentLeft = m_panelRectInnerLeftBottom.x + padding * 3;
+    this->m_textIndentRight = m_panelRectInnerRightTop.x - padding * 3;
+        
+    float posY = round( m_panelRectInnerRightTop.y + verticalSpacingLarge/2 );
 
+    CCLabelBMFont* label = CCLabelBMFont::create("HIGHSCORE", m_gameContext->getFontLargePath().c_str());
+    label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY );
+    this->addChild(label);
+
+    label = CCLabelBMFont::create("off", m_gameContext->getFontNormalPath().c_str());
+    CCSize size = label->getContentSize();
+    
+    size.setSize(size.width + padding * 12, size.height + padding * 4); 
+
+    label->release();
+
+    ccColor3B toggleColorTextOn = { 0, 0, 0 };
+    ccColor3B toggleColorTextOff = { 255, 255, 255 };
+    ccColor4F toggleColorBorder = { 1,1,1,1};
+    ccColor4F toggleColorBackgroundOn = { 1,1,1,1 };
+    ccColor4F toggleColorBackgroundOff = { 0,0,0,1 };
+    
+    posY = round( m_panelRectInnerRightTop.y - verticalSpacing * 2 );    
+        
     GameScore gameScore = m_gameContext->getGameScore();
         
     char str[256];        
 
-    CCLabelBMFont* label = CCLabelBMFont::create("Easy", m_gameContext->getFontNormalPath().c_str());
-    label->setPosition(leftX + m_padding + label->getContentSize().width/2, topY - verticalSpacing);
+    label = CCLabelBMFont::create("Easy", m_gameContext->getFontNormalPath().c_str());
+    label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY);
     this->addChild(label);
     sprintf(str, "%i", m_gameContext->getHighscoreEasy());
     label = CCLabelBMFont::create(str, m_gameContext->getFontNormalPath().c_str());
-    label->setPosition(rightX - label->getContentSize().width/2, topY - verticalSpacing);
+    label->setPosition(this->m_textIndentRight - label->getContentSize().width/2, posY);
     this->addChild(label);
 
+    posY -= round( verticalSpacing );
     label = CCLabelBMFont::create("Normal", m_gameContext->getFontNormalPath().c_str());
-    label->setPosition(leftX + m_padding + label->getContentSize().width/2, topY - verticalSpacing * 2);
+    label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY);
     this->addChild(label);
     sprintf(str, "%i", m_gameContext->getHighscoreNormal());
     label = CCLabelBMFont::create(str, m_gameContext->getFontNormalPath().c_str());
-    label->setPosition(rightX - label->getContentSize().width/2, topY - verticalSpacing * 2);
+    label->setPosition(this->m_textIndentRight - label->getContentSize().width/2, posY);
     this->addChild(label);
 
+    posY -= round( verticalSpacing );
     label = CCLabelBMFont::create("Hard", m_gameContext->getFontNormalPath().c_str());
-    label->setPosition(leftX + m_padding + label->getContentSize().width/2, topY - verticalSpacing * 3);
+    label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY);
     this->addChild(label);
     sprintf(str, "%i", m_gameContext->getHighscoreHard());
     label = CCLabelBMFont::create(str, m_gameContext->getFontNormalPath().c_str());
-    label->setPosition(rightX - label->getContentSize().width/2, topY - verticalSpacing * 3);
+    label->setPosition(this->m_textIndentRight - label->getContentSize().width/2, posY);
     this->addChild(label);
     
-    bottomY = label->getPositionY() - label->getContentSize().height / 2;
+    TextButton* textButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+      , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
+      , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
+      , "back"
+      , m_gameContext->getDefaultButtonSize()
+      , borderThickness
+      , this->m_gameContext
+      , callfuncO_selector(HighscoreScene::showMenuCallback)
+      , this);
+    textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
+    size = textButton->getSize();
+    textButton->setPosition(center.x, size.height/2 + padding * 4);
+    this->addChild(textButton);
+
+    m_panelRectLeftBottom = ccp ( m_panelRectLeftBottom.x, textButton->getPositionY() + size.height/2 + padding * 4 );
+    m_separatorBottomRight = ccp ( m_separatorBottomRight.x, m_panelRectLeftBottom.y + borderThickness);
+
+    m_bgLight.a = .4f; 
+    m_bgLight.r = 0; 
+    m_bgLight.g = 0; 
+    m_bgLight.b = 0;
+    m_bgDark.a = .8f; 
+    m_bgDark.r = 0; 
+    m_bgDark.g = 0; 
+    m_bgDark.b = 0;
+    m_separatorColor.a = 1; 
+    m_separatorColor.r = 1; 
+    m_separatorColor.g = 1; 
+    m_separatorColor.b = 1; 
   }
 }
+
+void HighscoreScene::draw()
+{ 
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+  ccDrawSolidRect(m_panelRectLeftBottom, m_panelRectRightTop, m_bgDark);
+  
+  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+  ccDrawSolidRect(m_panelRectLeftTop, m_separatorTopRight, m_separatorColor);
+  ccDrawSolidRect(m_panelRectLeftBottom, m_separatorBottomRight, m_separatorColor);
+}
+
 void HighscoreScene::showMenuCallback(CCObject* pSender)
 { 
   NavigationManager::showScene(MENU_SCENE, m_gameContext, NEW);

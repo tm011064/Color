@@ -1,4 +1,5 @@
 #include "LayoutController.h"
+#include <cstdlib>
 
 CCArray* LayoutController::createTwoButtons(GameContext* gameContext, DebugDraw* debugDraw, CCPoint anchor, CCNode *pTarget
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate)

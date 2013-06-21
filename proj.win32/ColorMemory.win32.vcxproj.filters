@@ -190,6 +190,15 @@
     <ClInclude Include="ArcadeNormalGameScene.h">
       <Filter>include\Scenes\Arcade</Filter>
     </ClInclude>
+    <ClInclude Include="WildcardPopupButtonPanel.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="WildcardPopupBuyCoinsPanel.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseNode.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseScene.cpp">
@@ -296,6 +305,15 @@
     </ClCompile>
     <ClCompile Include="ArcadeNormalGameScene.cpp">
       <Filter>include\Scenes\Arcade</Filter>
+    </ClCompile>
+    <ClCompile Include="WildcardPopupButtonPanel.cpp">
+      <Filter>include\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="WildcardPopupBuyCoinsPanel.cpp">
+      <Filter>include\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseNode.cpp">
+      <Filter>include</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

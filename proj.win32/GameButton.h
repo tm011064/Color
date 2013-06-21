@@ -10,11 +10,9 @@
 class GameButton : public BaseSprite
 {
 private:
-  ButtonState m_buttonState;
   
   bool m_isEnabled;
-  void setButtonState(ButtonState buttonState);
-
+  
   GameContext* m_gameContext;
   std::string m_soundPath;
   ccColor3B m_originalColor;
@@ -23,7 +21,6 @@ public:
   GameButton(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, GameContext* gameContext
     , std::string soundPath)   
     : BaseSprite(pTarget, touchEndedDelegate, preLoadDelegate)
-    , m_buttonState(UNGRABBED)
     , m_gameContext(gameContext)
     , m_soundPath(soundPath)
     , m_isEnabled(true)
@@ -51,10 +48,9 @@ public:
   void setOriginalColor(ccColor3B color) { this->m_originalColor = color; }
 
   virtual void playAnimation(int animationIndex);
+  virtual void playAnimation(int animationIndex, bool suppressSound);
 
   virtual bool ccTouchBegan(CCTouch* touch, CCEvent* event);
-  virtual void ccTouchMoved(CCTouch* touch, CCEvent* event);
-  virtual void ccTouchEnded(CCTouch* touch, CCEvent* event);
 
   virtual bool containsTouchLocation(CCTouch* touch);
 };

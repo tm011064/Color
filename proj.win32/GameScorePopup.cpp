@@ -80,8 +80,7 @@ void GameScorePopup::onEnter()
     label = CCLabelBMFont::create("Total Points", m_gameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY);
     this->addChild(label);
-    sprintf(str, "%i", (int)(gameScore.level));
-    m_totalPointsLabel = CCLabelBMFont::create(str, m_gameContext->getFontNormalPath().c_str());
+    m_totalPointsLabel = CCLabelBMFont::create("0", m_gameContext->getFontNormalPath().c_str());
     m_totalPointsLabel->setPosition(this->m_textIndentRight - m_totalPointsLabel->getContentSize().width/2, posY);
     this->addChild(m_totalPointsLabel);
 
@@ -89,8 +88,7 @@ void GameScorePopup::onEnter()
     label = CCLabelBMFont::create("Coins earned", m_gameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY);
     this->addChild(label);
-    sprintf(str, "%i", (int)(gameScore.level));
-    m_coinsEarnedLabel = CCLabelBMFont::create(str, m_gameContext->getFontNormalPath().c_str());
+    m_coinsEarnedLabel = CCLabelBMFont::create("0", m_gameContext->getFontNormalPath().c_str());
     m_coinsEarnedLabel->setPosition(this->m_textIndentRight - m_coinsEarnedLabel->getContentSize().width/2, posY);
     this->addChild(m_coinsEarnedLabel);
         
@@ -181,7 +179,7 @@ void GameScorePopup::show()
 
   this->m_elaspeTimePoints = 0;
   this->m_elaspeTimeCoins = -coinsDelay;
-  this->m_targetTime = .8;
+  this->m_targetTime = .8f;
 
   this->schedule(schedule_selector(GameScorePopup::updatePointsDisplay), 0.021f); // framerate: 1/48
   this->schedule(schedule_selector(GameScorePopup::updateCoinsDisplay), 0.021f, -1, coinsDelay); // framerate: 1/48
@@ -193,13 +191,13 @@ void GameScorePopup::updateCoinsDisplay(float dt)
 
   GameScore gameScore = m_gameContext->getGameScore();
 
-  float val = m_elaspeTimeCoins * gameScore.level / m_targetTime;
+  float val = m_elaspeTimeCoins * gameScore.coinsEarned / m_targetTime;
   if (val >= 1)
     m_coinsEarnedLabel->setVisible(true);
   
   if (this->m_elaspeTimeCoins >= this->m_targetTime)
   {   
-    val = gameScore.level;    
+    val = gameScore.coinsEarned;    
     m_coinsEarnedLabel->setVisible(true);
     this->unschedule(schedule_selector(GameScorePopup::updateCoinsDisplay));
   }

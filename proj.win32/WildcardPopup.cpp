@@ -47,67 +47,33 @@ void WildcardPopup::onEnter()
     m_availableCoinsCoin = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(11));
     m_availableCoinsCoin->setPosition(ccpRounded(m_coinsLabel->getPositionX() - m_coinsLabel->getContentSize().width/2 - m_padding, posY));
     this->addChild(m_availableCoinsCoin);
-
-    posY = round( m_dialogRectInnerRightTop.y - (verticalSpacingLarge/2 + verticalSpacing/2 + this->m_padding) );
-    label = CCLabelBMFont::create("use coins to buy cheats", m_gameContext->getFontNormalPath().c_str());
-    label->setPosition(center.x, posY );
-    this->addChild(label);
-
-    CCSize wildCardButtonSize = CCSizeMake(round( m_textIndentRight - m_textIndentLeft)
-                                           , round( m_gameContext->getFontHeightNormal() * 2 + m_padding*4));
-    posY -= round( (verticalSpacingLarge/2 + verticalSpacing/2 + this->m_padding + wildCardButtonSize.height/2) );
     
-    WildcardButton* wildcardButton = new WildcardButton(
-      WILDCARD_BUTTON_BORDER_COLOR_ON, WILDCARD_BUTTON_BORDER_COLOR_OFF
-      , WILDCARD_BUTTON_BACKGROUND_COLOR_ON, WILDCARD_BUTTON_BACKGROUND_COLOR_OFF
-      , WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_ON, WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_OFF
-      , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
-      , "REPLAY\nSEQUENCE"
-      , "25"
-      , wildCardButtonSize
-      , m_gameContext->getDefaultBorderThickness()
-      , m_gameContext
+    this->m_wildcardPopupButtonPanel = new WildcardPopupButtonPanel(
+      this->m_gameContext
+      , CCSizeMake( this->m_textIndentRight - this->m_textIndentLeft, 0 )
       , callfuncO_selector(WildcardPopup::replaySequenceCallback)
-      , this);
-    wildcardButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-    wildcardButton->setPosition(center.x, posY);
-    this->addChild(wildcardButton);
-
-    posY -= round( (this->m_padding*4 + wildCardButtonSize.height) );
-    wildcardButton = new WildcardButton(
-      WILDCARD_BUTTON_BORDER_COLOR_ON, WILDCARD_BUTTON_BORDER_COLOR_OFF
-      , WILDCARD_BUTTON_BACKGROUND_COLOR_ON, WILDCARD_BUTTON_BACKGROUND_COLOR_OFF
-      , WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_ON, WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_OFF
-      , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
-      , "SHOW NEXT"
-      , "50"
-      , wildCardButtonSize
-      , m_gameContext->getDefaultBorderThickness()
-      , m_gameContext
       , callfuncO_selector(WildcardPopup::showNextSequenceItemCallback)
-      , this);
-    wildcardButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-    wildcardButton->setPosition(center.x, posY);
-    this->addChild(wildcardButton);
-
-    posY -= round( (this->m_padding*4 + wildCardButtonSize.height) );
-    wildcardButton = new WildcardButton(
-      WILDCARD_BUTTON_BORDER_COLOR_ON, WILDCARD_BUTTON_BORDER_COLOR_OFF
-      , WILDCARD_BUTTON_BACKGROUND_COLOR_ON, WILDCARD_BUTTON_BACKGROUND_COLOR_OFF
-      , WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_ON, WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_OFF
-      , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
-      , "REPLAY\nREMAINING"
-      , "100"
-      , wildCardButtonSize
-      , m_gameContext->getDefaultBorderThickness()
-      , m_gameContext
       , callfuncO_selector(WildcardPopup::replayFromCurrentCallback)
+      , callfuncO_selector(WildcardPopup::moreCoinsCallback)
       , this);
-    wildcardButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-    wildcardButton->setPosition(center.x, posY);
-    this->addChild(wildcardButton);
-        
-    posY -= round( (verticalSpacingLarge/2 + verticalSpacing/2 + this->m_padding + wildCardButtonSize.height/2) );
+    this->addChild(this->m_wildcardPopupButtonPanel);
+    this->m_wildcardPopupButtonPanel->hide();
+
+    this->m_wildcardPopupBuyCoinsPanel = new WildcardPopupBuyCoinsPanel(
+      this->m_gameContext
+      , CCSizeMake( this->m_textIndentRight - this->m_textIndentLeft, 0 )
+      , callfuncO_selector(WildcardPopup::wildcardPanelCallback)
+      , this);
+    this->addChild(this->m_wildcardPopupBuyCoinsPanel);
+    this->m_wildcardPopupBuyCoinsPanel->hide();
+
+    CCSize wildcardPopupButtonPanelSize = this->m_wildcardPopupButtonPanel->getContentSize();
+    posY = m_dialogRectLeftTop.y - wildcardPopupButtonPanelSize.height/2 - verticalSpacing;
+
+    this->m_wildcardPopupButtonPanel->setPosition(center.x, posY);
+    this->m_wildcardPopupBuyCoinsPanel->setPosition(center.x, posY);
+    
+    posY -= round( (verticalSpacingLarge + verticalSpacing/2 + this->m_padding + wildcardPopupButtonPanelSize.height/2) );
 
     TextButton* textButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
@@ -122,20 +88,24 @@ void WildcardPopup::onEnter()
     textButton->setPosition(this->m_textIndentLeft + textButton->getSize().width/2, posY);
     this->addChild(textButton);
     
-    textButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+    m_moreCoinsTextButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
       , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
       , "+ coins"
       , m_gameContext->getDefaultButtonSize()
       , this->m_borderThickness
       , this->m_gameContext
-      , callfuncO_selector(WildcardPopup::closeCallback)
+      , callfuncO_selector(WildcardPopup::moreCoinsCallback)
       , this);
-    textButton->setEnabled(false);
-    textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-    textButton->setPosition(this->m_textIndentRight - textButton->getSize().width/2, posY);
-    this->addChild(textButton);
-    
+    m_moreCoinsTextButton->setEnabled(false);
+    m_moreCoinsTextButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
+    m_moreCoinsTextButton->setPosition(this->m_textIndentRight - m_moreCoinsTextButton->getSize().width/2, posY);
+    this->addChild(m_moreCoinsTextButton);
+        
+    this->m_wildcardPopupBuyCoinsPanel->hide();
+    this->m_wildcardPopupButtonPanel->show();
+    this->m_moreCoinsTextButton->setVisible(true);
+
     m_bgLight.a = .6f; 
     m_bgLight.r = 0; 
     m_bgLight.g = 0; 
@@ -149,6 +119,15 @@ void WildcardPopup::onEnter()
     m_separatorColor.g = 1; 
     m_separatorColor.b = 1; 
   }
+}
+
+void WildcardPopup::show()
+{
+  BaseNode::show();
+
+  // basenode show makes everything visible, so hide the buy coin panel...
+  this->m_wildcardPopupBuyCoinsPanel->hide();
+  this->m_wildcardPopupButtonPanel->show();
 }
 
 void WildcardPopup::refresh()
@@ -213,9 +192,9 @@ void WildcardPopup::showNextSequenceItemCallback(CCObject* pSender)
 void WildcardPopup::replayFromCurrentCallback(CCObject* pSender)
 {
   int totalCoins = this->m_gameContext->getTotalCoins();
-  if (totalCoins >= COINS_COST_SAVE_TRY)
+  if (totalCoins >= COINS_COST_SHOW_REMAINING)
   {
-    totalCoins -= COINS_COST_SAVE_TRY;
+    totalCoins -= COINS_COST_SHOW_REMAINING;
     this->m_gameContext->setTotalCoins(totalCoins);
     
     char str[10];
@@ -228,9 +207,65 @@ void WildcardPopup::replayFromCurrentCallback(CCObject* pSender)
   }
 }
 
+void WildcardPopup::activatePanel(WildcardPopupPanel wildcardPopupPanel)
+{
+  CCActionInterval* moveLeft = CCMoveBy::create(.15f, ccp(-(VisibleRect::getVisibleRect().size.width),0));
+  CCActionInterval* moveRight = CCMoveBy::create(.15f, ccp((VisibleRect::getVisibleRect().size.width),0));
+  
+  CCPoint center = VisibleRect::center();
+  CCRect visibleRect = VisibleRect::getVisibleRect();
+  float easeRate = .5f;
+  float posLeft = center.x - visibleRect.size.width;
+  float posRight = center.x + visibleRect.size.width;
+    
+  this->m_wildcardPopupBuyCoinsPanel->show();
+  this->m_wildcardPopupButtonPanel->show();
+
+  switch (wildcardPopupPanel)
+  {
+  case WILDCARD_BUTTONS:
+    this->m_wildcardPopupBuyCoinsPanel->setPositionX(center.x);
+    this->m_wildcardPopupBuyCoinsPanel->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
+
+    this->m_wildcardPopupButtonPanel->setPositionX(posLeft);
+    this->m_wildcardPopupButtonPanel->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
+      
+    this->m_moreCoinsTextButton->setVisible(true);
+    break;
+
+  case WILDCARD_MORE_COINS:
+    this->m_wildcardPopupBuyCoinsPanel->setPositionX(posRight);
+    this->m_wildcardPopupBuyCoinsPanel->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
+
+    this->m_wildcardPopupButtonPanel->setPositionX(center.x);
+    this->m_wildcardPopupButtonPanel->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
+  
+    this->m_moreCoinsTextButton->setVisible(false);
+    break;
+  }
+  
+  this->m_activeWildcardPopupPanel = wildcardPopupPanel;
+}
+
+void WildcardPopup::moreCoinsCallback(CCObject* pSender)
+{
+  activatePanel(WILDCARD_MORE_COINS);
+}
+void WildcardPopup::wildcardPanelCallback(CCObject* pSender)
+{    
+  activatePanel(WILDCARD_BUTTONS);
+}
+
 void WildcardPopup::closeCallback(CCObject* pSender)
 {
-  // callback
-  if(m_pTarget != 0 && this->m_fnpCloseCallbackDelegate != 0)
-      (m_pTarget->*this->m_fnpCloseCallbackDelegate)(this);
+  if (this->m_activeWildcardPopupPanel == WILDCARD_MORE_COINS)
+  {
+    activatePanel(WILDCARD_BUTTONS);
+  }
+  else
+  {
+    // callback
+    if(m_pTarget != 0 && this->m_fnpCloseCallbackDelegate != 0)
+        (m_pTarget->*this->m_fnpCloseCallbackDelegate)(this);
+  }
 }

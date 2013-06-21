@@ -29,13 +29,11 @@
 
 bool TextButton::containsTouchLocation(CCTouch* touch)
 {
-  float posX, posY;
-  this->getPosition(&posX, &posY);
-
   CCPoint location = touch->getLocationInView();
   location = CCDirector::sharedDirector()->convertToGL(location);
+  CCPoint fromOrigin = CCNode::convertToNodeSpace(location);  
 
-  return CCRectMake(posX - m_size.width / 2, posY - m_size.height / 2, m_size.width, m_size.height).containsPoint(location);
+  return CCRectMake(-m_size.width / 2, -m_size.height / 2, m_size.width, m_size.height).containsPoint(fromOrigin);
 }
 
 void TextButton::onEnter()

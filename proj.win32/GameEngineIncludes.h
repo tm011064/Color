@@ -10,6 +10,7 @@
 #include "SpriteFrameCache.h"
 #include "BaseTileMap.h"
 #include "BaseSprite.h"
+#include "BaseNode.h"
 #include "RepeatingSprite.h"
 
 #include "VisibleRect.h"

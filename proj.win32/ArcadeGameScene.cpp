@@ -319,9 +319,7 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
       }
       m_gameScore.totalPoints += this->m_challengePointScoreDefinition.levelBonus;
       m_gameScore.totalPoints = (int)m_gameScore.totalPoints - (int)m_gameScore.totalPoints % 10;
-
-      this->m_gameContext->setTotalCoins(this->m_gameContext->getTotalCoins() + 1);           
-      
+            
       m_topBar->setLevel(m_gameScore.level + 1);      
       m_topBar->setScore((long)this->m_gameScore.totalPoints);
 
@@ -333,8 +331,12 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
     this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION;
     
     m_topBar->setScore((long)this->m_gameScore.totalPoints);
-    m_gameContext->setGameScore( m_gameScore );
     
+    this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
+    this->m_gameContext->setTotalCoins(this->m_gameContext->getTotalCoins() + m_gameScore.coinsEarned);
+
+    m_gameContext->setGameScore( m_gameScore );
+
     onGameOver();
 
     if (this->m_gameContext->getIsSoundOn())
@@ -348,8 +350,8 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
     float correctBlinkDelay = 2.3f;
     this->m_eogTotalWrongButtonBlinks = 3;
     this->m_eogElaspedTime = 0;
-    this->m_eogTargetTime = .8;
-    this->m_eogTargetTimeLastButton = .55;
+    this->m_eogTargetTime = .8f;
+    this->m_eogTargetTimeLastButton = .55f;
     this->m_eogElapsedTimeWrongButton = -wrongDelay;
           
     m_lastButtonPressed->playAnimation(PRESSED);
@@ -371,7 +373,7 @@ void ArcadeGameScene::eogBlinkCorrectButton(float dt)
   {
     this->m_nextSequenceButton->setColor(BUTTON_COLOR_BLACK);
     this->unschedule(schedule_selector(ArcadeGameScene::eogBlinkCorrectButton)); 
-    this->schedule(schedule_selector(ArcadeGameScene::eogAnimationFinish), 0, 0, .65); // framerate: 1/48        
+    this->schedule(schedule_selector(ArcadeGameScene::eogAnimationFinish), 0, 0, .65f); // framerate: 1/48        
   }
   else
   {

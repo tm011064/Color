@@ -134,14 +134,12 @@ bool MenuButton::containsTouchLocation(CCTouch* touch)
   }
   else
     return false;
-
-  float posX, posY;
-  this->getPosition(&posX, &posY);
-
+    
   CCPoint location = touch->getLocationInView();
   location = CCDirector::sharedDirector()->convertToGL(location);
+  CCPoint fromOrigin = CCNode::convertToNodeSpace(location);  
 
-  return CCRectMake(posX - size.width / 2, posY - size.height / 2, size.width, size.height).containsPoint(location);
+  return CCRectMake(-size.width / 2, -size.height / 2, size.width, size.height).containsPoint(fromOrigin);
 }
 
 void MenuButton::onEnter()
@@ -184,7 +182,6 @@ void MenuButton::onEnter()
       this->addChild(m_bgDisabledRight);
 
     CCSize bodySize, capsSize;
-    float posX, posY;
 
     int totalWidth = 0;
     int tagCounter = 0;
@@ -226,6 +223,11 @@ void MenuButton::onEnter()
     }
 
     CC_SAFE_DELETE(splitted);
+
+    if (m_bgNormalMiddle)
+      this->setContentSize(CCSizeMake( totalWidth, m_bgNormalMiddle->getContentSize().height ));
+    else
+      this->setContentSize(CCSizeMake( totalWidth, m_bgNormal->getContentSize().height ));
 
     this->refresh();
 
