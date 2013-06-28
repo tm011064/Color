@@ -2,12 +2,14 @@
 
 GameContext::GameContext()
   : m_imageMap(NULL)
+  , m_buttonMap(NULL)
 {
 }
 
 GameContext::~GameContext()
 {
   CC_SAFE_DELETE(m_imageMap);
+  CC_SAFE_DELETE(m_buttonMap);
   CC_SAFE_DELETE(this->m_spriteFrameCache);
 }
 
@@ -35,10 +37,28 @@ void GameContext::init(int totalChallenges)
   this->m_spriteFrameCache->init();
 }
 
-void GameContext::initImageMap(const char *pList, const char *textureFileName)
+void GameContext::registerImageMapFile(const char *pList, const char *textureFileName)
 {
-  CC_SAFE_DELETE(m_imageMap);  
-  m_imageMap = new BaseTileMap(pList,textureFileName);
+  if (!m_imageMap)
+  {  
+    m_imageMap = new BaseTileMap(pList,textureFileName);
+  }
+  else
+  {
+    m_imageMap->RegisterTextureFileName(pList, textureFileName);
+  }
+}
+
+void GameContext::registerButtonMapFile(const char *pList, const char *textureFileName)
+{
+  if (!m_buttonMap)
+  {  
+    m_buttonMap = new BaseTileMap(pList,textureFileName);
+  }
+  else
+  {
+    m_buttonMap->RegisterTextureFileName(pList, textureFileName);
+  }
 }
 
 void GameContext::setTotalCoins(unsigned int totalCoins)

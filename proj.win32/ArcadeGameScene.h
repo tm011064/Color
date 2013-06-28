@@ -23,6 +23,7 @@ private:
 
   void update(float delta);
   void runSequenceAnimation(bool doAddButton, int startIndex, int endIndex);
+  void runSequenceAnimationTimerCallback(float dt);
 
   int m_buttonSequenceIndex;
     
@@ -33,6 +34,7 @@ private:
   GameScorePopup* m_gameScorePopup; 
   
   ImageButton* m_consoleButton;
+  CCLabelBMFont* m_levelDoneLabel;
 
   int m_lastStartIndex;
   int m_lastEndIndex;

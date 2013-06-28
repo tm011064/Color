@@ -5,7 +5,7 @@
 #include "Types.h"
 
 static const float BLINK_SPEED_NORMAL = .55f;
-static const float BLINK_SPEED_STEP = .0195f;
+static const float BLINK_SPEED_STEP = .0125f;
 static const float BLINK_SPEED_THRESHOLD = .25f;
 
 static const float CORRECT_BUTTON_SCORE_TWO_BUTTONS = 300.0f;

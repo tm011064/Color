@@ -82,6 +82,9 @@
       <DllDataFileName>
       </DllDataFileName>
     </Midl>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)\..\Resources" "$(ProjectDir)" /e /y /i /r</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -143,6 +146,7 @@
     <ClInclude Include="ArcadeGameScene.h" />
     <ClInclude Include="ArcadeHardGameScene.h" />
     <ClInclude Include="BaseChallengeScene.h" />
+    <ClInclude Include="BaseFileUtils.h" />
     <ClInclude Include="BaseLayer.h" />
     <ClInclude Include="BaseNode.h" />
     <ClInclude Include="BaseScene.h" />
@@ -187,6 +191,7 @@
     <ClCompile Include="ArcadeGameScene.cpp" />
     <ClCompile Include="ArcadeHardGameScene.cpp" />
     <ClCompile Include="BaseChallengeScene.cpp" />
+    <ClCompile Include="BaseFileUtils.cpp" />
     <ClCompile Include="BaseLayer.cpp" />
     <ClCompile Include="BaseNode.cpp" />
     <ClCompile Include="BaseScene.cpp" />

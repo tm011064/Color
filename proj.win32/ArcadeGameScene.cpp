@@ -95,7 +95,7 @@ void ArcadeGameScene::onEnter()
     this->addChild(m_consoleBackground);    
     
     CCSize consoleBackgroundSize = m_consoleBackground->getContentSize();
-    float consoleBackgroundScale = availableWidth * 1.12 / (consoleBackgroundSize.height/2);
+    float consoleBackgroundScale = availableWidth / (consoleBackgroundSize.width/2);
 
     m_consoleBackground->setScale(consoleBackgroundScale);
             
@@ -133,6 +133,13 @@ void ArcadeGameScene::onEnter()
     m_consoleButton->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
 
     /********** CONSOLE **********/
+
+    m_levelDoneLabel = CCLabelBMFont::create("WELL DONE", m_gameContext->getFontLargePath().c_str());
+    m_levelDoneLabel->setPosition(ccp(this->m_anchor.x, this->m_anchor.y - consoleBackgroundSize.height*consoleBackgroundScale/2
+                                                                         - m_gameContext->getFontHeightLarge()/2));
+    m_levelDoneLabel->setOpacity(.0f);
+    this->addChild(m_levelDoneLabel, 1000);
+	
 
     /********** MODAL LAYER **********/
     m_wildcardPopup = new WildcardPopup(
@@ -317,13 +324,41 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
         m_gameScore.totalLevelBonus += bonus;
         m_gameScore.totalPoints += bonus;
       }
+      else
+      {
+        bonus = 0;
+      }
       m_gameScore.totalPoints += this->m_challengePointScoreDefinition.levelBonus;
       m_gameScore.totalPoints = (int)m_gameScore.totalPoints - (int)m_gameScore.totalPoints % 10;
             
       m_topBar->setLevel(m_gameScore.level + 1);      
       m_topBar->setScore((long)this->m_gameScore.totalPoints);
+ 
+      float mark = bonus / this->m_challengePointScoreDefinition.maxLevelTimeBonus;
+      char str[256];  
+    
+      if (mark > .92f)
+        sprintf(str, "PERFECT");
+      else if (mark > .88f)
+        sprintf(str, "GREAT");
+      else if (mark > .75)
+        sprintf(str, "GOOD");
+      else
+        sprintf(str, "CORRECT");
+      
+      m_levelDoneLabel->setString(str);
 
-      runSequenceAnimation(true, 0, -1);
+      m_levelDoneLabel->setScale(1.0f);
+      m_levelDoneLabel->runAction(CCSequence::create(
+        CCFadeIn::create(.12f)
+        , CCDelayTime::create(.2f)
+        , CCFadeOut::create(.5f)
+        , NULL));
+      m_levelDoneLabel->runAction(CCSequence::create(
+        CCScaleTo::create(1.2f, 1.1)
+        , NULL));
+
+      this->scheduleOnce(schedule_selector(ArcadeGameScene::runSequenceAnimationTimerCallback), .32f);
     }      
   }
   else
@@ -361,6 +396,10 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
     this->schedule(schedule_selector(ArcadeGameScene::eogReleaseLastButton), 0.021f, 0, wrongDelay); // framerate: 1/48
     this->schedule(schedule_selector(ArcadeGameScene::eogBlinkCorrectButton), 0.2f, -1, correctBlinkDelay); // framerate: 1/48    
   }
+}
+void ArcadeGameScene::runSequenceAnimationTimerCallback(float dt)
+{      
+  runSequenceAnimation(true, 0, -1);
 }
 void ArcadeGameScene::eogReleaseLastButton(float dt)
 {

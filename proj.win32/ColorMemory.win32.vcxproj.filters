@@ -199,6 +199,9 @@
     <ClInclude Include="BaseNode.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="BaseFileUtils.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseScene.cpp">
@@ -313,6 +316,9 @@
       <Filter>include\Controls</Filter>
     </ClCompile>
     <ClCompile Include="BaseNode.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseFileUtils.cpp">
       <Filter>include</Filter>
     </ClCompile>
   </ItemGroup>

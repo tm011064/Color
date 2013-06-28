@@ -104,9 +104,6 @@ void WildcardPopupButtonPanel::replaySequenceCallback(CCObject* pSender)
   int totalCoins = this->m_gameContext->getTotalCoins();
   if (totalCoins >= COINS_COST_REPLAY_SEQUENCE)
   {
-    totalCoins -= COINS_COST_REPLAY_SEQUENCE;
-    this->m_gameContext->setTotalCoins(totalCoins);
-
     // callback
     if(m_pTarget != 0 && this->m_fnpReplaySequenceCallbackDelegate != 0)
         (m_pTarget->*this->m_fnpReplaySequenceCallbackDelegate)(this);
@@ -123,9 +120,6 @@ void WildcardPopupButtonPanel::showNextSequenceItemCallback(CCObject* pSender)
   int totalCoins = this->m_gameContext->getTotalCoins();
   if (totalCoins >= COINS_COST_SHOW_NEXT_ITEM)
   {
-    totalCoins -= COINS_COST_SHOW_NEXT_ITEM;
-    this->m_gameContext->setTotalCoins(totalCoins);
-    
     // callback
     if(m_pTarget != 0 && this->m_fnpShowNextSequenceItemCallbackDelegate != 0)
         (m_pTarget->*this->m_fnpShowNextSequenceItemCallbackDelegate)(this);
@@ -142,9 +136,6 @@ void WildcardPopupButtonPanel::replayFromCurrentCallback(CCObject* pSender)
   int totalCoins = this->m_gameContext->getTotalCoins();
   if (totalCoins >= COINS_COST_SHOW_REMAINING)
   {
-    totalCoins -= COINS_COST_SHOW_REMAINING;
-    this->m_gameContext->setTotalCoins(totalCoins);    
- 
     // callback
     if(m_pTarget != 0 && this->m_fnpSaveTryCallbackDelegate != 0)
         (m_pTarget->*this->m_fnpSaveTryCallbackDelegate)(this);

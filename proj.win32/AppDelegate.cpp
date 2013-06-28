@@ -3,6 +3,7 @@
 #include "AppDelegate.h"
 #include "SimpleAudioEngine.h"
 #include "BaseLayer.h"
+#include "BaseFileUtils.h"
 #include "Types.h"
 #include "GameConstants.h"
 #include "GameContext.h"
@@ -94,8 +95,23 @@ bool AppDelegate::applicationDidFinishLaunching()
   SimpleAudioEngine::sharedEngine()->preloadEffect( (gameContext->getSoundPath() + "button_s5.wav").c_str() );
   SimpleAudioEngine::sharedEngine()->preloadEffect( (gameContext->getSoundPath() + "button_wrong.wav").c_str() );
 
-  gameContext->initImageMap(gameContext->getImageMapPListPath().c_str(), gameContext->getImageMapPngPath().c_str());
-    
+  BaseFileUtils* baseFileUtils = new BaseFileUtils(); 
+  baseFileUtils->loadFilenameLookupDictionaryFromFile(
+    CCFileUtils::sharedFileUtils()->fullPathForFilename(NavigationManager::getPath(gameContext, "resourceLookup.plist").c_str()).c_str());
+  std::vector<std::string> mapFiles = baseFileUtils->getNumberedResourceFiles("img_buttonmap");
+  std::vector<std::string>::iterator it;
+  for(it=mapFiles.begin();it!=mapFiles.end();++it)
+  {
+    gameContext->registerButtonMapFile(std::string(*it + ".plist").c_str(), std::string(*it + ".png").c_str());
+  }
+  mapFiles = baseFileUtils->getNumberedResourceFiles("img_imagemap");
+  for(it=mapFiles.begin();it!=mapFiles.end();++it)
+  {
+    gameContext->registerImageMapFile(std::string(*it + ".plist").c_str(), std::string(*it + ".png").c_str());
+  }
+  // TODO (Roman): get sound files as well??
+  CC_SAFE_DELETE(baseFileUtils);
+
   std::string normalPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(NavigationManager::getPath(gameContext, FONT_MENU_NORMAL).c_str());
   std::string largePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(NavigationManager::getPath(gameContext, FONT_MENU_LARGE).c_str());
   gameContext->setFontNormalPath(normalPath);
@@ -116,10 +132,10 @@ bool AppDelegate::applicationDidFinishLaunching()
   if (gameContext->getDefaultBorderThickness() < 1.0f)
     gameContext->setDefaultBorderThickness(1.0f);
 
-  label = CCLabelBMFont::create("Replay", largePath.c_str());
+  label = CCLabelBMFont::create("Replay", largePath.c_str()); 
   gameContext->setFontHeightLarge(label->getContentSize().height);
 
-  label->release();    
+  label->release();  
 
   this->m_gameContext = gameContext;
 

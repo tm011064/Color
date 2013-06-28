@@ -1,9 +1,22 @@
 #include "BaseTileMap.h"
 
+BaseTileMap::BaseTileMap()
+{
+  m_tiles = new CCArray;  
+}
 BaseTileMap::BaseTileMap(const char *pList, const char *textureFileName)
 {  
-  m_tiles = new CCArray;
-    
+  m_tiles = new CCArray;  
+  this->RegisterTextureFileName(pList, textureFileName);
+}
+
+BaseTileMap::~BaseTileMap(void)
+{
+  CC_SAFE_DELETE(m_tiles);
+}
+
+void BaseTileMap::RegisterTextureFileName(const char *pList, const char *textureFileName)
+{
   // IMPORTANT:
   // The sprite frames will be cached AND RETAINED, and they won't be released unless you call
   //     CCSpriteFrameCache::sharedSpriteFrameCache()->removeUnusedSpriteFrames);
@@ -23,12 +36,11 @@ BaseTileMap::BaseTileMap(const char *pList, const char *textureFileName)
   }
 }
 
-BaseTileMap::~BaseTileMap(void)
-{
-  CC_SAFE_DELETE(m_tiles);
-}
-
 CCSpriteFrame* BaseTileMap::getTile(int index)
 {
   return (CCSpriteFrame *)m_tiles->objectAtIndex(index);
+}
+CCArray* BaseTileMap::getAllTiles()
+{
+  return this->m_tiles;
 }

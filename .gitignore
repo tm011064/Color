@@ -31,3 +31,9 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 ColorMemory.sdf
 Resources/
+proj.win32/s1536x2048
+proj.win32/s960x1280
+proj.win32/s720x960
+proj.win32/s360x480
+proj.win32/s240x320
+proj.win32/sounds

@@ -11,11 +11,9 @@ GameButton* GameButton::createThirdButton(const ccColor3B& color, CCNode *pTarge
   gameButton->init();    // Must call init for latest version cocos2d-x
 
   pTarget->addChild(gameButton);
-  
-  gameButton->setAnimationFrames(gameContext->getSpriteFrameCache()->getSpriteFramesForKey(
-      NavigationManager::getPath(gameContext, "buttonmap.plist")
-      , NavigationManager::getPath(gameContext, "buttonmap.png")));    
 
+  gameButton->setAnimationFrames(gameContext->getButtonMap()->getAllTiles());
+  
   gameButton->setOriginalColor(color);
   gameButton->setColor(color);
   
@@ -39,9 +37,7 @@ GameButton* GameButton::createQuarterButton(const ccColor3B& color, CCNode *pTar
 
   pTarget->addChild(gameButton);
   
-  gameButton->setAnimationFrames(gameContext->getSpriteFrameCache()->getSpriteFramesForKey(
-      NavigationManager::getPath(gameContext, "buttonmap.plist")
-      , NavigationManager::getPath(gameContext, "buttonmap.png"))); 
+  gameButton->setAnimationFrames(gameContext->getButtonMap()->getAllTiles());
   
   gameButton->setOriginalColor(color);
   gameButton->setColor(color);
@@ -77,9 +73,7 @@ GameButton* GameButton::createFifthButton(const ccColor3B& color, CCNode *pTarge
 
   pTarget->addChild(gameButton);
   
-  gameButton->setAnimationFrames(gameContext->getSpriteFrameCache()->getSpriteFramesForKey(
-      NavigationManager::getPath(gameContext, "buttonmap.plist")
-      , NavigationManager::getPath(gameContext, "buttonmap.png")));   
+  gameButton->setAnimationFrames(gameContext->getButtonMap()->getAllTiles());  
   
   gameButton->setOriginalColor(color);
   gameButton->setColor(color);

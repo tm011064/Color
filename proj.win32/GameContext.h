@@ -30,6 +30,7 @@ private:
   int m_highscoreHard;
 
   BaseTileMap* m_imageMap;
+  BaseTileMap* m_buttonMap;
   
   SpriteFrameCache* m_spriteFrameCache;
 
@@ -120,9 +121,12 @@ public:
   int getHighscoreHard() { return this->m_highscoreHard; }
   void setHighscoreHard(int totalPoints);
 
-  void initImageMap(const char *pList, const char *textureFileName);
+  void registerImageMapFile(const char *pList, const char *textureFileName);
   BaseTileMap* getImageMap(){ return this->m_imageMap; }
   
+  void registerButtonMapFile(const char *pList, const char *textureFileName);
+  BaseTileMap* getButtonMap(){ return this->m_buttonMap; }
+
   SpriteFrameCache* getSpriteFrameCache() { return this->m_spriteFrameCache; }
   void setSpriteFrameCache(SpriteFrameCache* spriteFrameCache) { this->m_spriteFrameCache = spriteFrameCache; }
 

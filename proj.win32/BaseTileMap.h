@@ -11,10 +11,13 @@ class BaseTileMap
 
 public:
   //
+  BaseTileMap();
   BaseTileMap(const char *pList, const char *textureFileName);
   ~BaseTileMap();
 
+  void RegisterTextureFileName(const char *pList, const char *textureFileName);
   CCSpriteFrame* getTile(int index);
+  CCArray* getAllTiles();
 };
 
 #endif
