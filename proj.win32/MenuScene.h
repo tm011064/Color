@@ -36,14 +36,14 @@ private:
   void resetHomeButtons(bool isVisible);
   void resetArcadeButtons(bool isVisible);
 
-  bool m_isInitialized;
+  bool m_isLayoutInitialized;
   void showView(MenuViewType menuViewType);
 
 public:
   MenuScene(GameContext* gameContext)   
     : BaseScene(gameContext)
     , m_menuViewType(HOME)
-    , m_isInitialized(false)
+    , m_isLayoutInitialized(false)
     , m_storyModePageIndex(0)
     , m_storyModeNextPage(NULL)
     , m_storyModePreviousPage(NULL)
@@ -57,6 +57,7 @@ public:
   {
 
   }
+  ~MenuScene();   
 
   virtual void onEnter();
   virtual void onBackKeyPressed();

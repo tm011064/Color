@@ -102,7 +102,7 @@ bool AppDelegate::applicationDidFinishLaunching()
   std::vector<std::string>::iterator it;
   for(it=mapFiles.begin();it!=mapFiles.end();++it)
   {
-    gameContext->registerButtonMapFile(std::string(*it + ".plist").c_str(), std::string(*it + ".png").c_str());
+    gameContext->registerImageMapFile(std::string(*it + ".plist").c_str(), std::string(*it + ".png").c_str());
   }
   mapFiles = baseFileUtils->getNumberedResourceFiles("img_imagemap");
   for(it=mapFiles.begin();it!=mapFiles.end();++it)

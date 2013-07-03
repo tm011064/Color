@@ -21,13 +21,18 @@ public:
 
   static ImageButton* create(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate
     , SEL_CallFuncO preLoadDelegate, GameContext* gameContext
-    , std::string pList, std::string textureFileName
+    , std::string animationGroupName
     , int alphaMapStillFrameIndex // set to -1 if no alpha map is needed
     , int idleFrameIndex
     , int pressingFrames[], int totalPressingFrames
     , int releasingFrames[], int totalReleasingFrames
     , int pressedFrame
     , int disabledFrame
+    , int touchPriority);  
+  static ImageButton* create(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate
+    , SEL_CallFuncO preLoadDelegate, GameContext* gameContext
+    , std::string spriteFrameName
+    , bool hasAlphaMap
     , int touchPriority);
 
   ButtonState getButtonState() { return this->m_buttonState; }

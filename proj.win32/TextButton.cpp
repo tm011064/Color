@@ -13,7 +13,7 @@
   , m_fnpChangedDelegate(fnpChangedDelegate)
   , m_isEnabled(true)
   , m_pTarget(pTarget)
-  , m_isInitialized(false)
+  , m_isLayoutInitialized(false)
   , m_borderColorOn(borderColorOn)
   , m_borderColorOff(borderColorOff)
   , m_backgroundColorOn(backgroundColorOn)
@@ -43,9 +43,9 @@ void TextButton::onEnter()
 
   CCNode::onEnter();
   
-  if (!this->m_isInitialized)
+  if (!this->m_isLayoutInitialized)
   {  
-    this->m_isInitialized = true;
+    this->m_isLayoutInitialized = true;
     this->m_isEnabled = true;
 
     m_textLabel = CCLabelBMFont::create(m_text.c_str(), m_gameContext->getFontNormalPath().c_str());

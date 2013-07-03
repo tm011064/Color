@@ -6,9 +6,9 @@ void HighscoreScene::onEnter()
 {
   CCScene::onEnter();
 
-  if (!this->m_isInitialized)
+  if (!this->m_isLayoutInitialized)
   {  
-    this->m_isInitialized = true;
+    this->m_isLayoutInitialized = true;
     
     CCPoint center = VisibleRect::center();
     CCPoint rightTop = VisibleRect::rightTop();
@@ -18,7 +18,7 @@ void HighscoreScene::onEnter()
     
     RepeatingSprite* bg = new RepeatingSprite(
       m_gameContext
-      , m_gameContext->getImageMap()->getTile(0)
+      , m_gameContext->getImageMap()->getTile("background")
       , HORIZONTAL
       , NORMAL
       , visibleRect.size);

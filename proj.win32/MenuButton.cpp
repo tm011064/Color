@@ -19,7 +19,7 @@
   , m_isEnabled(true)
   , m_pTarget(pTarget)
   , m_text(text)
-  , m_isInitialized(false)
+  , m_isLayoutInitialized(false)
   , m_bgNormalLeft(NULL)
   , m_bgNormalMiddle(NULL)
   , m_bgNormalRight(NULL)
@@ -65,7 +65,7 @@ MenuButton::MenuButton(CCSpriteFrame* bgNormal, CCSpriteFrame* bgSelected, CCSpr
   , m_isEnabled(true)
   , m_pTarget(pTarget)
   , m_text(text)
-  , m_isInitialized(false)
+  , m_isLayoutInitialized(false)
   , m_bgNormalLeft(NULL)
   , m_bgNormalMiddle(NULL)
   , m_bgNormalRight(NULL)
@@ -149,7 +149,7 @@ void MenuButton::onEnter()
 
   CCNode::onEnter();
   
-  if (!this->m_isInitialized)
+  if (!this->m_isLayoutInitialized)
   {  
     CCLOG("initializing MenuButton");
 
@@ -232,7 +232,7 @@ void MenuButton::onEnter()
     this->refresh();
 
     CCLOG("finished initializing MenuButton");
-    this->m_isInitialized = true;
+    this->m_isLayoutInitialized = true;
   }
 }
 

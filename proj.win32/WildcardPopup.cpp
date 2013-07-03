@@ -44,7 +44,7 @@ void WildcardPopup::onEnter()
     m_coinsLabel->setPosition(ccp(this->m_textIndentRight - m_coinsLabel->getContentSize().width/2, posY));
     this->addChild(m_coinsLabel);
     
-    m_availableCoinsCoin = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(11));
+    m_availableCoinsCoin = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("coin_small"));
     m_availableCoinsCoin->setPosition(ccpRounded(m_coinsLabel->getPositionX() - m_coinsLabel->getContentSize().width/2 - m_padding, posY));
     this->addChild(m_availableCoinsCoin);
     

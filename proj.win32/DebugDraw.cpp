@@ -17,10 +17,10 @@ DebugDraw::DebugDraw()
 
 DebugDraw::~DebugDraw()
 {
- delete m_lines;
- delete m_points;
- delete m_circles;
- delete m_rects; 
+  CC_SAFE_DELETE(m_lines);
+  CC_SAFE_DELETE(m_points);
+  CC_SAFE_DELETE(m_circles);
+  CC_SAFE_DELETE(m_rects);
 }
 
 void DebugDraw::draw(void)

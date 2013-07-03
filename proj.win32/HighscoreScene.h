@@ -9,7 +9,7 @@ class HighscoreScene : public BaseScene
 {
 private:
 
-  bool m_isInitialized;
+  bool m_isLayoutInitialized;
   float m_padding;
 
   
@@ -37,7 +37,7 @@ private:
 public:
   HighscoreScene(GameContext* gameContext)   
     : BaseScene(gameContext)
-    , m_isInitialized(false)
+    , m_isLayoutInitialized(false)
   {
 
   }

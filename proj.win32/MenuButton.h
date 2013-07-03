@@ -33,7 +33,7 @@ private:
   CCNode* m_pTarget;
   const char* m_text;
   bool m_isEnabled;
-  bool m_isInitialized;
+  bool m_isLayoutInitialized;
 
   GameContext* m_gameContext; 
   SEL_CallFuncO m_fnpTouchEndedDelegate;

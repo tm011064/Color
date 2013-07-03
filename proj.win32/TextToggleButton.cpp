@@ -13,7 +13,7 @@
   , m_fnpToggleChangedDelegate(fnpToggleChangedDelegate)
   , m_isEnabled(true)
   , m_pTarget(pTarget)
-  , m_isInitialized(false)
+  , m_isLayoutInitialized(false)
   , m_borderColorOn(borderColorOn)
   , m_borderColorOff(borderColorOff)
   , m_backgroundColorOn(backgroundColorOn)
@@ -43,9 +43,9 @@ void TextToggleButton::onEnter()
 
   CCNode::onEnter();
   
-  if (!this->m_isInitialized)
+  if (!this->m_isLayoutInitialized)
   {  
-    this->m_isInitialized = true;
+    this->m_isLayoutInitialized = true;
     
     m_textLabel = CCLabelBMFont::create(m_text.c_str(), m_gameContext->getFontNormalPath().c_str());
     this->addChild(m_textLabel);

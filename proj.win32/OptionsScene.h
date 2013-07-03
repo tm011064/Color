@@ -9,7 +9,7 @@ class OptionsScene : public BaseScene
 {
 private:
 
-  bool m_isInitialized;
+  bool m_isLayoutInitialized;
 
   TextToggleButton* m_soundToggleButtonOn;
   TextToggleButton* m_soundToggleButtonOff;
@@ -46,11 +46,13 @@ private:
 public:
   OptionsScene(GameContext* gameContext)   
     : BaseScene(gameContext)
-    , m_isInitialized(false)
+    , m_isLayoutInitialized(false)
   {
 
   }
-
+  ~OptionsScene()
+  {
+  }
   virtual void onEnter();
   virtual void draw();
   virtual void onBackKeyPressed();

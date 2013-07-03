@@ -12,7 +12,7 @@ using namespace cocos2d;
 
 class BaseSprite : public cocos2d::CCSprite, public cocos2d::CCTargetedTouchDelegate
 {
-  CCArray *m_animationFrames;
+  std::vector<CCSpriteFrame*>* m_animationFrames;
   
   int m_totalFrames;
 
@@ -70,8 +70,8 @@ public:
   void setTouchPriority(int priority) { this->m_touchPriority = priority; }
 
   //Add Frames to run Animation.
-  void setAnimationFrames(CCArray *frames);
-  void setAnimationFrames(CCArray *frames, int displayTextureIndex);
+  void setAnimationFrames(std::vector<CCSpriteFrame*>* frames);
+  void setAnimationFrames(std::vector<CCSpriteFrame*>* frames, int displayTextureIndex);
  
   //Sets Frame Rate for running Animation
   void setFrameRate(int framesPerSecond){m_frameRate = calculateFrameRate(framesPerSecond);}

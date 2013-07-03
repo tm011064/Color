@@ -4,8 +4,7 @@ using namespace cocos2d;
 
 BaseChallengeScene::BaseChallengeScene(GameContext* gameContext, int challengeIndex, ChallengeSceneType challengeSceneType, int totalButtons)   
   : BaseScene(gameContext)
-  , m_isInitialized(false) 
-  , m_isLayoutInitialized(false)
+  , m_isLayoutInitialized(false) 
   , m_bIsFirstDraw(true)
   , m_buttons(0)
   , m_loadingScreen(0)
@@ -25,9 +24,9 @@ BaseChallengeScene::BaseChallengeScene(GameContext* gameContext, int challengeIn
   m_gameScore.level = 0;
   m_gameScore.totalTimeElapsed = 0;
 }
-BaseChallengeScene::~BaseChallengeScene()
+void BaseChallengeScene::onExit()
 {
-  if(this->m_isInitialized)
+  if(this->m_isLayoutInitialized)
   {
     CC_SAFE_FREE(m_buttons);    
     CC_SAFE_DELETE(m_lastButtonPressedTime);
@@ -51,7 +50,7 @@ void BaseChallengeScene::onEnter()
     this->m_anchor.setPoint(center.x, top.y * .5); // TODO (Roman): positioning   
         
     // TODO (Roman): loading screen
-    m_loadingScreen = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(0));
+    m_loadingScreen = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("background"));
     m_loadingScreen->setPosition(center);
     m_loadingScreen->setVisible(true);
 
@@ -59,7 +58,7 @@ void BaseChallengeScene::onEnter()
         
     RepeatingSprite* bg = new RepeatingSprite(
       m_gameContext
-      , m_gameContext->getImageMap()->getTile(0)
+      , m_gameContext->getImageMap()->getTile("background")
       , HORIZONTAL
       , NORMAL
       , visibleRect.size);
@@ -67,7 +66,7 @@ void BaseChallengeScene::onEnter()
     bg = NULL;
 
     /********** CONSOLE **********/    
-    m_consoleBackground = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(1));
+    m_consoleBackground = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("console"));
     m_consoleBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
     this->addChild(m_consoleBackground);    
 
@@ -77,20 +76,19 @@ void BaseChallengeScene::onEnter()
 
     m_consoleBackground->setScale(consoleBackgroundScale);    
         
-    int releasingFrames[] = { 9 };
-    int pressingFrames[] = { 9 };
+    int releasingFrames[] = { 0 };
+    int pressingFrames[] = { 0 };
     m_consoleButton = ImageButton::create(this
       , callfuncO_selector( BaseChallengeScene::consoleButtonTouchEndedCallback )
       , NULL
       , m_gameContext
-      , this->m_gameContext->getImageMapPListPath().c_str()
-      , this->m_gameContext->getImageMapPngPath().c_str()
-      , 9
-      , 9
+      , "gameConsoleButton"
+      , 0
+      , 0
       , pressingFrames, 1
       , releasingFrames, 1
-      , 9
-      , 9
+      , 0
+      , 0
       , TOUCH_PRIORITY_NORMAL);
     m_consoleButton->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
     m_consoleButton->setScale(consoleBackgroundScale);

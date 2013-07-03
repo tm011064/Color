@@ -5,8 +5,7 @@
 #include "GameContext.h"
 
 BaseSprite::BaseSprite(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate)
-://m_fnpSelectorDelegate(0)
- m_pTarget(pTarget)
+:m_pTarget(pTarget)
 ,m_isPlistLoaded(false)
 ,m_elaspeTime(0.0)
 ,m_incrementValue(0)
@@ -16,18 +15,20 @@ BaseSprite::BaseSprite(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate, SEL_Ca
 ,m_fnpTouchEndedDelegate(touchEndedDelegate)
 ,m_fnpPreLoadDelegate(preLoadDelegate)
 ,m_currentAnimationDefinition(NULL)
-, m_alphaMap(0)
+, m_alphaMap(NULL)
 , m_alphaMapCols(0)
 , m_alphaMapRows(0)
 , m_touchPriority(0)
 , m_totalFrames(0)
+, m_animationFrames(NULL)
 { }
 
 BaseSprite::~BaseSprite()
 {
   // TODO (Roman): is that correct?
   m_currentAnimationDefinition = NULL;
-
+  //m_animationFrames = NULL;
+  CC_SAFE_DELETE(m_animationFrames);
   if (m_alphaMap)
   {
     for (unsigned int i = 0; i < m_alphaMapCols; i++)
@@ -37,19 +38,19 @@ BaseSprite::~BaseSprite()
   }
 }
 
-void BaseSprite::setAnimationFrames(CCArray *frames)
+void BaseSprite::setAnimationFrames(std::vector<CCSpriteFrame*>* frames)
 {
   this->setAnimationFrames(frames, 0);
 }
 
-void BaseSprite::setAnimationFrames(CCArray *frames, int displayTextureIndex)
+void BaseSprite::setAnimationFrames(std::vector<CCSpriteFrame*>* frames, int displayTextureIndex)
 {
   m_isPlistLoaded = true;
 
   CC_ASSERT( frames );
   m_animationFrames = frames;
 
-  CCSpriteFrame* spriteFrame = (CCSpriteFrame *)m_animationFrames->objectAtIndex(displayTextureIndex);
+  CCSpriteFrame* spriteFrame = m_animationFrames->at(displayTextureIndex);
   
   CC_ASSERT( spriteFrame );
   setDisplayFrame(spriteFrame);
@@ -67,13 +68,13 @@ void BaseSprite::increaseCurrentIndex()
 
 void BaseSprite::setDisplayFrameAtIndex(int index)
 {
-  setDisplayFrame((CCSpriteFrame *)m_animationFrames->objectAtIndex(index));
+  setDisplayFrame(m_animationFrames->at(index));
 }
 
 
 CCSize BaseSprite::getSpriteFrameSize(int index)
 {
-  CCSpriteFrame* spriteFrame = (CCSpriteFrame *)m_animationFrames->objectAtIndex(index);
+  CCSpriteFrame* spriteFrame = m_animationFrames->at(index);
   CCSize size = spriteFrame->getOriginalSize();
   size.setSize(size.width * this->getScaleX(), size.height * this->getScaleY());
   return size;
@@ -87,7 +88,7 @@ void BaseSprite::update(float dt)
     m_elaspeTime -= m_frameRate;
     m_currentIndex += m_incrementValue;
     
-    setDisplayFrame((CCSpriteFrame *)m_animationFrames->objectAtIndex(
+    setDisplayFrame(m_animationFrames->at(
       this->m_currentAnimationDefinition->plistIndexes.at(m_currentIndex)));
 
     //Forward Animation....
@@ -160,7 +161,7 @@ void BaseSprite::loadUpdate(float delta)
   {
     for(std::vector<int>::iterator jj = (*ii).second.plistIndexes.begin(); jj != (*ii).second.plistIndexes.end(); ++jj)
     {
-      this->setDisplayFrame((CCSpriteFrame *)m_animationFrames->objectAtIndex((*jj)));
+      this->setDisplayFrame(m_animationFrames->at((*jj)));
       this->visit();
     }
   }

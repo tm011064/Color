@@ -41,7 +41,7 @@ private:
 
   CCNode* m_pTarget;
   bool m_isEnabled;
-  bool m_isInitialized;
+  bool m_isLayoutInitialized;
 
   CCPoint m_borderOrigin;
   CCPoint m_borderDestination;

@@ -15,7 +15,7 @@
   , m_fnpChangedDelegate(fnpChangedDelegate)
   , m_isEnabled(true)
   , m_pTarget(pTarget)
-  , m_isInitialized(false)
+  , m_isLayoutInitialized(false)
   , m_borderColorOn(borderColorOn)
   , m_borderColorOff(borderColorOff)
   , m_backgroundColorOn(backgroundColorOn)
@@ -50,9 +50,9 @@ void WildcardButton::onEnter()
 
   CCNode::onEnter();
   
-  if (!this->m_isInitialized)
+  if (!this->m_isLayoutInitialized)
   {  
-    this->m_isInitialized = true;
+    this->m_isLayoutInitialized = true;
     this->m_isEnabled = true;
 
     this->m_borderOrigin.setPoint(round(-this->m_size.width/2), round(-this->m_size.height/2)); 
@@ -78,7 +78,7 @@ void WildcardButton::onEnter()
                                                              - m_totalCoinsLabel->getContentSize().width/2, 0));
     this->addChild(m_totalCoinsLabel);
         
-    CCSprite* coin = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(11));
+    CCSprite* coin = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("coin_small"));
     coin->setPosition(ccpRounded(m_coinBorderDestination.x + m_gameContext->getDefaultPadding()*4 + coin->getContentSize().width/2, 0));
     this->addChild(coin);
     

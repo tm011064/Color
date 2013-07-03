@@ -32,6 +32,8 @@ public:
 #endif
   }
 
+  ~BaseScene(){}
+
   virtual void onBackKeyPressed() { }
   SceneState getSceneState() { return this->m_sceneState; } 
 

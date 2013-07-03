@@ -61,7 +61,6 @@ private:
 
 protected:
   int m_totalButtons;
-  bool m_isInitialized;
   bool m_isLayoutInitialized;
   float m_buttonScale;
 
@@ -82,9 +81,10 @@ protected:
 public:
 
   ArcadeGameScene(GameContext* gameContext, SceneType sceneType, int totalButtons);
-  ~ArcadeGameScene();
+  ~ArcadeGameScene(){}
   
   virtual void onEnter();
+  virtual void onExit();
   virtual void draw();
   virtual void onBackKeyPressed();
 

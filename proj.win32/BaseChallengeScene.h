@@ -32,7 +32,6 @@ private:
 
 protected:
   int m_totalButtons;
-  bool m_isInitialized;
   bool m_isLayoutInitialized;
   int m_challengeIndex;
 
@@ -66,8 +65,9 @@ protected:
 public:
 
   BaseChallengeScene(GameContext* gameContext, int challengeIndex, ChallengeSceneType challengeSceneType, int totalButtons);
-  ~BaseChallengeScene();
+  ~BaseChallengeScene(){}
   
+  virtual void onExit();
   virtual void onEnter();
   virtual void draw();
   virtual void onBackKeyPressed();

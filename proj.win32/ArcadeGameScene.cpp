@@ -6,8 +6,7 @@ using namespace cocos2d;
 
 ArcadeGameScene::ArcadeGameScene(GameContext* gameContext, SceneType sceneType, int totalButtons)   
   : BaseScene(gameContext)
-  , m_isInitialized(false) 
-  , m_isLayoutInitialized(false)
+  , m_isLayoutInitialized(false) 
   , m_bIsFirstDraw(true)
   , m_buttonScale(.0f)
   , m_buttons(0)
@@ -31,15 +30,15 @@ ArcadeGameScene::ArcadeGameScene(GameContext* gameContext, SceneType sceneType, 
   m_gameScore.totalTimeElapsed = 0;
 }
 
-ArcadeGameScene::~ArcadeGameScene()
+void ArcadeGameScene::onExit()
 {
-  if(this->m_isInitialized)
+  // TODO (Roman): is that correct???
+  if(this->m_isLayoutInitialized)
   {
     CC_SAFE_FREE(m_buttons);    
     CC_SAFE_DELETE(m_lastButtonPressedTime);
-    CC_SAFE_DELETE(m_lastLevelStartTime);    
-    CC_SAFE_DELETE(m_loadingScreen);    
-    
+    CC_SAFE_DELETE(m_lastLevelStartTime); 
+        
     m_lastButtonPressed = NULL;    
     m_nextSequenceButton = NULL;    
   }
@@ -65,7 +64,7 @@ void ArcadeGameScene::onEnter()
     this->addChild(m_loadingScreenText, 1001);
     m_loadingScreen = new RepeatingSprite(
       m_gameContext
-      , m_gameContext->getImageMap()->getTile(0)
+      , m_gameContext->getImageMap()->getTile("background")
       , HORIZONTAL
       , NORMAL
       , visibleRect.size);    
@@ -74,7 +73,7 @@ void ArcadeGameScene::onEnter()
     
     RepeatingSprite* bg = new RepeatingSprite(
       m_gameContext
-      , m_gameContext->getImageMap()->getTile(0)
+      , m_gameContext->getImageMap()->getTile("background")
       , HORIZONTAL
       , NORMAL
       , visibleRect.size);    
@@ -91,7 +90,7 @@ void ArcadeGameScene::onEnter()
     /********** TOP BAR **********/
     
     /********** CONSOLE **********/    
-    m_consoleBackground = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(1));
+    m_consoleBackground = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("console"));
     this->addChild(m_consoleBackground);    
     
     CCSize consoleBackgroundSize = m_consoleBackground->getContentSize();
@@ -99,26 +98,34 @@ void ArcadeGameScene::onEnter()
 
     m_consoleBackground->setScale(consoleBackgroundScale);
             
-    CCSprite* consoleButtonBackground = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(2));
+    CCSprite* consoleButtonBackground = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("gameConsoleButtonBackground"));
     consoleButtonBackground->setScale(consoleBackgroundScale);
     this->addChild(consoleButtonBackground);    
-
-    int releasingFrames[] = { 9 };
-    int pressingFrames[] = { 9 };
+    
+    int releasingFrames[] = { 0 };
+    int pressingFrames[] = { 0 };
     m_consoleButton = ImageButton::create(this
       , callfuncO_selector( ArcadeGameScene::consoleButtonTouchEndedCallback )
       , NULL
       , m_gameContext
-      , this->m_gameContext->getImageMapPListPath().c_str()
-      , this->m_gameContext->getImageMapPngPath().c_str()
-      , 9
-      , 9
+      , "coin_large"
+      , 0
+      , 0
       , pressingFrames, 1
       , releasingFrames, 1
-      , 9
-      , 9
+      , 0
+      , 0
+      , TOUCH_PRIORITY_NORMAL);
+    /*
+    m_consoleButton = ImageButton::create(this
+      , callfuncO_selector( ArcadeGameScene::consoleButtonTouchEndedCallback )
+      , NULL
+      , m_gameContext
+      , "coin_large"
+      , false
       , TOUCH_PRIORITY_NORMAL);
     m_consoleButton->setScale(consoleBackgroundScale);
+      */
 
     CCRect topBarBoundingBox = m_topBar->getBoundingBox();
     CCSize consoleSize = m_consoleBackground->getContentSize();
@@ -134,11 +141,13 @@ void ArcadeGameScene::onEnter()
 
     /********** CONSOLE **********/
 
+    /********** LEVEL DONE MESSAGE **********/
     m_levelDoneLabel = CCLabelBMFont::create("WELL DONE", m_gameContext->getFontLargePath().c_str());
     m_levelDoneLabel->setPosition(ccp(this->m_anchor.x, this->m_anchor.y - consoleBackgroundSize.height*consoleBackgroundScale/2
                                                                          - m_gameContext->getFontHeightLarge()/2));
     m_levelDoneLabel->setOpacity(.0f);
     this->addChild(m_levelDoneLabel, 1000);
+    /********** LEVEL DONE MESSAGE **********/
 	
 
     /********** MODAL LAYER **********/

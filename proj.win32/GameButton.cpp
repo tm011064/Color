@@ -12,7 +12,7 @@ GameButton* GameButton::createThirdButton(const ccColor3B& color, CCNode *pTarge
 
   pTarget->addChild(gameButton);
 
-  gameButton->setAnimationFrames(gameContext->getButtonMap()->getAllTiles());
+  gameButton->setAnimationFrames(gameContext->getImageMap()->getTiles("gamebuttons"));
   
   gameButton->setOriginalColor(color);
   gameButton->setColor(color);
@@ -37,7 +37,7 @@ GameButton* GameButton::createQuarterButton(const ccColor3B& color, CCNode *pTar
 
   pTarget->addChild(gameButton);
   
-  gameButton->setAnimationFrames(gameContext->getButtonMap()->getAllTiles());
+  gameButton->setAnimationFrames(gameContext->getImageMap()->getTiles("gamebuttons"));
   
   gameButton->setOriginalColor(color);
   gameButton->setColor(color);
@@ -73,7 +73,7 @@ GameButton* GameButton::createFifthButton(const ccColor3B& color, CCNode *pTarge
 
   pTarget->addChild(gameButton);
   
-  gameButton->setAnimationFrames(gameContext->getButtonMap()->getAllTiles());  
+  gameButton->setAnimationFrames(gameContext->getImageMap()->getTiles("gamebuttons"));  
   
   gameButton->setOriginalColor(color);
   gameButton->setColor(color);

@@ -2,13 +2,18 @@
 
 using namespace cocos2d;
 
+MenuScene::~MenuScene()
+{
+
+}
+
 void MenuScene::onEnter()
 {
   CCScene::onEnter();
         // TODO (Roman): memory management for all enter methods
-  if (!this->m_isInitialized)
+  if (!this->m_isLayoutInitialized)
   {  
-    this->m_isInitialized = true;
+    this->m_isLayoutInitialized = true;
 
     CCLOG("initializing MenuScene");
     CCPoint center = VisibleRect::center();
@@ -17,7 +22,7 @@ void MenuScene::onEnter()
     
     RepeatingSprite* bg = new RepeatingSprite(
       m_gameContext
-      , m_gameContext->getImageMap()->getTile(0)
+      , m_gameContext->getImageMap()->getTile("background")
       , HORIZONTAL
       , NORMAL
       , visibleRect.size);
@@ -25,7 +30,7 @@ void MenuScene::onEnter()
     this->addChild(bg, 0);
     bg = NULL;
         
-    CCSprite* header = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile(10));
+    CCSprite* header = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("header"));
     CCSize size = header->getContentSize();
     header->setScale(visibleRect.size.width / size.height); 
     header->setRotation(-90);
@@ -38,9 +43,9 @@ void MenuScene::onEnter()
 
     /*************** HOME ***************/
     m_homeStoryMode = new MenuButton(
-      m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
-      , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
-      , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
+      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "STORY MODE", m_gameContext, menu_selector(MenuScene::showStoryModeMenu), this);
     m_homeStoryMode->setPosition(center.x, posY);
@@ -54,9 +59,9 @@ void MenuScene::onEnter()
 
     posY -= spacing;
     m_homeArcade = new MenuButton(
-      m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
-      , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
-      , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
+      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "ARCADE", m_gameContext, menu_selector(MenuScene::showArcadeMenu), this);
     m_homeArcade->setPosition(center.x, posY);
@@ -64,9 +69,9 @@ void MenuScene::onEnter()
     
     posY -= spacing;
     m_homeHighscore = new MenuButton(
-      m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
-      , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
-      , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
+      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "HIGHSCORE", m_gameContext, menu_selector(MenuScene::showHighscore), this);
     m_homeHighscore->setPosition(center.x, posY);
@@ -74,9 +79,9 @@ void MenuScene::onEnter()
     
     posY -= spacing;
     m_homeOptions = new MenuButton(
-      m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
-      , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
-      , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
+      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "OPTIONS", m_gameContext, menu_selector(MenuScene::showOptions), this);
     m_homeOptions->setPosition(center.x, posY);
@@ -87,9 +92,9 @@ void MenuScene::onEnter()
     /*************** ARCADE ***************/
     posY -= spacing;
     m_arcadeEasy = new MenuButton(
-      m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
-      , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
-      , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
+      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "EASY", m_gameContext, menu_selector(MenuScene::startArcadeEasyGameCallback), this);
     m_arcadeEasy->setPosition(center.x + visibleRect.size.width, posY);
@@ -97,9 +102,9 @@ void MenuScene::onEnter()
 
     posY -= spacing;
     m_arcadeNormal = new MenuButton(
-      m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
-      , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
-      , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
+      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "NORMAL", m_gameContext, menu_selector(MenuScene::startArcadeNormalGameCallback), this);
     m_arcadeNormal->setPosition(center.x + visibleRect.size.width, posY);
@@ -107,9 +112,9 @@ void MenuScene::onEnter()
 
     posY -= spacing;
     m_arcadeHard = new MenuButton(
-      m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
-      , m_gameContext->getImageMap()->getTile(6), m_gameContext->getImageMap()->getTile(7), m_gameContext->getImageMap()->getTile(8)
-      , m_gameContext->getImageMap()->getTile(3), m_gameContext->getImageMap()->getTile(4), m_gameContext->getImageMap()->getTile(5)
+      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "HARD", m_gameContext, menu_selector(MenuScene::startArcadeHardGameCallback), this);
     m_arcadeHard->setPosition(center.x + visibleRect.size.width, posY);

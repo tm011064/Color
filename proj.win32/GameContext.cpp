@@ -49,18 +49,6 @@ void GameContext::registerImageMapFile(const char *pList, const char *textureFil
   }
 }
 
-void GameContext::registerButtonMapFile(const char *pList, const char *textureFileName)
-{
-  if (!m_buttonMap)
-  {  
-    m_buttonMap = new BaseTileMap(pList,textureFileName);
-  }
-  else
-  {
-    m_buttonMap->RegisterTextureFileName(pList, textureFileName);
-  }
-}
-
 void GameContext::setTotalCoins(unsigned int totalCoins)
 {  
   CCUserDefault::sharedUserDefault()->setIntegerForKey("totalCoins", totalCoins);

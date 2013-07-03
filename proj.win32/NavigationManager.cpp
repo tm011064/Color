@@ -30,11 +30,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
   MenuScene* menuScene;
   OptionsScene* optionsScene;
   HighscoreScene* highscoreScene;
-
-  // TODO (Roman): whenever we load a new scene, the sprite frame cache must be reinitialized
-  // this could be written in a better way, so the cache is at the scene level, not game context level maybe???
-  gameContext->getSpriteFrameCache()->init();  
-
+    
   switch (sceneType)
   {
   case MENU_SCENE: 
@@ -46,6 +42,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     pLayer->autorelease();
 
     menuScene->addChild(pLayer);
+    
     return menuScene;
 
   case ARCADE_NORMAL_GAME_SCENE: 
@@ -58,6 +55,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     pLayer->autorelease();
 
     normalGameScene->addChild(pLayer); 
+    //normalGameScene->autorelease();
     return normalGameScene;
 
   case ARCADE_EASY_GAME_SCENE: 
@@ -70,6 +68,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     pLayer->autorelease();
 
     arcadeEasyGameScene->addChild(pLayer); 
+    //arcadeEasyGameScene->autorelease();
 
     return arcadeEasyGameScene;
     
@@ -83,7 +82,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     pLayer->autorelease();
 
     arcadeHardGameScene->addChild(pLayer); 
-
+    //arcadeHardGameScene->autorelease();
     return arcadeHardGameScene;
     
   case OPTIONS_SCENE: 
@@ -95,6 +94,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     pLayer->autorelease();
 
     optionsScene->addChild(pLayer);
+    
     return optionsScene;
 
   case HIGHSCORE_SCENE: 
@@ -106,6 +106,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     pLayer->autorelease();
 
     highscoreScene->addChild(pLayer);
+    
     return highscoreScene;
   }
 
@@ -259,6 +260,7 @@ void NavigationManager::showChallengeScene(GameContext* gameContext, int challen
 void NavigationManager::showScene(SceneType sceneType, GameContext* gameContext, SceneRenderMode sceneRenderMode)
 {    
   CCScene* scene;
+  CCScene* s2;
   CCDirector::sharedDirector()->purgeCachedData();
   
   switch(sceneRenderMode)

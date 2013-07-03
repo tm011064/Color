@@ -124,9 +124,6 @@ public:
   void registerImageMapFile(const char *pList, const char *textureFileName);
   BaseTileMap* getImageMap(){ return this->m_imageMap; }
   
-  void registerButtonMapFile(const char *pList, const char *textureFileName);
-  BaseTileMap* getButtonMap(){ return this->m_buttonMap; }
-
   SpriteFrameCache* getSpriteFrameCache() { return this->m_spriteFrameCache; }
   void setSpriteFrameCache(SpriteFrameCache* spriteFrameCache) { this->m_spriteFrameCache = spriteFrameCache; }
 
