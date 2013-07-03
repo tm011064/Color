@@ -16,7 +16,8 @@ void OptionsScene::onEnter()
     m_visibleRectLeftBottom = VisibleRect::leftBottom();
     m_visibleRectRightTop = VisibleRect::rightTop();
     
-    RepeatingSprite* bg = new RepeatingSprite(
+    
+    RepeatingSprite* bg = RepeatingSprite::create(
       m_gameContext
       , m_gameContext->getImageMap()->getTile("background")
       , HORIZONTAL
@@ -76,6 +77,7 @@ void OptionsScene::onEnter()
       , m_gameContext->getIsSoundOn() ? OFF : ON
       , size
       , m_gameContext, callfuncO_selector(OptionsScene::onSoundToggleOffChanged), this);
+    this->m_soundToggleButtonOff->autorelease();
     this->m_soundToggleButtonOff->setPosition(m_textIndentRight - size.width/2, posY);
     this->addChild(this->m_soundToggleButtonOff);
 
@@ -85,6 +87,7 @@ void OptionsScene::onEnter()
       , m_gameContext->getIsSoundOn() ? ON : OFF
       , size
       , m_gameContext, callfuncO_selector(OptionsScene::onSoundToggleOnChanged), this);
+    this->m_soundToggleButtonOn->autorelease();
     this->m_soundToggleButtonOn->setPosition(this->m_soundToggleButtonOff->getPositionX() - padding*2 - size.width, posY);
     this->addChild(this->m_soundToggleButtonOn);
     
@@ -99,6 +102,7 @@ void OptionsScene::onEnter()
       , m_gameContext->getIsVibrateOn() ? OFF : ON
       , size
       , m_gameContext, callfuncO_selector(OptionsScene::onVibrateToggleOffChanged), this);
+    this->m_vibrateToggleButtonOff->autorelease();
     this->m_vibrateToggleButtonOff->setPosition(m_textIndentRight - size.width/2, posY);
     this->addChild(this->m_vibrateToggleButtonOff);
 
@@ -108,6 +112,7 @@ void OptionsScene::onEnter()
       , m_gameContext->getIsVibrateOn() ? ON : OFF
       , size
       , m_gameContext, callfuncO_selector(OptionsScene::onVibrateToggleOnChanged), this);
+    this->m_vibrateToggleButtonOn->autorelease();
     this->m_vibrateToggleButtonOn->setPosition(this->m_vibrateToggleButtonOff->getPositionX() - padding*2 - size.width, posY);
     this->addChild(this->m_vibrateToggleButtonOn);
     

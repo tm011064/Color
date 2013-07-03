@@ -36,7 +36,7 @@ public:
   }
   ~TopBar()
   {
-
+    this->m_gameContext = NULL;
   }
   
   CCRect getBoundingBox() { return CCRectMake(m_borderOrigin.x, m_borderOrigin.y, m_rectDestination.x - m_borderOrigin.x, m_rectDestination.y - m_borderOrigin.y); }

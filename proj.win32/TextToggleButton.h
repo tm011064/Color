@@ -60,7 +60,11 @@ public:
     , ccColor4F backgroundColorOff, ccColor3B textColorOn, ccColor3B textColorOff
     , std::string text, ToggleState toggleState, CCSize size
     , GameContext* gameContext, SEL_CallFuncO m_fnpToggleChangedDelegate, CCNode *pTarget);
-  ~TextToggleButton() { }
+  ~TextToggleButton() 
+  { 
+    this->m_gameContext = NULL;
+    this->m_pTarget = NULL;
+  }
   
   void setEnabled(bool isEnabled) { this->m_isEnabled = isEnabled; }
 

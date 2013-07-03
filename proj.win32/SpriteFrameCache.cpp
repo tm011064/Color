@@ -8,14 +8,13 @@ SpriteFrameCache::SpriteFrameCache(void)
 
 SpriteFrameCache::~SpriteFrameCache(void)
 {
-  // TODO (roman): memory management!!!
-  // this all seems to be covered by autorelease, but double check
+  m_cache = NULL;
 }
 
 void SpriteFrameCache::init()
 {
   this->m_cache = CCSpriteFrameCache::sharedSpriteFrameCache();
-  this->m_spriteFrameLookup = CCDictionary::create();
+  this->m_spriteFrameLookup = CCDictionary::create(); // this will be auto released
 }
 
 CCArray* SpriteFrameCache::getSpriteFramesForKey(std::string pList, std::string textureFileName)

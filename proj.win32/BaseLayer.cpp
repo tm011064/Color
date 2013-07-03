@@ -10,7 +10,7 @@ BaseLayer::BaseLayer(CCObject* callbackTarget, SEL_CallFunc backKeyCallback)
 }
 BaseLayer::~BaseLayer()
 {
-
+  this->m_callbackTarget = NULL;
 }
 
 bool BaseLayer::init() 

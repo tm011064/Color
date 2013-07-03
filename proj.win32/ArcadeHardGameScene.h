@@ -8,7 +8,10 @@ class ArcadeHardGameScene : public ArcadeGameScene
 public:
 
   ArcadeHardGameScene(GameContext* gameContext);
-  ~ArcadeHardGameScene(){}
+  ~ArcadeHardGameScene()
+  {
+    this->m_gameContext = NULL;
+  }  
   
 protected:  
   virtual void onLoadLayout();

@@ -2,11 +2,6 @@
 
 using namespace cocos2d;
 
-MenuScene::~MenuScene()
-{
-
-}
-
 void MenuScene::onEnter()
 {
   CCScene::onEnter();
@@ -20,7 +15,8 @@ void MenuScene::onEnter()
     CCPoint rightTop = VisibleRect::rightTop();
     CCRect visibleRect = VisibleRect::getVisibleRect();
     
-    RepeatingSprite* bg = new RepeatingSprite(
+    
+    RepeatingSprite* bg = RepeatingSprite::create(
       m_gameContext
       , m_gameContext->getImageMap()->getTile("background")
       , HORIZONTAL
@@ -48,6 +44,7 @@ void MenuScene::onEnter()
       , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "STORY MODE", m_gameContext, menu_selector(MenuScene::showStoryModeMenu), this);
+    m_homeStoryMode->autorelease();
     m_homeStoryMode->setPosition(center.x, posY);
     this->addChild(m_homeStoryMode);
     size = this->m_homeStoryMode->getContentSize();
@@ -64,6 +61,7 @@ void MenuScene::onEnter()
       , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "ARCADE", m_gameContext, menu_selector(MenuScene::showArcadeMenu), this);
+    m_homeArcade->autorelease();
     m_homeArcade->setPosition(center.x, posY);
     this->addChild(m_homeArcade);
     
@@ -74,6 +72,7 @@ void MenuScene::onEnter()
       , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "HIGHSCORE", m_gameContext, menu_selector(MenuScene::showHighscore), this);
+    m_homeHighscore->autorelease();
     m_homeHighscore->setPosition(center.x, posY);
     this->addChild(m_homeHighscore);
     
@@ -84,6 +83,7 @@ void MenuScene::onEnter()
       , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "OPTIONS", m_gameContext, menu_selector(MenuScene::showOptions), this);
+    m_homeOptions->autorelease();
     m_homeOptions->setPosition(center.x, posY);
     this->addChild(m_homeOptions);
 
@@ -97,6 +97,7 @@ void MenuScene::onEnter()
       , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "EASY", m_gameContext, menu_selector(MenuScene::startArcadeEasyGameCallback), this);
+    m_arcadeEasy->autorelease();
     m_arcadeEasy->setPosition(center.x + visibleRect.size.width, posY);
     this->addChild(m_arcadeEasy);
 
@@ -107,6 +108,7 @@ void MenuScene::onEnter()
       , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "NORMAL", m_gameContext, menu_selector(MenuScene::startArcadeNormalGameCallback), this);
+    m_arcadeNormal->autorelease();
     m_arcadeNormal->setPosition(center.x + visibleRect.size.width, posY);
     this->addChild(m_arcadeNormal);
 
@@ -117,6 +119,7 @@ void MenuScene::onEnter()
       , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
       , "HARD", m_gameContext, menu_selector(MenuScene::startArcadeHardGameCallback), this);
+    m_arcadeHard->autorelease();
     m_arcadeHard->setPosition(center.x + visibleRect.size.width, posY);
     this->addChild(m_arcadeHard);    
 

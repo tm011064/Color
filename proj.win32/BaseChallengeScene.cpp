@@ -56,7 +56,8 @@ void BaseChallengeScene::onEnter()
 
     this->addChild(m_loadingScreen, 1000);        
         
-    RepeatingSprite* bg = new RepeatingSprite(
+    
+    RepeatingSprite* bg = RepeatingSprite::create(
       m_gameContext
       , m_gameContext->getImageMap()->getTile("background")
       , HORIZONTAL
@@ -96,6 +97,7 @@ void BaseChallengeScene::onEnter()
         
     /********** TOP BAR **********/
     m_topBar = new TopBar(m_gameContext);
+    m_topBar->autorelease();
     this->addChild(m_topBar);
     
     m_topBar->setLevel(1);      
@@ -111,6 +113,7 @@ void BaseChallengeScene::onEnter()
       , callfuncO_selector(BaseChallengeScene::closeCallback) 
       , this
       );
+    m_wildcardPopup->autorelease();
     m_wildcardPopup->setPosition(ccp(0, 0));    
     m_wildcardPopup->setZOrder( MODAL_ZORDER );
     
@@ -263,7 +266,7 @@ void BaseChallengeScene::onBackKeyPressed()
   }
   else
   {
-    NavigationManager::showScene(MENU_SCENE, m_gameContext, PUSH);
+    NavigationManager::showScene(MENU_SCENE, m_gameContext, NEW);
   }
 }
 

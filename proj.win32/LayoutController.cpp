@@ -158,100 +158,6 @@ CCArray* LayoutController::createThreeButtons(GameContext* gameContext, DebugDra
   return buttons;
 }
 
-/*
-CCArray* LayoutController::createThreeButtons(GameContext* gameContext, DebugDraw* debugDraw, CCPoint anchor, CCNode *pTarget
-    , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate)
-{
-  CCPoint top = VisibleRect::top();
-  CCPoint right = VisibleRect::right();
-  CCPoint center = VisibleRect::center();
-  CCPoint left = VisibleRect::left();
-      
-  CCRect visibleRect = VisibleRect::getVisibleRect();
-            
-  GameButton* b3 = GameButton::createThirdButton( BUTTON_COLOR_GREEN, pTarget
-    , touchEndedDelegate
-    , preLoadDelegate
-    , blinkEndedDelegate
-    , gameContext->getSoundPath() + "button_s1.wav"
-    , gameContext);
-  GameButton* b2 = GameButton::createThirdButton( BUTTON_COLOR_RED, pTarget
-    , touchEndedDelegate
-    , preLoadDelegate
-    , blinkEndedDelegate
-    , gameContext->getSoundPath() + "button_s2.wav"
-    , gameContext);
-  GameButton* b1 = GameButton::createThirdButton( BUTTON_COLOR_YELLOW, pTarget
-    , touchEndedDelegate
-    , preLoadDelegate
-    , blinkEndedDelegate
-    , gameContext->getSoundPath() + "button_s3.wav"
-    , gameContext);
-      
-  CCSize size = b1->getContentSize();
-      
-  float availableWidth = visibleRect.size.width / 2;
-  float filledWidth = availableWidth * BUTTON_THIRD_SCALE;
-    
-#if 0
-  debugDraw->appendLine(ccp(VisibleRect::bottom().x, 0), ccp(VisibleRect::top().x, VisibleRect::top().y), 100, 100, 100);
-  debugDraw->appendLine(ccp(0, anchor.y), ccp(VisibleRect::right().x, anchor.y), 100, 100, 100);
-#endif
-
-#if 0
-  float length = 200;
-
-  float angle1 = 90.0f;
-  float angle2 = angle1 + 120.0f;
-  float angle3 = angle1 - 120.0f;
-    
-  debugDraw->appendLine(ccp(anchor.x, anchor.y)
-    , ccp(anchor.x + length * std::cos(CC_DEGREES_TO_RADIANS(angle1))
-        , anchor.y + length * std::sin(CC_DEGREES_TO_RADIANS(angle1))), 0, 255, 0);
-  debugDraw->appendLine(ccp(anchor.x, anchor.y)
-    , ccp(anchor.x + length * std::cos(CC_DEGREES_TO_RADIANS(angle2))
-        , anchor.y + length * std::sin(CC_DEGREES_TO_RADIANS(angle2))), 0, 255, 0);
-  debugDraw->appendLine(ccp(anchor.x, anchor.y)
-    , ccp(anchor.x + length * std::cos(CC_DEGREES_TO_RADIANS(angle3))
-        , anchor.y + length * std::sin(CC_DEGREES_TO_RADIANS(angle3))), 0, 255, 0);
-
-  debugDraw->appendCircle(anchor.x, anchor.y, visibleRect.size.width * BUTTON_THIRD_SCALE / 2, 0, 255, 0);
-  debugDraw->appendCircle(anchor.x, anchor.y, visibleRect.size.width * BUTTON_THIRD_SCALE / 2 * .25, 0, 255, 0);
-
-#endif
-
-  float buttonScale = filledWidth / size.width;
-    
-  float offsetX = (size.width * buttonScale)   * .53;
-
-  float offsetY1 = (size.height * buttonScale) * .21;
-  float offsetY2 = (size.width * buttonScale)  * .63;
-    
-  CCPoint buttonAnchor = ccp(.5026281,.52); // TODO (Roman): magic number
-    
-  b1->setAnchorPoint(buttonAnchor);
-  b2->setAnchorPoint(buttonAnchor);
-  b3->setAnchorPoint(buttonAnchor);
-
-  b1->setPosition(ccp(anchor.x - offsetX, anchor.y + offsetY1));
-  b2->setPosition(ccp(anchor.x, anchor.y - offsetY2)); 
-  b3->setPosition(ccp(anchor.x + offsetX, anchor.y + offsetY1));
-            
-  b2->setRotation(240);
-  b3->setRotation(120);
-      
-  b3->setScale(buttonScale);
-  b1->setScale(buttonScale);
-  b2->setScale(buttonScale);
-        
-  CCArray* buttons = new CCArray;
-  buttons->addObject(b1);
-  buttons->addObject(b2);
-  buttons->addObject(b3);
-            
-  return buttons;
-}
-*/
 CCArray* LayoutController::createFourButtons(GameContext* gameContext, DebugDraw* debugDraw, CCPoint anchor, CCNode *pTarget
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate)
 {
@@ -310,12 +216,19 @@ CCArray* LayoutController::createFourButtons(GameContext* gameContext, DebugDraw
   b1->setScale(buttonScale);
   b2->setScale(buttonScale);
         
-  CCArray* buttons = new CCArray;
+  CCArray* buttons = CCArray::create();
+  buttons->retain();
+  
   buttons->addObject(b1);
   buttons->addObject(b2);
   buttons->addObject(b3);
   buttons->addObject(b4);
-            
+
+  b1->release();
+  b2->release();
+  b3->release();
+  b4->release();
+  
   return buttons;
 }
 

@@ -81,7 +81,7 @@ protected:
 public:
 
   ArcadeGameScene(GameContext* gameContext, SceneType sceneType, int totalButtons);
-  ~ArcadeGameScene(){}
+  ~ArcadeGameScene();
   
   virtual void onEnter();
   virtual void onExit();

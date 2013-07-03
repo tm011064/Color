@@ -9,7 +9,7 @@ ArcadeGameScene::ArcadeGameScene(GameContext* gameContext, SceneType sceneType, 
   , m_isLayoutInitialized(false) 
   , m_bIsFirstDraw(true)
   , m_buttonScale(.0f)
-  , m_buttons(0)
+  , m_buttons(NULL)
   , m_loadingScreen(0)
   , m_loadingScreenText(NULL)
   , m_lastButtonPressedTime(0)
@@ -30,18 +30,23 @@ ArcadeGameScene::ArcadeGameScene(GameContext* gameContext, SceneType sceneType, 
   m_gameScore.totalTimeElapsed = 0;
 }
 
+ArcadeGameScene::~ArcadeGameScene()
+{  
+  
+}
+
 void ArcadeGameScene::onExit()
 {
-  // TODO (Roman): is that correct???
   if(this->m_isLayoutInitialized)
-  {
-    CC_SAFE_FREE(m_buttons);    
+  {   
     CC_SAFE_DELETE(m_lastButtonPressedTime);
     CC_SAFE_DELETE(m_lastLevelStartTime); 
         
     m_lastButtonPressed = NULL;    
     m_nextSequenceButton = NULL;    
   }
+
+  CCScene::onExit();
 }
 
 void ArcadeGameScene::onEnter()
@@ -62,7 +67,8 @@ void ArcadeGameScene::onEnter()
     m_loadingScreenText = CCLabelBMFont::create("LOADING", m_gameContext->getFontLargePath().c_str());
     m_loadingScreenText->setPosition(center);
     this->addChild(m_loadingScreenText, 1001);
-    m_loadingScreen = new RepeatingSprite(
+    
+    m_loadingScreen = RepeatingSprite::create(
       m_gameContext
       , m_gameContext->getImageMap()->getTile("background")
       , HORIZONTAL
@@ -71,7 +77,8 @@ void ArcadeGameScene::onEnter()
     m_loadingScreen->setPosition(center);
     this->addChild(m_loadingScreen, 1000);
     
-    RepeatingSprite* bg = new RepeatingSprite(
+    
+    RepeatingSprite* bg = RepeatingSprite::create(
       m_gameContext
       , m_gameContext->getImageMap()->getTile("background")
       , HORIZONTAL
@@ -83,6 +90,7 @@ void ArcadeGameScene::onEnter()
         
     /********** TOP BAR **********/
     m_topBar = new TopBar(m_gameContext);
+    m_topBar->autorelease();
     this->addChild(m_topBar);
 
     m_topBar->setLevel(1);      
@@ -116,16 +124,6 @@ void ArcadeGameScene::onEnter()
       , 0
       , 0
       , TOUCH_PRIORITY_NORMAL);
-    /*
-    m_consoleButton = ImageButton::create(this
-      , callfuncO_selector( ArcadeGameScene::consoleButtonTouchEndedCallback )
-      , NULL
-      , m_gameContext
-      , "coin_large"
-      , false
-      , TOUCH_PRIORITY_NORMAL);
-    m_consoleButton->setScale(consoleBackgroundScale);
-      */
 
     CCRect topBarBoundingBox = m_topBar->getBoundingBox();
     CCSize consoleSize = m_consoleBackground->getContentSize();
@@ -159,6 +157,7 @@ void ArcadeGameScene::onEnter()
       , callfuncO_selector(ArcadeGameScene::closeCallback) 
       , this
       );
+    m_wildcardPopup->autorelease();
     m_wildcardPopup->setPosition(ccp(0, 0));    
     m_wildcardPopup->setZOrder( MODAL_ZORDER );
     
@@ -203,6 +202,7 @@ void ArcadeGameScene::runSequenceAnimation(bool doAddButton, int startIndex, int
       button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
     }
     m_buttonSequence.push_back(button);
+    button = NULL;
   }
 
   m_buttonSequenceIndex = startIndex;
@@ -226,12 +226,13 @@ void ArcadeGameScene::update(float delta)
   GameButton* button = m_buttonSequence.at(m_buttonSequenceIndex);
   
   button->playAnimation(BLINK);
+  button = NULL;
   m_buttonSequenceIndex++;
 
   if (m_buttonSequenceIndex >= this->m_lastEndIndex)
   {
     this->unschedule(schedule_selector(ArcadeGameScene::update));
-  }  
+  }
 }
 
 void ArcadeGameScene::buttonBlinkCallback(CCObject* pSender)
@@ -537,7 +538,7 @@ void ArcadeGameScene::onBackKeyPressed()
   }
   else
   {
-    NavigationManager::showScene(MENU_SCENE, m_gameContext, PUSH);
+    NavigationManager::showScene(MENU_SCENE, m_gameContext, NEW);
   }
 }
 

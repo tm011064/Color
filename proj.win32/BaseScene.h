@@ -32,7 +32,10 @@ public:
 #endif
   }
 
-  ~BaseScene(){}
+  ~BaseScene()
+  {
+    this->m_gameContext = NULL;
+  }
 
   virtual void onBackKeyPressed() { }
   SceneState getSceneState() { return this->m_sceneState; } 

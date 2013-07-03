@@ -23,12 +23,10 @@ BaseSprite::BaseSprite(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate, SEL_Ca
 , m_animationFrames(NULL)
 { }
 
-BaseSprite::~BaseSprite()
+BaseSprite::~BaseSprite() 
 {
-  // TODO (Roman): is that correct?
   m_currentAnimationDefinition = NULL;
-  //m_animationFrames = NULL;
-  CC_SAFE_DELETE(m_animationFrames);
+  m_animationFrames = NULL; // only set to NULL, the underlying object will be deleted elsewhere
   if (m_alphaMap)
   {
     for (unsigned int i = 0; i < m_alphaMapCols; i++)
@@ -36,6 +34,13 @@ BaseSprite::~BaseSprite()
 
     free((void *)m_alphaMap);
   }
+}
+
+void BaseSprite::onExit()
+{
+  CCDirector* pDirector = CCDirector::sharedDirector();
+  pDirector->getTouchDispatcher()->removeDelegate(this);
+  CCSprite::onExit();
 }
 
 void BaseSprite::setAnimationFrames(std::vector<CCSpriteFrame*>* frames)
@@ -282,18 +287,10 @@ void BaseSprite::onEnter()
     this->addChild(m_debugDraw, 1000); 
   }
 #endif
-
   CCDirector* pDirector = CCDirector::sharedDirector();
   pDirector->getTouchDispatcher()->addTargetedDelegate(this, this->m_touchPriority, true);
   CCSprite::onEnter();
 }
-
-void BaseSprite::onExit()
-{
-  CCDirector* pDirector = CCDirector::sharedDirector();
-  pDirector->getTouchDispatcher()->removeDelegate(this);
-  CCSprite::onExit();
-}    
 
 Circle BaseSprite::getVisibleBoundingCircle()
 {

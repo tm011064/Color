@@ -21,8 +21,7 @@ AppDelegate::AppDelegate()
 
 AppDelegate::~AppDelegate()
 {
-  if (m_gameContext)
-    CC_SAFE_DELETE(m_gameContext);
+  CC_SAFE_DELETE(m_gameContext);
 
   SimpleAudioEngine::end();
 }

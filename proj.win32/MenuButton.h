@@ -60,7 +60,8 @@ public:
     , GameContext* gameContext, SEL_CallFuncO fnpTouchEndedDelegate, CCNode *pTarget);
   ~MenuButton()
   {
-
+    this->m_gameContext = NULL;
+    this->m_pTarget = NULL;
   }
   
   void setEnabled(bool isEnabled) { this->m_isEnabled = isEnabled; }

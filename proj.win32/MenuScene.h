@@ -57,7 +57,7 @@ public:
   {
 
   }
-  ~MenuScene();   
+  ~MenuScene(){}
 
   virtual void onEnter();
   virtual void onBackKeyPressed();

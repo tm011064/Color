@@ -2,17 +2,16 @@
 
 BaseTileMap::BaseTileMap()
 {
-  m_tiles = new CCArray;
+
 }
 BaseTileMap::BaseTileMap(const char *pList, const char *textureFileName)
-{  
-  m_tiles = new CCArray;  
+{   
   this->RegisterTextureFileName(pList, textureFileName);
 }
 
 BaseTileMap::~BaseTileMap(void)
 {
-  CC_SAFE_DELETE(m_tiles);
+
 }
 
 std::vector<std::string> BaseTileMap::split(std::string text, char delim, int rep) 
@@ -115,8 +114,6 @@ void BaseTileMap::RegisterTextureFileName(const char *pList, const char *texture
         }
 
       }
-
-      m_tiles->addObject(frame);
   }
 }
 

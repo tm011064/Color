@@ -17,7 +17,10 @@ private:
   GameContext* m_gameContext;
 
 public:
-  ~ImageButton() { }
+  ~ImageButton() 
+  { 
+    this->m_gameContext = NULL;
+  }
 
   static ImageButton* create(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate
     , SEL_CallFuncO preLoadDelegate, GameContext* gameContext
@@ -28,11 +31,6 @@ public:
     , int releasingFrames[], int totalReleasingFrames
     , int pressedFrame
     , int disabledFrame
-    , int touchPriority);  
-  static ImageButton* create(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate
-    , SEL_CallFuncO preLoadDelegate, GameContext* gameContext
-    , std::string spriteFrameName
-    , bool hasAlphaMap
     , int touchPriority);
 
   ButtonState getButtonState() { return this->m_buttonState; }

@@ -70,7 +70,11 @@ public:
     , m_moreCoinsTextButton(NULL)
     , m_activeWildcardPopupPanel(WILDCARD_BUTTONS)
   { }
-  ~WildcardPopup() { }
+  ~WildcardPopup() 
+  { 
+    this->m_gameContext = NULL;
+    this->m_pTarget = NULL;
+  }
   
   void refresh();
   virtual void onEnter();

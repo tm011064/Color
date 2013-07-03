@@ -33,8 +33,9 @@ GameButton* GameButton::createQuarterButton(const ccColor3B& color, CCNode *pTar
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate, std::string soundPath, GameContext* gameContext)
 {
   GameButton* gameButton = new GameButton(pTarget, touchEndedDelegate, preLoadDelegate, gameContext, soundPath);
+  
   gameButton->init();    // Must call init for latest version cocos2d-x
-
+  gameButton->autorelease();
   pTarget->addChild(gameButton);
   
   gameButton->setAnimationFrames(gameContext->getImageMap()->getTiles("gamebuttons"));

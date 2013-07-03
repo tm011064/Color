@@ -44,7 +44,11 @@ public:
     , m_size(size)
     , m_isLayoutInitialized(false)
   { }
-  ~WildcardPopupButtonPanel() { }
+  ~WildcardPopupButtonPanel() 
+  { 
+    this->m_gameContext = NULL;
+    this->m_pTarget = NULL;
+  }
   
   virtual void onEnter();
 };

@@ -33,6 +33,13 @@ private:
   CCSize m_boundingBox;
 
 public:  
+  static RepeatingSprite* create(GameContext* gameContext, CCSpriteFrame* spriteFrame, REPEAT_DIRECTION direction, REPEAT_MODE mode
+    , CCSize boundingBox);
+  ~RepeatingSprite();
+
+  virtual void onEnter();
+protected:
+  
   RepeatingSprite(GameContext* gameContext, CCSpriteFrame* spriteFrame, REPEAT_DIRECTION direction, REPEAT_MODE mode
     , CCSize boundingBox)
     : m_gameContext(gameContext)
@@ -42,12 +49,6 @@ public:
     , m_mode(mode)
     , m_boundingBox(boundingBox)
   { }
-  ~RepeatingSprite() 
-  {
-    this->m_spriteFrame = NULL;
-  }
-
-  virtual void onEnter();
 };
 
 #endif  // __REPEATINGSPRITE_H__

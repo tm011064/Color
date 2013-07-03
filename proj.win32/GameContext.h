@@ -29,9 +29,7 @@ private:
   int m_highscoreNormal;
   int m_highscoreHard;
 
-  BaseTileMap* m_imageMap;
-  BaseTileMap* m_buttonMap;
-  
+  BaseTileMap* m_imageMap;  
   SpriteFrameCache* m_spriteFrameCache;
 
   GameScore m_currentGameScore;

@@ -65,7 +65,10 @@ protected:
 public:
 
   BaseChallengeScene(GameContext* gameContext, int challengeIndex, ChallengeSceneType challengeSceneType, int totalButtons);
-  ~BaseChallengeScene(){}
+  ~BaseChallengeScene()
+  {
+    // TODO (Roman): memory management...
+  }
   
   virtual void onExit();
   virtual void onEnter();

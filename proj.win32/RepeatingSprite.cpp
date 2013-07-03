@@ -1,5 +1,19 @@
 #include "RepeatingSprite.h"
 
+RepeatingSprite* RepeatingSprite::create(GameContext* gameContext, CCSpriteFrame* spriteFrame, REPEAT_DIRECTION direction, REPEAT_MODE mode
+  , CCSize boundingBox)
+{
+  RepeatingSprite* repeatingSprite = new RepeatingSprite(gameContext, spriteFrame, direction, mode, boundingBox);
+  repeatingSprite->autorelease();
+  return repeatingSprite;
+}
+
+RepeatingSprite::~RepeatingSprite() 
+{
+  this->m_spriteFrame = NULL;
+  this->m_gameContext = NULL;
+}
+
 void RepeatingSprite::onEnter()
 {
   CCNode::onEnter();

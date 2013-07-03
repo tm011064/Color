@@ -4,38 +4,6 @@
 #include "NavigationManager.h"
 
 ImageButton* ImageButton::create(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate
-    , SEL_CallFuncO preLoadDelegate, GameContext* gameContext
-    , std::string spriteFrameName
-    , bool hasAlphaMap
-    , int touchPriority)
-{
-  ImageButton* imageButton = new ImageButton(pTarget, touchEndedDelegate, preLoadDelegate, gameContext);
-
-  imageButton->setTouchPriority(touchPriority);
-  imageButton->init();    // Must call init for latest version cocos2d-x
-  
-  pTarget->addChild(imageButton);
-
-  std::vector<CCSpriteFrame*>* frames = new std::vector<CCSpriteFrame*>();
-  frames->push_back(gameContext->getImageMap()->getTile(spriteFrameName));
-  imageButton->setAnimationFrames(frames);
-
-  if (hasAlphaMap)
-    imageButton->setAlphaMapStillFrameIndex(0);
-
-  int pressingFrames[] = { 0 };
-  imageButton->registerStillFrame(IDLE, 0, 0, false);    
-  imageButton->registerAnimation(PRESSING, pressingFrames, 1, 1, 0, 30, false, false);  
-  imageButton->registerAnimation(RELEASING, pressingFrames, 1, 1, 0, 30, false, false);  
-  imageButton->registerStillFrame(PRESSED, 0, 0, false);
-  imageButton->registerStillFrame(DISABLED, 0, 0, false);
-
-  imageButton->playAnimation(IDLE);
-    
-  return imageButton;
-}
-
-ImageButton* ImageButton::create(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate
   , SEL_CallFuncO preLoadDelegate, GameContext* gameContext
   , std::string animationGroupName
   , int alphaMapStillFrameIndex // set to -1 if no alpha map is needed
@@ -51,7 +19,8 @@ ImageButton* ImageButton::create(CCNode *pTarget, SEL_CallFuncO touchEndedDelega
 
   imageButton->setTouchPriority(touchPriority);
   imageButton->init();    // Must call init for latest version cocos2d-x
-  
+  imageButton->autorelease();
+
   pTarget->addChild(imageButton);
   
   imageButton->setAnimationFrames(gameContext->getImageMap()->getTiles(animationGroupName)); 

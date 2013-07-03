@@ -16,7 +16,8 @@ void HighscoreScene::onEnter()
     m_visibleRectLeftBottom = VisibleRect::leftBottom();
     m_visibleRectRightTop = VisibleRect::rightTop();
     
-    RepeatingSprite* bg = new RepeatingSprite(
+    
+    RepeatingSprite* bg = RepeatingSprite::create(
       m_gameContext
       , m_gameContext->getImageMap()->getTile("background")
       , HORIZONTAL

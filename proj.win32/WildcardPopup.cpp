@@ -56,6 +56,7 @@ void WildcardPopup::onEnter()
       , callfuncO_selector(WildcardPopup::replayFromCurrentCallback)
       , callfuncO_selector(WildcardPopup::moreCoinsCallback)
       , this);
+    this->m_wildcardPopupButtonPanel->autorelease();
     this->addChild(this->m_wildcardPopupButtonPanel);
     this->m_wildcardPopupButtonPanel->hide();
 
@@ -64,6 +65,7 @@ void WildcardPopup::onEnter()
       , CCSizeMake( this->m_textIndentRight - this->m_textIndentLeft, 0 )
       , callfuncO_selector(WildcardPopup::wildcardPanelCallback)
       , this);
+    this->m_wildcardPopupBuyCoinsPanel->autorelease();
     this->addChild(this->m_wildcardPopupBuyCoinsPanel);
     this->m_wildcardPopupBuyCoinsPanel->hide();
 

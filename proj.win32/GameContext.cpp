@@ -2,14 +2,12 @@
 
 GameContext::GameContext()
   : m_imageMap(NULL)
-  , m_buttonMap(NULL)
 {
 }
 
 GameContext::~GameContext()
 {
   CC_SAFE_DELETE(m_imageMap);
-  CC_SAFE_DELETE(m_buttonMap);
   CC_SAFE_DELETE(this->m_spriteFrameCache);
 }
 
