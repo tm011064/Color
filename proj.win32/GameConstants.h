@@ -58,8 +58,6 @@ static ResourceDefinition SIZE_720x960    =  { cocos2d::CCSizeMake(720, 960),   
 static ResourceDefinition SIZE_960x1280   =  { cocos2d::CCSizeMake(960, 1280),  "s960x1280"   };
 static ResourceDefinition SIZE_1536x2048  =  { cocos2d::CCSizeMake(1536, 2048), "s1536x2048"   };
 
-static const char* FONT_MENU_LARGE = "RussoOneLarge.fnt";
-static const char* FONT_MENU_NORMAL = "RussoOneNormal.fnt";
 /*
 static const char* FONT_MENU_LARGE = "SquareFontLarge.fnt";
 static const char* FONT_MENU_NORMAL = "SquareFont.fnt";

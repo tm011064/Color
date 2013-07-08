@@ -11,7 +11,7 @@ private:
  
   bool m_isLayoutInitialized;
     
-  GameContext* m_gameContext; 
+  GameContext* m_pGameContext; 
   SEL_CallFuncO m_fnpCloseCallbackDelegate;  
   CCNode *m_pTarget;
   CCLabelBMFont* m_text;
@@ -22,7 +22,7 @@ public:
   DescriptionPopup(GameContext* gameContext
     , SEL_CallFuncO closeCallbackDelegate
     , CCNode* callbackTarget)
-    : m_gameContext(gameContext)
+    : m_pGameContext(gameContext)
     , m_isLayoutInitialized(false)
     , m_fnpCloseCallbackDelegate(closeCallbackDelegate)
     , m_pTarget(callbackTarget)

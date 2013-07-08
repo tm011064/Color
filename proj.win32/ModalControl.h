@@ -36,7 +36,10 @@ public:
   ModalControl() 
   : m_isLayoutInitialized(false)
   { }
-  ~ModalControl() { }
+  ~ModalControl() 
+  { 
+  
+  }
   
   virtual void onEnter();
   virtual void onExit();

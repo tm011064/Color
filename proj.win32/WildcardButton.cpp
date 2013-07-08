@@ -4,34 +4,21 @@
 #include "Types.h"
 #include <cstring> 
 
- WildcardButton::WildcardButton(ccColor4F borderColorOn, ccColor4F borderColorOff
+ WildcardButton* WildcardButton::create(ccColor4F borderColorOn, ccColor4F borderColorOff
     , ccColor4F backgroundColorOn, ccColor4F backgroundColorOff
     , ccColor4F coinBackgroundColorOn, ccColor4F coinBackgroundColorOff
     , ccColor3B textColorOn, ccColor3B textColorOff
     , std::string text, std::string totalCoinsText, CCSize size, float borderWidth
     , GameContext* gameContext, SEL_CallFuncO fnpChangedDelegate, CCNode *pTarget)
-  : m_buttonState(UNGRABBED)
-  , m_gameContext(gameContext)
-  , m_fnpChangedDelegate(fnpChangedDelegate)
-  , m_isEnabled(true)
-  , m_pTarget(pTarget)
-  , m_isLayoutInitialized(false)
-  , m_borderColorOn(borderColorOn)
-  , m_borderColorOff(borderColorOff)
-  , m_backgroundColorOn(backgroundColorOn)
-  , m_backgroundColorOff(backgroundColorOff)
-  , m_textColorOn(textColorOn)
-  , m_textColorOff(textColorOff)
-  , m_text(text)
-  , m_totalCoinsText(totalCoinsText)
-  , m_size(size)
-  , m_borderWidth(borderWidth)
-  , m_coinBackgroundColorOn(coinBackgroundColorOn)
-  , m_coinBackgroundColorOff(coinBackgroundColorOff)
-  , m_totalCoinsLabel(NULL)
-  , m_textLabel(NULL)
  {
-
+   WildcardButton* wildcardButton = new WildcardButton(borderColorOn, borderColorOff
+    , backgroundColorOn, backgroundColorOff
+    , coinBackgroundColorOn, coinBackgroundColorOff
+    , textColorOn, textColorOff
+    , text, totalCoinsText, size, borderWidth
+    , gameContext, fnpChangedDelegate, pTarget);
+   wildcardButton->autorelease();
+   return wildcardButton;
  }
 
 bool WildcardButton::containsTouchLocation(CCTouch* touch)
@@ -68,18 +55,19 @@ void WildcardButton::onEnter()
   
     this->m_coinBackgroundOrigin.setPoint(round(this->m_coinBorderDestination.x + this->m_borderWidth), round(m_backgroundOrigin.y));
     
-    m_textLabel = CCLabelBMFont::create(m_text.c_str(), m_gameContext->getFontNormalPath().c_str());
-    m_textLabel->setPosition(-m_size.width/2 + m_gameContext->getDefaultPadding()*4 
+    m_textLabel = CCLabelBMFont::create(m_text.c_str(), m_pGameContext->getFontNormalPath().c_str());
+    m_textLabel->setPosition(-m_size.width/2 + m_pGameContext->getDefaultPadding()*4 
                                              + m_textLabel->getContentSize().width/2, 0);
     this->addChild(m_textLabel);
 
-    m_totalCoinsLabel = CCLabelBMFont::create(m_totalCoinsText.c_str(), m_gameContext->getFontNormalPath().c_str());
-    m_totalCoinsLabel->setPosition(ccpRounded(m_size.width/2 - m_gameContext->getDefaultPadding()*4
+    m_totalCoinsLabel = CCLabelBMFont::create(m_totalCoinsText.c_str(), m_pGameContext->getFontNormalPath().c_str());
+    m_totalCoinsLabel->setPosition(ccpRounded(m_size.width/2 - m_pGameContext->getDefaultPadding()*4
                                                              - m_totalCoinsLabel->getContentSize().width/2, 0));
     this->addChild(m_totalCoinsLabel);
         
-    CCSprite* coin = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("coin_small"));
-    coin->setPosition(ccpRounded(m_coinBorderDestination.x + m_gameContext->getDefaultPadding()*4 + coin->getContentSize().width/2, 0));
+    CCSprite* coin = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("coin_small"));
+    coin->setScale(this->m_pGameContext->getFontHeightNormal() / coin->getContentSize().height * 1.5);
+    coin->setPosition(ccpRounded(m_coinBorderDestination.x + m_pGameContext->getDefaultPadding()*4 + coin->getContentSize().width/2, 0));
     this->addChild(coin);
     
     this->setButtonState(UNGRABBED);

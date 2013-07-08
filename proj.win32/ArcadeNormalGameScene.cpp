@@ -15,13 +15,18 @@ ArcadeNormalGameScene::ArcadeNormalGameScene(GameContext* gameContext)
 }
 void ArcadeNormalGameScene::onLoadLayout()
 {  
-  this->m_buttons = LayoutController::createThreeButtons(this->m_gameContext, this->m_debugDraw, this->m_anchor, this
+  this->m_buttons = LayoutController::createThreeButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
     , callfuncO_selector( ArcadeNormalGameScene::buttonTouchEndedCallback )
     , callfuncO_selector( ArcadeNormalGameScene::buttonLoadedCallback )
-    , callfuncO_selector( ArcadeNormalGameScene::buttonBlinkCallback ));         
+    , callfuncO_selector( ArcadeNormalGameScene::buttonBlinkCallback ));   
+  CCObject* o;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    this->addChild((GameButton*)o);
+  }      
 }
 void ArcadeNormalGameScene::onGameOver()
 {  
-  if ((int)m_gameScore.totalPoints > m_gameContext->getHighscoreNormal())
-    m_gameContext->setHighscoreNormal((int)m_gameScore.totalPoints);
+  if ((int)m_gameScore.totalPoints > m_pGameContext->getHighscoreNormal())
+    m_pGameContext->setHighscoreNormal((int)m_gameScore.totalPoints);
 }

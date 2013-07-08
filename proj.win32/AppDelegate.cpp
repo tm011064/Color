@@ -9,19 +9,20 @@
 #include "GameContext.h"
 #include "NavigationManager.h"
 #include <cstring> 
+#include <sstream>
 
 using namespace CocosDenshion;
 
 USING_NS_CC;
 
 AppDelegate::AppDelegate()
-  :m_gameContext(NULL)
+  :m_pGameContext(NULL)
 {
 }
 
 AppDelegate::~AppDelegate()
 {
-  CC_SAFE_DELETE(m_gameContext);
+  CC_SAFE_DELETE(m_pGameContext);
 
   SimpleAudioEngine::end();
 }
@@ -37,37 +38,33 @@ bool AppDelegate::applicationDidFinishLaunching()
   GameContext* gameContext = new GameContext();
   gameContext->init(27);
   
-  gameContext->setResolutionPolicy(kResolutionNoBorder); // kResolutionShowAll
+  gameContext->setResolutionPolicy(kResolutionNoBorder); // kResolutionShowAll // kResolutionExactFit // kResolutionNoBorder
   gameContext->setOriginalSize(pEGLView->getDesignResolutionSize());
     
   CCSize frameSize = pEGLView->getFrameSize();
-    
-  if (frameSize.width > SIZE_960x1280.size.width)
-  { 
-    gameContext->setResourceDefinition( SIZE_1536x2048 );
-    pEGLView->setDesignResolutionSize(SIZE_1536x2048.size.width, SIZE_1536x2048.size.height, gameContext->getResolutionPolicy());
-  }
-  if (frameSize.width > SIZE_720x960.size.width)
+  
+  gameContext->setResourceDefinition( SIZE_1536x2048 );
+  if (frameSize.width <= SIZE_960x1280.size.width
+    && frameSize.height <= SIZE_960x1280.size.height)
   { 
     gameContext->setResourceDefinition( SIZE_960x1280 );
-    pEGLView->setDesignResolutionSize(SIZE_960x1280.size.width, SIZE_960x1280.size.height, gameContext->getResolutionPolicy());
   }
-  else if (frameSize.width > SIZE_360x480.size.width)
+  if (frameSize.width <= SIZE_720x960.size.width
+    && frameSize.height <= SIZE_720x960.size.height) 
   { 
     gameContext->setResourceDefinition( SIZE_720x960 );
-    pEGLView->setDesignResolutionSize(SIZE_720x960.size.width, SIZE_720x960.size.height, gameContext->getResolutionPolicy());
   }
-  else if (frameSize.width > SIZE_240x320.size.width)
+  if (frameSize.width <= SIZE_360x480.size.width
+    && frameSize.height <= SIZE_360x480.size.height)
   { 
     gameContext->setResourceDefinition( SIZE_360x480 );
-    pEGLView->setDesignResolutionSize(SIZE_360x480.size.width, SIZE_360x480.size.height, gameContext->getResolutionPolicy());
   }
-  else
+  if (frameSize.width <= SIZE_240x320.size.width
+    && frameSize.height <= SIZE_240x320.size.height)
   { 
     gameContext->setResourceDefinition( SIZE_240x320 );
-    pEGLView->setDesignResolutionSize(SIZE_240x320.size.width, SIZE_240x320.size.height, gameContext->getResolutionPolicy());
   }
-    
+
   std::vector<std::string> searchPaths;
   searchPaths.push_back(gameContext->getResourceDefinition().directory);
   CCFileUtils::sharedFileUtils()->setSearchPaths(searchPaths);
@@ -110,11 +107,53 @@ bool AppDelegate::applicationDidFinishLaunching()
   }
   // TODO (Roman): get sound files as well??
   CC_SAFE_DELETE(baseFileUtils);
+  
+  // Fonts
+  baseFileUtils = new BaseFileUtils(); 
+  baseFileUtils->loadFilenameLookupDictionaryFromFile(
+    CCFileUtils::sharedFileUtils()->fullPathForFilename("fontResourceLookup.plist").c_str());
+  mapFiles = baseFileUtils->getNumberedKeys("fs_");
+  std::vector<int> fontSizes;
+  for(it=mapFiles.begin();it!=mapFiles.end();++it)
+  {
+    // this will be fs_18, fs_20...
+    fontSizes.push_back(atoi(((it)->substr(3, (it)->length() - 3)).c_str()));
+  }
+  
+  std::vector<int>::iterator itInt;
+  int targetNormalFontSize = (int)round(frameSize.height * .0375);
+  int targetLargeFontSize = (int)round(frameSize.height * .0625);
+  int actualNormalFontSize, actualLargeFontSize, delta;
+  int closestNormalFontSizeDistance = INT_MAX;
+  int closestLargeFontSizeDistance = INT_MAX;
+  
+  for(itInt=fontSizes.begin();itInt!=fontSizes.end();++itInt)
+  {
+    delta = abs(targetNormalFontSize - *itInt);
+    if (delta < closestNormalFontSizeDistance)
+    {
+      closestNormalFontSizeDistance = delta;
+      actualNormalFontSize = *itInt;
+    }
+    delta = abs(targetLargeFontSize - *itInt);
+    if (delta < closestLargeFontSizeDistance)
+    {
+      closestLargeFontSizeDistance = delta;
+      actualLargeFontSize = *itInt;
+    }
+  }
 
-  std::string normalPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(NavigationManager::getPath(gameContext, FONT_MENU_NORMAL).c_str());
-  std::string largePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(NavigationManager::getPath(gameContext, FONT_MENU_LARGE).c_str());
+  std::ostringstream ossNormal;
+  ossNormal << "fs_" << actualNormalFontSize;
+  std::string normalPath = CCFileUtils::sharedFileUtils()->fullPathForFilename((baseFileUtils->valueForKey(ossNormal.str())).c_str());
+  
+  std::ostringstream ossLarge;
+  ossLarge << "fs_" << actualLargeFontSize;
+  std::string largePath = CCFileUtils::sharedFileUtils()->fullPathForFilename((baseFileUtils->valueForKey(ossLarge.str())).c_str());
+  
   gameContext->setFontNormalPath(normalPath);
   gameContext->setFontLargePath(largePath);
+  CC_SAFE_DELETE(baseFileUtils);
       
   // set default sizes
   CCLabelBMFont* label = CCLabelBMFont::create("Replay", normalPath.c_str());    
@@ -136,7 +175,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 
   label->release();  
 
-  this->m_gameContext = gameContext;
+  this->m_pGameContext = gameContext;
 
   NavigationManager::showScene(MENU_SCENE, gameContext, FIRST_RUN);
   

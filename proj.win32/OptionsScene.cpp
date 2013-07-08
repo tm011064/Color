@@ -18,8 +18,8 @@ void OptionsScene::onEnter()
     
     
     RepeatingSprite* bg = RepeatingSprite::create(
-      m_gameContext
-      , m_gameContext->getImageMap()->getTile("background")
+      m_pGameContext
+      , m_pGameContext->getImageMap()->getTile("background")
       , HORIZONTAL
       , NORMAL
       , visibleRect.size);
@@ -27,11 +27,11 @@ void OptionsScene::onEnter()
     this->addChild(bg, -1);
     bg = NULL;
         
-    float padding = m_gameContext->getDefaultPadding();
-    float borderThickness = m_gameContext->getDefaultBorderThickness();
+    float padding = m_pGameContext->getDefaultPadding();
+    float borderThickness = m_pGameContext->getDefaultBorderThickness();
 
-    float verticalSpacing = m_gameContext->getFontHeightNormal() + padding;
-    float verticalSpacingLarge = m_gameContext->getFontHeightLarge() + padding*3;
+    float verticalSpacing = m_pGameContext->getFontHeightNormal() + padding;
+    float verticalSpacingLarge = m_pGameContext->getFontHeightLarge() + padding*3;
             
     m_panelRectLeftTop = ccp ( 0, m_visibleRectRightTop.y * .825);
     m_panelRectLeftBottom = ccp ( 0, m_visibleRectRightTop.y * .26 );
@@ -52,11 +52,11 @@ void OptionsScene::onEnter()
         
     float posY = round( m_panelRectInnerRightTop.y + verticalSpacingLarge/2 );
 
-    CCLabelBMFont* label = CCLabelBMFont::create("OPTIONS", m_gameContext->getFontLargePath().c_str());
+    CCLabelBMFont* label = CCLabelBMFont::create("OPTIONS", m_pGameContext->getFontLargePath().c_str());
     label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY );
     this->addChild(label);
 
-    label = CCLabelBMFont::create("off", m_gameContext->getFontNormalPath().c_str());
+    label = CCLabelBMFont::create("off", m_pGameContext->getFontNormalPath().c_str());
     CCSize size = label->getContentSize();
     
     size.setSize(size.width + padding * 12, size.height + padding * 4); 
@@ -71,63 +71,59 @@ void OptionsScene::onEnter()
     
     posY = round( m_panelRectInnerRightTop.y - verticalSpacing * 2 );    
     
-    this->m_soundToggleButtonOff = new TextToggleButton(toggleColorBorder, toggleColorBorder, toggleColorBackgroundOn
+    this->m_soundToggleButtonOff = TextToggleButton::create(toggleColorBorder, toggleColorBorder, toggleColorBackgroundOn
       , toggleColorBackgroundOff, toggleColorTextOn, toggleColorTextOff
       , "off"
-      , m_gameContext->getIsSoundOn() ? OFF : ON
+      , m_pGameContext->getIsSoundOn() ? OFF : ON
       , size
-      , m_gameContext, callfuncO_selector(OptionsScene::onSoundToggleOffChanged), this);
-    this->m_soundToggleButtonOff->autorelease();
+      , m_pGameContext, callfuncO_selector(OptionsScene::onSoundToggleOffChanged), this);
     this->m_soundToggleButtonOff->setPosition(m_textIndentRight - size.width/2, posY);
     this->addChild(this->m_soundToggleButtonOff);
 
-    this->m_soundToggleButtonOn = new TextToggleButton(toggleColorBorder, toggleColorBorder, toggleColorBackgroundOn
+    this->m_soundToggleButtonOn = TextToggleButton::create(toggleColorBorder, toggleColorBorder, toggleColorBackgroundOn
       , toggleColorBackgroundOff, toggleColorTextOn, toggleColorTextOff
       , "on"
-      , m_gameContext->getIsSoundOn() ? ON : OFF
+      , m_pGameContext->getIsSoundOn() ? ON : OFF
       , size
-      , m_gameContext, callfuncO_selector(OptionsScene::onSoundToggleOnChanged), this);
-    this->m_soundToggleButtonOn->autorelease();
+      , m_pGameContext, callfuncO_selector(OptionsScene::onSoundToggleOnChanged), this);
     this->m_soundToggleButtonOn->setPosition(this->m_soundToggleButtonOff->getPositionX() - padding*2 - size.width, posY);
     this->addChild(this->m_soundToggleButtonOn);
     
-    label = CCLabelBMFont::create("Sound", m_gameContext->getFontNormalPath().c_str());
+    label = CCLabelBMFont::create("Sound", m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_soundToggleButtonOn->getPositionX() - padding*8 - size.width/2 - label->getContentSize().width/2, posY);
     this->addChild(label);
     
     posY -= verticalSpacing * 2;    
-    this->m_vibrateToggleButtonOff = new TextToggleButton(toggleColorBorder, toggleColorBorder, toggleColorBackgroundOn
+    this->m_vibrateToggleButtonOff = TextToggleButton::create(toggleColorBorder, toggleColorBorder, toggleColorBackgroundOn
       , toggleColorBackgroundOff, toggleColorTextOn, toggleColorTextOff
       , "off"
-      , m_gameContext->getIsVibrateOn() ? OFF : ON
+      , m_pGameContext->getIsVibrateOn() ? OFF : ON
       , size
-      , m_gameContext, callfuncO_selector(OptionsScene::onVibrateToggleOffChanged), this);
-    this->m_vibrateToggleButtonOff->autorelease();
+      , m_pGameContext, callfuncO_selector(OptionsScene::onVibrateToggleOffChanged), this);
     this->m_vibrateToggleButtonOff->setPosition(m_textIndentRight - size.width/2, posY);
     this->addChild(this->m_vibrateToggleButtonOff);
 
-    this->m_vibrateToggleButtonOn = new TextToggleButton(toggleColorBorder, toggleColorBorder, toggleColorBackgroundOn
+    this->m_vibrateToggleButtonOn = TextToggleButton::create(toggleColorBorder, toggleColorBorder, toggleColorBackgroundOn
       , toggleColorBackgroundOff, toggleColorTextOn, toggleColorTextOff
       , "on"
-      , m_gameContext->getIsVibrateOn() ? ON : OFF
+      , m_pGameContext->getIsVibrateOn() ? ON : OFF
       , size
-      , m_gameContext, callfuncO_selector(OptionsScene::onVibrateToggleOnChanged), this);
-    this->m_vibrateToggleButtonOn->autorelease();
+      , m_pGameContext, callfuncO_selector(OptionsScene::onVibrateToggleOnChanged), this);
     this->m_vibrateToggleButtonOn->setPosition(this->m_vibrateToggleButtonOff->getPositionX() - padding*2 - size.width, posY);
     this->addChild(this->m_vibrateToggleButtonOn);
     
-    label = CCLabelBMFont::create("Vibrate", m_gameContext->getFontNormalPath().c_str());
+    label = CCLabelBMFont::create("Vibrate", m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_vibrateToggleButtonOn->getPositionX() - padding*8 - size.width/2 - label->getContentSize().width/2, posY);
     this->addChild(label);
         
     
-    TextButton* textButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+    TextButton* textButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
       , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
       , "back"
-      , m_gameContext->getDefaultButtonSize()
+      , m_pGameContext->getDefaultButtonSize()
       , borderThickness
-      , this->m_gameContext
+      , this->m_pGameContext
       , callfuncO_selector(OptionsScene::showMenuCallback)
       , this);
     textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
@@ -167,30 +163,30 @@ void OptionsScene::draw()
 
 void OptionsScene::showMenuCallback(CCObject* pSender)
 { 
-  NavigationManager::showScene(MENU_SCENE, m_gameContext, NEW);
+  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
 }
 void OptionsScene::onBackKeyPressed()
 {
-  NavigationManager::showScene(MENU_SCENE, m_gameContext, NEW);
+  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
 }
 
 void OptionsScene::onSoundToggleOnChanged(CCObject* pSender)
 {
   this->m_soundToggleButtonOff->setToggleState(this->m_soundToggleButtonOn->getToggleState() == ON ? OFF : ON);
-  this->m_gameContext->setIsSoundOn(this->m_soundToggleButtonOn->getToggleState() == ON);
+  this->m_pGameContext->setIsSoundOn(this->m_soundToggleButtonOn->getToggleState() == ON);
 }
 void OptionsScene::onSoundToggleOffChanged(CCObject* pSender)
 {
   this->m_soundToggleButtonOn->setToggleState(this->m_soundToggleButtonOff->getToggleState() == ON ? OFF : ON);
-  this->m_gameContext->setIsSoundOn(this->m_soundToggleButtonOn->getToggleState() == ON);
+  this->m_pGameContext->setIsSoundOn(this->m_soundToggleButtonOn->getToggleState() == ON);
 }
 void OptionsScene::onVibrateToggleOnChanged(CCObject* pSender)
 {
   this->m_vibrateToggleButtonOff->setToggleState(this->m_vibrateToggleButtonOn->getToggleState() == ON ? OFF : ON);
-  this->m_gameContext->setIsVibrateOn(this->m_vibrateToggleButtonOn->getToggleState() == ON);
+  this->m_pGameContext->setIsVibrateOn(this->m_vibrateToggleButtonOn->getToggleState() == ON);
 }
 void OptionsScene::onVibrateToggleOffChanged(CCObject* pSender)
 {
   this->m_vibrateToggleButtonOn->setToggleState(this->m_vibrateToggleButtonOff->getToggleState() == ON ? OFF : ON);
-  this->m_gameContext->setIsVibrateOn(this->m_vibrateToggleButtonOn->getToggleState() == ON);
+  this->m_pGameContext->setIsVibrateOn(this->m_vibrateToggleButtonOn->getToggleState() == ON);
 }

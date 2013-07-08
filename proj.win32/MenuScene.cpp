@@ -5,6 +5,7 @@ using namespace cocos2d;
 void MenuScene::onEnter()
 {
   CCScene::onEnter();
+
         // TODO (Roman): memory management for all enter methods
   if (!this->m_isLayoutInitialized)
   {  
@@ -14,11 +15,10 @@ void MenuScene::onEnter()
     CCPoint center = VisibleRect::center();
     CCPoint rightTop = VisibleRect::rightTop();
     CCRect visibleRect = VisibleRect::getVisibleRect();
-    
-    
+        
     RepeatingSprite* bg = RepeatingSprite::create(
-      m_gameContext
-      , m_gameContext->getImageMap()->getTile("background")
+      m_pGameContext
+      , m_pGameContext->getImageMap()->getTile("background")
       , HORIZONTAL
       , NORMAL
       , visibleRect.size);
@@ -26,7 +26,7 @@ void MenuScene::onEnter()
     this->addChild(bg, 0);
     bg = NULL;
         
-    CCSprite* header = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("header"));
+    CCSprite* header = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("header"));
     CCSize size = header->getContentSize();
     header->setScale(visibleRect.size.width / size.height); 
     header->setRotation(-90);
@@ -38,13 +38,12 @@ void MenuScene::onEnter()
     float buttonWidth = visibleRect.size.width * .75;
 
     /*************** HOME ***************/
-    m_homeStoryMode = new MenuButton(
-      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+    m_homeStoryMode = MenuButton::create(
+      m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_on_left"), m_pGameContext->getImageMap()->getTile("menubutton_on_center"), m_pGameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
-      , "STORY MODE", m_gameContext, menu_selector(MenuScene::showStoryModeMenu), this);
-    m_homeStoryMode->autorelease();
+      , "STORY MODE", m_pGameContext, menu_selector(MenuScene::showStoryModeMenu), this);
     m_homeStoryMode->setPosition(center.x, posY);
     this->addChild(m_homeStoryMode);
     size = this->m_homeStoryMode->getContentSize();
@@ -55,35 +54,32 @@ void MenuScene::onEnter()
 #endif
 
     posY -= spacing;
-    m_homeArcade = new MenuButton(
-      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+    m_homeArcade = MenuButton::create(
+      m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_on_left"), m_pGameContext->getImageMap()->getTile("menubutton_on_center"), m_pGameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
-      , "ARCADE", m_gameContext, menu_selector(MenuScene::showArcadeMenu), this);
-    m_homeArcade->autorelease();
+      , "ARCADE", m_pGameContext, menu_selector(MenuScene::showArcadeMenu), this);
     m_homeArcade->setPosition(center.x, posY);
     this->addChild(m_homeArcade);
     
     posY -= spacing;
-    m_homeHighscore = new MenuButton(
-      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+    m_homeHighscore = MenuButton::create(
+      m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_on_left"), m_pGameContext->getImageMap()->getTile("menubutton_on_center"), m_pGameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
-      , "HIGHSCORE", m_gameContext, menu_selector(MenuScene::showHighscore), this);
-    m_homeHighscore->autorelease();
+      , "HIGHSCORE", m_pGameContext, menu_selector(MenuScene::showHighscore), this);
     m_homeHighscore->setPosition(center.x, posY);
     this->addChild(m_homeHighscore);
     
     posY -= spacing;
-    m_homeOptions = new MenuButton(
-      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+    m_homeOptions = MenuButton::create(
+      m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_on_left"), m_pGameContext->getImageMap()->getTile("menubutton_on_center"), m_pGameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
-      , "OPTIONS", m_gameContext, menu_selector(MenuScene::showOptions), this);
-    m_homeOptions->autorelease();
+      , "OPTIONS", m_pGameContext, menu_selector(MenuScene::showOptions), this);
     m_homeOptions->setPosition(center.x, posY);
     this->addChild(m_homeOptions);
 
@@ -91,63 +87,62 @@ void MenuScene::onEnter()
 
     /*************** ARCADE ***************/
     posY -= spacing;
-    m_arcadeEasy = new MenuButton(
-      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+    m_arcadeEasy = MenuButton::create(
+      m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_on_left"), m_pGameContext->getImageMap()->getTile("menubutton_on_center"), m_pGameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
-      , "EASY", m_gameContext, menu_selector(MenuScene::startArcadeEasyGameCallback), this);
-    m_arcadeEasy->autorelease();
+      , "EASY", m_pGameContext, menu_selector(MenuScene::startArcadeEasyGameCallback), this);
     m_arcadeEasy->setPosition(center.x + visibleRect.size.width, posY);
     this->addChild(m_arcadeEasy);
 
     posY -= spacing;
-    m_arcadeNormal = new MenuButton(
-      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+    m_arcadeNormal = MenuButton::create(
+      m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_on_left"), m_pGameContext->getImageMap()->getTile("menubutton_on_center"), m_pGameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
-      , "NORMAL", m_gameContext, menu_selector(MenuScene::startArcadeNormalGameCallback), this);
-    m_arcadeNormal->autorelease();
+      , "NORMAL", m_pGameContext, menu_selector(MenuScene::startArcadeNormalGameCallback), this);
     m_arcadeNormal->setPosition(center.x + visibleRect.size.width, posY);
     this->addChild(m_arcadeNormal);
 
     posY -= spacing;
-    m_arcadeHard = new MenuButton(
-      m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_on_left"), m_gameContext->getImageMap()->getTile("menubutton_on_center"), m_gameContext->getImageMap()->getTile("menubutton_on_right")
-      , m_gameContext->getImageMap()->getTile("menubutton_off_left"), m_gameContext->getImageMap()->getTile("menubutton_off_center"), m_gameContext->getImageMap()->getTile("menubutton_off_right")
+    m_arcadeHard = MenuButton::create(
+      m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_on_left"), m_pGameContext->getImageMap()->getTile("menubutton_on_center"), m_pGameContext->getImageMap()->getTile("menubutton_on_right")
+      , m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
-      , "HARD", m_gameContext, menu_selector(MenuScene::startArcadeHardGameCallback), this);
-    m_arcadeHard->autorelease();
+      , "HARD", m_pGameContext, menu_selector(MenuScene::startArcadeHardGameCallback), this);
     m_arcadeHard->setPosition(center.x + visibleRect.size.width, posY);
     this->addChild(m_arcadeHard);    
-
+ 
 #if GAME_VERSION > 1
     /*************** STORY MODE ***************/
     int nextReleasingFrames[] = { 24 };
     int nextPressingFrames[] = { 24 };
-    m_storyModeNextPage = ImageButton::create(this, callfuncO_selector(MenuScene::nextStoryModePage), NULL, m_gameContext
-      , this->m_gameContext->getImageMapPListPath(), this->m_gameContext->getImageMapPngPath(), -1
+    m_storyModeNextPage = ImageButton::create(this, callfuncO_selector(MenuScene::nextStoryModePage), NULL, m_pGameContext
+      , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
       , 24
       , nextReleasingFrames, 1
       , nextPressingFrames, 1
       , 24
       , 24
       , TOUCH_PRIORITY_NORMAL);
+    this->addChild(m_storyModeNextPage);
     m_storyModeNextPage->setPosition(ccp( VisibleRect::right().x - 60, VisibleRect::top().y - 60 ) );
     m_storyModeNextPage->setVisible(false);
     
     int previousReleasingFrames[] = { 24 };
     int previousPressingFrames[] = { 24 };
-    m_storyModePreviousPage = ImageButton::create(this, callfuncO_selector(MenuScene::previousStoryModePage), NULL, m_gameContext
-      , this->m_gameContext->getImageMapPListPath(), this->m_gameContext->getImageMapPngPath(), -1
+    m_storyModePreviousPage = ImageButton::create(this, callfuncO_selector(MenuScene::previousStoryModePage), NULL, m_pGameContext
+      , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
       , 24
       , previousReleasingFrames, 1
       , previousPressingFrames, 1
       , 24
       , 24
       , TOUCH_PRIORITY_NORMAL);
+    this->addChild(m_storyModePreviousPage);
     m_storyModePreviousPage->setPosition(ccp( VisibleRect::left().x + 60, VisibleRect::top().y - 60 ) );
     m_storyModePreviousPage->setVisible(false);
 
@@ -181,37 +176,39 @@ void MenuScene::onEnter()
       {        
         for (int k = 0; k < STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE; ++k)
         {
-          newChallengeStatus = this->m_gameContext->getChallengeInfo(index);
+          newChallengeStatus = this->m_pGameContext->getChallengeInfo(index);
           switch (newChallengeStatus)
           {
           case 0: 
             if (lastChallengeStatus > 0)
             {
-              imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_gameContext
-                , this->m_gameContext->getImageMapPListPath(), this->m_gameContext->getImageMapPngPath(), -1
+              imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_pGameContext
+                , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
                 , 16
                 , challenge_1_ReleasingFrames, 1
                 , challenge_1_PressingFrames, 1
                 , 16
                 , 16
                 , TOUCH_PRIORITY_NORMAL);
+              this->addChild(imageButton);
             }
             else
             {
-              imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_gameContext
-                , this->m_gameContext->getImageMapPListPath(), this->m_gameContext->getImageMapPngPath(), -1
+              imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_pGameContext
+                , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
                 , 20
                 , challenge_0_ReleasingFrames, 1
                 , challenge_0_PressingFrames, 1
                 , 20
                 , 20
                 , TOUCH_PRIORITY_NORMAL);
+              this->addChild(imageButton);
             }
             lastChallengeStatus = 0;
           break;
           case 1: 
-          imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_gameContext
-            , this->m_gameContext->getImageMapPListPath(), this->m_gameContext->getImageMapPngPath(), -1
+          imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_pGameContext
+            , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
             , 16
             , challenge_1_ReleasingFrames, 1
             , challenge_1_PressingFrames, 1
@@ -219,10 +216,11 @@ void MenuScene::onEnter()
             , 16
             , TOUCH_PRIORITY_NORMAL);
             lastChallengeStatus = 1;
+              this->addChild(imageButton);
           break;
           case 2: 
-          imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_gameContext
-            , this->m_gameContext->getImageMapPListPath(), this->m_gameContext->getImageMapPngPath(), -1
+          imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_pGameContext
+            , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
             , 17
             , challenge_2_ReleasingFrames, 1
             , challenge_2_PressingFrames, 1
@@ -230,10 +228,11 @@ void MenuScene::onEnter()
             , 17
             , TOUCH_PRIORITY_NORMAL);
             lastChallengeStatus = 2;
+              this->addChild(imageButton);
           break;
           case 3: 
-          imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_gameContext
-            , this->m_gameContext->getImageMapPListPath(), this->m_gameContext->getImageMapPngPath(), -1
+          imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_pGameContext
+            , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
             , 18
             , challenge_3_ReleasingFrames, 1
             , challenge_3_PressingFrames, 1
@@ -241,10 +240,11 @@ void MenuScene::onEnter()
             , 18
             , TOUCH_PRIORITY_NORMAL);
             lastChallengeStatus = 3;
+              this->addChild(imageButton);
           break;
           case 4: 
-          imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_gameContext
-            , this->m_gameContext->getImageMapPListPath(), this->m_gameContext->getImageMapPngPath(), -1
+          imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_pGameContext
+            , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
             , 19
             , challenge_4_ReleasingFrames, 1
             , challenge_4_PressingFrames, 1
@@ -252,6 +252,7 @@ void MenuScene::onEnter()
             , 19
             , TOUCH_PRIORITY_NORMAL);
             lastChallengeStatus = 4;
+              this->addChild(imageButton);
           break;
           }
 
@@ -264,6 +265,7 @@ void MenuScene::onEnter()
 
     imageButton = NULL;
 #endif
+    
     CCLOG("finished initializing MenuScene");
   }
 }
@@ -420,15 +422,15 @@ void MenuScene::showView(MenuViewType menuViewType)
 
 void MenuScene::startArcadeEasyGameCallback(CCObject* pSender)
 { 
-  NavigationManager::showScene(ARCADE_EASY_GAME_SCENE, m_gameContext, NEW);
+  NavigationManager::showScene(ARCADE_EASY_GAME_SCENE, m_pGameContext, NEW);
 }
 void MenuScene::startArcadeHardGameCallback(CCObject* pSender)
 { 
-  NavigationManager::showScene(ARCADE_HARD_GAME_SCENE, m_gameContext, NEW);
+  NavigationManager::showScene(ARCADE_HARD_GAME_SCENE, m_pGameContext, NEW);
 }
 void MenuScene::startArcadeNormalGameCallback(CCObject* pSender)
 { 
-  NavigationManager::showScene(ARCADE_NORMAL_GAME_SCENE, m_gameContext, NEW);
+  NavigationManager::showScene(ARCADE_NORMAL_GAME_SCENE, m_pGameContext, NEW);
 }
 
 void MenuScene::showStoryModeMenu(CCObject* pSender)
@@ -455,7 +457,7 @@ void MenuScene::startChallenge(CCObject* pSender)
     }
   }
 
-  NavigationManager::showChallengeScene(m_gameContext, challengeIndex, NEW);
+  NavigationManager::showChallengeScene(m_pGameContext, challengeIndex, NEW);
 }
 void MenuScene::nextStoryModePage(CCObject* pSender)
 {  
@@ -531,11 +533,11 @@ void MenuScene::previousStoryModePage(CCObject* pSender)
 
 void MenuScene::showOptions(CCObject* pSender)
 { 
-  NavigationManager::showScene(OPTIONS_SCENE, m_gameContext, NEW);
+  NavigationManager::showScene(OPTIONS_SCENE, m_pGameContext, NEW);
 }
 void MenuScene::showHighscore(CCObject* pSender)
 { 
-  NavigationManager::showScene(HIGHSCORE_SCENE, m_gameContext, NEW);
+  NavigationManager::showScene(HIGHSCORE_SCENE, m_pGameContext, NEW);
 }
 void MenuScene::onBackKeyPressed()
 {

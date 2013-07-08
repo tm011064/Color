@@ -55,13 +55,13 @@ private:
   ccColor4F m_currentBackgroundColor;
   ccColor4F m_currentBorderColor;
   
-  GameContext* m_gameContext; 
+  GameContext* m_pGameContext; 
   SEL_CallFuncO m_fnpChangedDelegate;
   
   int m_touchPriority;
 
 public:  
-  WildcardButton(ccColor4F borderColorOn, ccColor4F borderColorOff
+  static WildcardButton* create(ccColor4F borderColorOn, ccColor4F borderColorOff
     , ccColor4F backgroundColorOn, ccColor4F backgroundColorOff
     , ccColor4F coinBackgroundColorOn, ccColor4F coinBackgroundColorOff
     , ccColor3B textColorOn, ccColor3B textColorOff
@@ -84,6 +84,37 @@ public:
   
   int getTouchPriority() { return this->m_touchPriority; }
   void setTouchPriority(int priority) { this->m_touchPriority = priority; }
+
+protected:  
+ WildcardButton(ccColor4F borderColorOn, ccColor4F borderColorOff
+    , ccColor4F backgroundColorOn, ccColor4F backgroundColorOff
+    , ccColor4F coinBackgroundColorOn, ccColor4F coinBackgroundColorOff
+    , ccColor3B textColorOn, ccColor3B textColorOff
+    , std::string text, std::string totalCoinsText, CCSize size, float borderWidth
+    , GameContext* gameContext, SEL_CallFuncO fnpChangedDelegate, CCNode *pTarget)
+  : m_buttonState(UNGRABBED)
+  , m_pGameContext(gameContext)
+  , m_fnpChangedDelegate(fnpChangedDelegate)
+  , m_isEnabled(true)
+  , m_pTarget(pTarget)
+  , m_isLayoutInitialized(false)
+  , m_borderColorOn(borderColorOn)
+  , m_borderColorOff(borderColorOff)
+  , m_backgroundColorOn(backgroundColorOn)
+  , m_backgroundColorOff(backgroundColorOff)
+  , m_textColorOn(textColorOn)
+  , m_textColorOff(textColorOff)
+  , m_text(text)
+  , m_totalCoinsText(totalCoinsText)
+  , m_size(size)
+  , m_borderWidth(borderWidth)
+  , m_coinBackgroundColorOn(coinBackgroundColorOn)
+  , m_coinBackgroundColorOff(coinBackgroundColorOff)
+  , m_totalCoinsLabel(NULL)
+  , m_textLabel(NULL)
+ {
+
+ }
 };
 
 #endif  // __WILDCARDBUTTON_H__

@@ -50,19 +50,19 @@ private:
   ccColor4F m_currentBackgroundColor;
   ccColor4F m_currentBorderColor;
   
-  GameContext* m_gameContext; 
+  GameContext* m_pGameContext; 
   SEL_CallFuncO m_fnpToggleChangedDelegate;
 
   void refresh();
 
 public:  
-  TextToggleButton(ccColor4F borderColorOn, ccColor4F borderColorOff, ccColor4F backgroundColorOn
+  static TextToggleButton* create(ccColor4F borderColorOn, ccColor4F borderColorOff, ccColor4F backgroundColorOn
     , ccColor4F backgroundColorOff, ccColor3B textColorOn, ccColor3B textColorOff
     , std::string text, ToggleState toggleState, CCSize size
     , GameContext* gameContext, SEL_CallFuncO m_fnpToggleChangedDelegate, CCNode *pTarget);
   ~TextToggleButton() 
   { 
-    this->m_gameContext = NULL;
+    this->m_pGameContext = NULL;
     this->m_pTarget = NULL;
   }
   
@@ -81,6 +81,29 @@ public:
 
   virtual bool containsTouchLocation(CCTouch* touch);
 
+protected:  
+ TextToggleButton(ccColor4F borderColorOn, ccColor4F borderColorOff, ccColor4F backgroundColorOn
+    , ccColor4F backgroundColorOff, ccColor3B textColorOn, ccColor3B textColorOff
+    , std::string text, ToggleState toggleState, CCSize size
+    , GameContext* gameContext, SEL_CallFuncO fnpToggleChangedDelegate, CCNode *pTarget)
+  : m_buttonState(UNGRABBED)
+  , m_pGameContext(gameContext)
+  , m_fnpToggleChangedDelegate(fnpToggleChangedDelegate)
+  , m_isEnabled(true)
+  , m_pTarget(pTarget)
+  , m_isLayoutInitialized(false)
+  , m_borderColorOn(borderColorOn)
+  , m_borderColorOff(borderColorOff)
+  , m_backgroundColorOn(backgroundColorOn)
+  , m_backgroundColorOff(backgroundColorOff)
+  , m_textColorOn(textColorOn)
+  , m_textColorOff(textColorOff)
+  , m_text(text)
+  , m_toggleState(toggleState)
+  , m_size(size)
+ {
+
+ }
 };
 
 #endif  // __TEXTTOGGLEBUTTON_H__

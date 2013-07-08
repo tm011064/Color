@@ -6,32 +6,32 @@ void TopBar::onEnter()
 
   if (!this->m_isLayoutInitialized)
   {
-    CCLabelBMFont* levelTextLabel = CCLabelBMFont::create("Level:", m_gameContext->getFontNormalPath().c_str());     
+    CCLabelBMFont* levelTextLabel = CCLabelBMFont::create("Level:", m_pGameContext->getFontNormalPath().c_str());     
     this->addChild(levelTextLabel);
-    CCLabelBMFont* scoreTextLabel = CCLabelBMFont::create("Score:", m_gameContext->getFontNormalPath().c_str());     
+    CCLabelBMFont* scoreTextLabel = CCLabelBMFont::create("Score:", m_pGameContext->getFontNormalPath().c_str());     
     this->addChild(scoreTextLabel);
     
-    m_levelLabel = CCLabelBMFont::create("888", m_gameContext->getFontNormalPath().c_str());     
+    m_levelLabel = CCLabelBMFont::create("888", m_pGameContext->getFontNormalPath().c_str());     
     this->addChild(m_levelLabel);
-    m_scoreLabel = CCLabelBMFont::create("88888888", m_gameContext->getFontNormalPath().c_str());     
+    m_scoreLabel = CCLabelBMFont::create("88888888", m_pGameContext->getFontNormalPath().c_str());     
     this->addChild(m_scoreLabel);
         
-    float padding = m_gameContext->getDefaultPadding();
-    float borderThickness = m_gameContext->getDefaultBorderThickness();
+    float padding = m_pGameContext->getDefaultPadding();
+    float borderThickness = m_pGameContext->getDefaultBorderThickness();
     
     CCPoint leftTop = VisibleRect::leftTop();
     CCPoint rightTop = VisibleRect::rightTop();
 
     // TODO (Roman): round all points
 
-    m_rectOrigin = ccpRounded (leftTop.x, leftTop.y - m_gameContext->getFontHeightNormal() - padding * 3);
+    m_rectOrigin = ccpRounded (leftTop.x, leftTop.y - m_pGameContext->getFontHeightNormal() - padding * 3);
     m_rectDestination = ccpRounded (rightTop.x, rightTop.y);
     
     m_borderOrigin = ccp (m_rectOrigin.x, m_rectOrigin.y - borderThickness);
     m_borderDestination = ccp (m_rectDestination.x, m_rectOrigin.y);
     
     CCSize levelTextLabelSize = levelTextLabel->getContentSize();
-    levelTextLabel->setPosition(ccp(m_rectOrigin.x + padding*2 + levelTextLabelSize.width / 2, m_rectOrigin.y + padding + m_gameContext->getFontHeightNormal() / 2));
+    levelTextLabel->setPosition(ccp(m_rectOrigin.x + padding*2 + levelTextLabelSize.width / 2, m_rectOrigin.y + padding + m_pGameContext->getFontHeightNormal() / 2));
         
     m_levelRightPosX = levelTextLabel->getPositionX() + levelTextLabelSize.width / 2 + padding + m_levelLabel->getContentSize().width;
     m_scoreRightPosX = m_rectDestination.x - padding*2;

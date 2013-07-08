@@ -81,6 +81,11 @@ CCArray* LayoutController::createTwoButtons(GameContext* gameContext, DebugDraw*
     }
   }
   button = NULL;
+  
+  b1->release();
+  b2->release();
+  b3->release();
+  b4->release();
 
   return buttons;
 }
@@ -154,6 +159,11 @@ CCArray* LayoutController::createThreeButtons(GameContext* gameContext, DebugDra
   button->setColor(BUTTON_COLOR_BLACK);
   button->setOriginalColor(BUTTON_COLOR_BLACK);
   button->setIsEnabled(false);
+  
+  b1->release();
+  b2->release();
+  b3->release();
+  b4->release();
 
   return buttons;
 }
@@ -223,7 +233,7 @@ CCArray* LayoutController::createFourButtons(GameContext* gameContext, DebugDraw
   buttons->addObject(b2);
   buttons->addObject(b3);
   buttons->addObject(b4);
-
+  
   b1->release();
   b2->release();
   b3->release();
@@ -358,7 +368,13 @@ CCArray* LayoutController::createFiveButtons(GameContext* gameContext, DebugDraw
   buttons->addObject(b2);
   buttons->addObject(b3);
   buttons->addObject(b4);
-  buttons->addObject(b5);    
+  buttons->addObject(b5);
+  
+  b1->release();
+  b2->release();
+  b3->release();
+  b4->release();    
+  b5->release();    
     
   return buttons;
 }

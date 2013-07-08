@@ -11,7 +11,7 @@ void DescriptionPopup::onEnter()
 
     this->m_padding = 12;
 
-    m_text = CCLabelBMFont::create("", m_gameContext->getFontNormalPath().c_str());
+    m_text = CCLabelBMFont::create("", m_pGameContext->getFontNormalPath().c_str());
     m_text->setPosition(center);
     this->addChild(m_text);
     

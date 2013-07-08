@@ -9,7 +9,7 @@ class GameScorePopup : public ModalControl
 {  
 private:
 
-  GameContext* m_gameContext; 
+  GameContext* m_pGameContext; 
     
   CCPoint m_separatorLineLeftBottom;
   CCPoint m_separatorLineRightTop;
@@ -47,7 +47,7 @@ public:
     , SEL_CallFuncO playAgainCallbackDelegate
     , SEL_CallFuncO mainMenuCallbackDelegate
     , CCNode* callbackTarget)
-    : m_gameContext(gameContext)
+    : m_pGameContext(gameContext)
     , m_fnpPlayAgainCallbackDelegate(playAgainCallbackDelegate)
     , m_fnpMainMenuCallbackDelegate(mainMenuCallbackDelegate)
     , m_pTarget(callbackTarget)

@@ -12,44 +12,44 @@ void WildcardPopup::onEnter()
     m_visibleRectLeftBottom = VisibleRect::leftBottom();
     m_visibleRectRightTop = VisibleRect::rightTop();
                 
-    this->m_padding = m_gameContext->getDefaultPadding();
-    this->m_borderThickness = m_gameContext->getDefaultBorderThickness();
+    this->m_padding = m_pGameContext->getDefaultPadding();
+    this->m_borderThickness = m_pGameContext->getDefaultBorderThickness();
 
-    float verticalSpacing = m_gameContext->getFontHeightNormal() + m_padding;
-    float verticalSpacingLarge = m_gameContext->getFontHeightLarge() + m_padding*3;
+    float verticalSpacing = m_pGameContext->getFontHeightNormal() + m_padding;
+    float verticalSpacingLarge = m_pGameContext->getFontHeightLarge() + m_padding*3;
             
     m_dialogRectLeftTop = ccp ( 0, m_visibleRectRightTop.y * .825);
-    m_dialogRectLeftBottom = ccp ( 0, m_visibleRectRightTop.y * .26 );
+    //m_dialogRectLeftBottom = ccp ( 0, m_visibleRectRightTop.y * .26 );
     m_dialogRectRightTop = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftTop.y);
-    m_dialogRectRightBottom = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftBottom.y);
+    //m_dialogRectRightBottom = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftBottom.y);
     
     m_separatorTopRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightTop.y + m_borderThickness);
-    m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightBottom.y - m_borderThickness);
+    //m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightBottom.y - m_borderThickness);
 
     // now we have the border thickness and padding, so we can set the boundaries 
     float indentLeft = m_visibleRectLeftBottom.x + (visibleRect.size.width * .1);
     float indentRight = m_visibleRectLeftBottom.x + (visibleRect.size.width * .9);
-    m_dialogRectInnerLeftBottom = ccp( indentLeft + this->m_borderThickness, m_dialogRectLeftBottom.y + this->m_borderThickness );
     m_dialogRectInnerRightTop = ccp( indentRight - this->m_borderThickness, m_dialogRectRightTop.y - this->m_borderThickness );
 
-    this->m_textIndentLeft = m_dialogRectInnerLeftBottom.x + m_padding * 3;
+    this->m_textIndentLeft = indentLeft + this->m_borderThickness + m_padding * 3;
     this->m_textIndentRight = m_dialogRectInnerRightTop.x - m_padding * 3;
 
     float posY = round( m_dialogRectInnerRightTop.y + verticalSpacing/2 + m_padding*2 );
-    CCLabelBMFont* label = CCLabelBMFont::create("coins available", m_gameContext->getFontNormalPath().c_str());
+    CCLabelBMFont* label = CCLabelBMFont::create("coins available", m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY );
     this->addChild(label);
        
-    m_coinsLabel = CCLabelBMFont::create("NA", m_gameContext->getFontNormalPath().c_str());
+    m_coinsLabel = CCLabelBMFont::create("NA", m_pGameContext->getFontNormalPath().c_str());
     m_coinsLabel->setPosition(ccp(this->m_textIndentRight - m_coinsLabel->getContentSize().width/2, posY));
     this->addChild(m_coinsLabel);
     
-    m_availableCoinsCoin = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("coin_small"));
+    m_availableCoinsCoin = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("coin_small"));
+    m_availableCoinsCoin->setScale(this->m_pGameContext->getFontHeightNormal() / m_availableCoinsCoin->getContentSize().height * 1.5);
     m_availableCoinsCoin->setPosition(ccpRounded(m_coinsLabel->getPositionX() - m_coinsLabel->getContentSize().width/2 - m_padding, posY));
     this->addChild(m_availableCoinsCoin);
     
     this->m_wildcardPopupButtonPanel = new WildcardPopupButtonPanel(
-      this->m_gameContext
+      this->m_pGameContext
       , CCSizeMake( this->m_textIndentRight - this->m_textIndentLeft, 0 )
       , callfuncO_selector(WildcardPopup::replaySequenceCallback)
       , callfuncO_selector(WildcardPopup::showNextSequenceItemCallback)
@@ -61,7 +61,7 @@ void WildcardPopup::onEnter()
     this->m_wildcardPopupButtonPanel->hide();
 
     this->m_wildcardPopupBuyCoinsPanel = new WildcardPopupBuyCoinsPanel(
-      this->m_gameContext
+      this->m_pGameContext
       , CCSizeMake( this->m_textIndentRight - this->m_textIndentLeft, 0 )
       , callfuncO_selector(WildcardPopup::wildcardPanelCallback)
       , this);
@@ -75,28 +75,27 @@ void WildcardPopup::onEnter()
     this->m_wildcardPopupButtonPanel->setPosition(center.x, posY);
     this->m_wildcardPopupBuyCoinsPanel->setPosition(center.x, posY);
     
-    posY -= round( (verticalSpacingLarge + verticalSpacing/2 + this->m_padding + wildcardPopupButtonPanelSize.height/2) );
-
-    TextButton* textButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+    TextButton* textButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
       , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
       , "back"
-      , m_gameContext->getDefaultButtonSize()
+      , m_pGameContext->getDefaultButtonSize()
       , this->m_borderThickness
-      , this->m_gameContext
+      , this->m_pGameContext
       , callfuncO_selector(WildcardPopup::closeCallback)
       , this);
     textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
+    posY -= round( (verticalSpacing*2 + textButton->getSize().height/2 + wildcardPopupButtonPanelSize.height/2) );
     textButton->setPosition(this->m_textIndentLeft + textButton->getSize().width/2, posY);
     this->addChild(textButton);
     
-    m_moreCoinsTextButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+    m_moreCoinsTextButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
       , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
       , "+ coins"
-      , m_gameContext->getDefaultButtonSize()
+      , m_pGameContext->getDefaultButtonSize()
       , this->m_borderThickness
-      , this->m_gameContext
+      , this->m_pGameContext
       , callfuncO_selector(WildcardPopup::moreCoinsCallback)
       , this);
     m_moreCoinsTextButton->setEnabled(false);
@@ -104,6 +103,10 @@ void WildcardPopup::onEnter()
     m_moreCoinsTextButton->setPosition(this->m_textIndentRight - m_moreCoinsTextButton->getSize().width/2, posY);
     this->addChild(m_moreCoinsTextButton);
         
+    m_dialogRectLeftBottom = ccp ( 0, posY - m_moreCoinsTextButton->getSize().height/2 - verticalSpacing );
+    m_dialogRectRightBottom = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftBottom.y);
+    m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightBottom.y - m_borderThickness);
+    
     this->m_wildcardPopupBuyCoinsPanel->hide();
     this->m_wildcardPopupButtonPanel->show();
     this->m_moreCoinsTextButton->setVisible(true);
@@ -135,7 +138,7 @@ void WildcardPopup::show()
 void WildcardPopup::refresh()
 {
   char str[10];
-  sprintf(str, "%i", m_gameContext->getTotalCoins());
+  sprintf(str, "%i", m_pGameContext->getTotalCoins());
   m_coinsLabel->setString(str);  
   m_coinsLabel->setPositionX(round(m_textIndentRight - m_padding*2 - m_coinsLabel->getContentSize().width/2));
   m_availableCoinsCoin->setPositionX(round(m_coinsLabel->getPositionX() - m_coinsLabel->getContentSize().width/2 
@@ -159,11 +162,11 @@ void WildcardPopup::draw()
 
 void WildcardPopup::replaySequenceCallback(CCObject* pSender)
 {
-  int totalCoins = this->m_gameContext->getTotalCoins();
+  int totalCoins = this->m_pGameContext->getTotalCoins();
   if (totalCoins >= COINS_COST_REPLAY_SEQUENCE)
   {
     totalCoins -= COINS_COST_REPLAY_SEQUENCE;
-    this->m_gameContext->setTotalCoins(totalCoins);
+    this->m_pGameContext->setTotalCoins(totalCoins);
 
     char str[10];
     sprintf(str, "%i", totalCoins);
@@ -176,11 +179,11 @@ void WildcardPopup::replaySequenceCallback(CCObject* pSender)
 }
 void WildcardPopup::showNextSequenceItemCallback(CCObject* pSender)
 {
-  int totalCoins = this->m_gameContext->getTotalCoins();
+  int totalCoins = this->m_pGameContext->getTotalCoins();
   if (totalCoins >= COINS_COST_SHOW_NEXT_ITEM)
   {
     totalCoins -= COINS_COST_SHOW_NEXT_ITEM;
-    this->m_gameContext->setTotalCoins(totalCoins);
+    this->m_pGameContext->setTotalCoins(totalCoins);
     
     char str[10];
     sprintf(str, "%i", totalCoins);
@@ -193,11 +196,11 @@ void WildcardPopup::showNextSequenceItemCallback(CCObject* pSender)
 }
 void WildcardPopup::replayFromCurrentCallback(CCObject* pSender)
 {
-  int totalCoins = this->m_gameContext->getTotalCoins();
+  int totalCoins = this->m_pGameContext->getTotalCoins();
   if (totalCoins >= COINS_COST_SHOW_REMAINING)
   {
     totalCoins -= COINS_COST_SHOW_REMAINING;
-    this->m_gameContext->setTotalCoins(totalCoins);
+    this->m_pGameContext->setTotalCoins(totalCoins);
     
     char str[10];
     sprintf(str, "%i", totalCoins);

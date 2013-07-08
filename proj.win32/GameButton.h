@@ -13,7 +13,7 @@ private:
   
   bool m_isEnabled;
   
-  GameContext* m_gameContext;
+  GameContext* m_pGameContext;
   std::string m_soundPath;
   ccColor3B m_originalColor;
 
@@ -21,7 +21,7 @@ public:
   GameButton(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, GameContext* gameContext
     , std::string soundPath)   
     : BaseSprite(pTarget, touchEndedDelegate, preLoadDelegate)
-    , m_gameContext(gameContext)
+    , m_pGameContext(gameContext)
     , m_soundPath(soundPath)
     , m_isEnabled(true)
   {

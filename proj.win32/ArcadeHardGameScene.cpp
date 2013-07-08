@@ -15,13 +15,18 @@ ArcadeHardGameScene::ArcadeHardGameScene(GameContext* gameContext)
 }
 void ArcadeHardGameScene::onLoadLayout()
 {  
-  this->m_buttons = LayoutController::createFourButtons(this->m_gameContext, this->m_debugDraw, this->m_anchor, this
+  this->m_buttons = LayoutController::createFourButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
     , callfuncO_selector( ArcadeHardGameScene::buttonTouchEndedCallback )
     , callfuncO_selector( ArcadeHardGameScene::buttonLoadedCallback )
-    , callfuncO_selector( ArcadeHardGameScene::buttonBlinkCallback ));         
+    , callfuncO_selector( ArcadeHardGameScene::buttonBlinkCallback ));   
+  CCObject* o;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    this->addChild((GameButton*)o);
+  }      
 }
 void ArcadeHardGameScene::onGameOver()
 {  
-  if ((int)m_gameScore.totalPoints > m_gameContext->getHighscoreHard())
-    m_gameContext->setHighscoreHard((int)m_gameScore.totalPoints);
+  if ((int)m_gameScore.totalPoints > m_pGameContext->getHighscoreHard())
+    m_pGameContext->setHighscoreHard((int)m_gameScore.totalPoints);
 }

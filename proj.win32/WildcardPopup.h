@@ -20,7 +20,7 @@ private:
   CCPoint m_dialogRectLeftTop;
   CCPoint m_dialogRectRightBottom;
 
-  GameContext* m_gameContext; 
+  GameContext* m_pGameContext; 
 
   CCLabelBMFont* m_coinsLabel;
   CCSprite* m_availableCoinsCoin;
@@ -57,7 +57,7 @@ public:
     , SEL_CallFuncO replayFromCurrentCallbackDelegate
     , SEL_CallFuncO closeCallbackDelegate
     , CCNode* callbackTarget)
-    : m_gameContext(gameContext)
+    : m_pGameContext(gameContext)
     , m_fnpReplaySequenceCallbackDelegate(replaySequenceCallbackDelegate)
     , m_fnpShowNextSequenceItemCallbackDelegate(showNextSequenceItemCallbackDelegate)
     , m_fnpSaveTryCallbackDelegate(replayFromCurrentCallbackDelegate)
@@ -72,7 +72,7 @@ public:
   { }
   ~WildcardPopup() 
   { 
-    this->m_gameContext = NULL;
+    this->m_pGameContext = NULL;
     this->m_pTarget = NULL;
   }
   

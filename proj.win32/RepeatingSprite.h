@@ -24,7 +24,7 @@ class RepeatingSprite : public cocos2d::CCNode
 private:
   
   CCSpriteFrame* m_spriteFrame;
-  GameContext* m_gameContext;
+  GameContext* m_pGameContext;
 
   bool m_isLayoutInitialized;
   bool m_doAlternateHorizontally;
@@ -42,7 +42,7 @@ protected:
   
   RepeatingSprite(GameContext* gameContext, CCSpriteFrame* spriteFrame, REPEAT_DIRECTION direction, REPEAT_MODE mode
     , CCSize boundingBox)
-    : m_gameContext(gameContext)
+    : m_pGameContext(gameContext)
     , m_spriteFrame(spriteFrame)
     , m_isLayoutInitialized(false)
     , m_direction(direction)

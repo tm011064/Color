@@ -11,7 +11,7 @@ RepeatingSprite* RepeatingSprite::create(GameContext* gameContext, CCSpriteFrame
 RepeatingSprite::~RepeatingSprite() 
 {
   this->m_spriteFrame = NULL;
-  this->m_gameContext = NULL;
+  this->m_pGameContext = NULL;
 }
 
 void RepeatingSprite::onEnter()
@@ -26,11 +26,11 @@ void RepeatingSprite::onEnter()
     CCSize bgPatternSize = bg->getContentSize();
 
     float xPos, yPos
-      , scaleX = 1 //m_gameContext->getHorizontalScaleFactor()
-      , scaleY = 1; //m_gameContext->getVerticalScaleFactor();
+      , scaleX = 1 //m_pGameContext->getHorizontalScaleFactor()
+      , scaleY = 1; //m_pGameContext->getVerticalScaleFactor();
 
     float scaleMultiplier = this->m_mode == NORMAL ? 1 : -1;
-      CCSize s = m_gameContext->getOriginalSize();
+      CCSize s = m_pGameContext->getOriginalSize();
       CCRect visibleRect = VisibleRect::getVisibleRect();
     switch (this->m_direction)
     {

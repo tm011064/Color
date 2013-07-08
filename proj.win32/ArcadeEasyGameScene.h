@@ -10,7 +10,7 @@ public:
   ArcadeEasyGameScene(GameContext* gameContext) ;
   ~ArcadeEasyGameScene()
   {
-    this->m_gameContext = NULL;
+    this->m_pGameContext = NULL;
   }  
   
 protected:  

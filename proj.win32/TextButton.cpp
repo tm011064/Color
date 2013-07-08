@@ -4,28 +4,18 @@
 #include "Types.h"
 #include <cstring> 
 
- TextButton::TextButton(ccColor3B borderColorOn, ccColor3B borderColorOff, ccColor4F backgroundColorOn
+ TextButton* TextButton::create(ccColor3B borderColorOn, ccColor3B borderColorOff, ccColor4F backgroundColorOn
     , ccColor4F backgroundColorOff, ccColor3B textColorOn, ccColor3B textColorOff
     , std::string text, CCSize size, float borderWidth
     , GameContext* gameContext, SEL_CallFuncO fnpChangedDelegate, CCNode *pTarget)
-  : m_buttonState(UNGRABBED)
-  , m_gameContext(gameContext)
-  , m_fnpChangedDelegate(fnpChangedDelegate)
-  , m_isEnabled(true)
-  , m_pTarget(pTarget)
-  , m_isLayoutInitialized(false)
-  , m_borderColorOn(borderColorOn)
-  , m_borderColorOff(borderColorOff)
-  , m_backgroundColorOn(backgroundColorOn)
-  , m_backgroundColorOff(backgroundColorOff)
-  , m_textColorOn(textColorOn)
-  , m_textColorOff(textColorOff)
-  , m_text(text)
-  , m_size(size)
-  , m_borderWidth(borderWidth)
  {
-
+   TextButton* textButton = new TextButton(borderColorOn, borderColorOff, backgroundColorOn, backgroundColorOff
+     , textColorOn, textColorOff, text, size, borderWidth
+     , gameContext, fnpChangedDelegate, pTarget);
+   textButton->autorelease();
+   return textButton;
  }
+
 
 bool TextButton::containsTouchLocation(CCTouch* touch)
 {
@@ -48,7 +38,7 @@ void TextButton::onEnter()
     this->m_isLayoutInitialized = true;
     this->m_isEnabled = true;
 
-    m_textLabel = CCLabelBMFont::create(m_text.c_str(), m_gameContext->getFontNormalPath().c_str());
+    m_textLabel = CCLabelBMFont::create(m_text.c_str(), m_pGameContext->getFontNormalPath().c_str());
     this->addChild(m_textLabel);
 
     refresh();

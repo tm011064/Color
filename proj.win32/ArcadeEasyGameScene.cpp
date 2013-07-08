@@ -15,13 +15,19 @@ ArcadeEasyGameScene::ArcadeEasyGameScene(GameContext* gameContext)
 }
 void ArcadeEasyGameScene::onLoadLayout()
 {  
-  this->m_buttons = LayoutController::createTwoButtons(this->m_gameContext, this->m_debugDraw, this->m_anchor, this
+  this->m_buttons = LayoutController::createTwoButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
     , callfuncO_selector( ArcadeEasyGameScene::buttonTouchEndedCallback )
     , callfuncO_selector( ArcadeEasyGameScene::buttonLoadedCallback )
-    , callfuncO_selector( ArcadeEasyGameScene::buttonBlinkCallback ));         
+    , callfuncO_selector( ArcadeEasyGameScene::buttonBlinkCallback ));
+  
+  CCObject* o;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    this->addChild((GameButton*)o);
+  }
 }
 void ArcadeEasyGameScene::onGameOver()
 {  
-  if ((int)m_gameScore.totalPoints > m_gameContext->getHighscoreEasy())
-    m_gameContext->setHighscoreEasy((int)m_gameScore.totalPoints);
+  if ((int)m_gameScore.totalPoints > m_pGameContext->getHighscoreEasy())
+    m_pGameContext->setHighscoreEasy((int)m_gameScore.totalPoints);
 }

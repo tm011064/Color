@@ -36,7 +36,6 @@ GameButton* GameButton::createQuarterButton(const ccColor3B& color, CCNode *pTar
   
   gameButton->init();    // Must call init for latest version cocos2d-x
   gameButton->autorelease();
-  pTarget->addChild(gameButton);
   
   gameButton->setAnimationFrames(gameContext->getImageMap()->getTiles("gamebuttons"));
   
@@ -94,7 +93,7 @@ GameButton* GameButton::createFifthButton(const ccColor3B& color, CCNode *pTarge
 
 void GameButton::playSound()
 {
-  if (m_gameContext->getIsSoundOn())
+  if (m_pGameContext->getIsSoundOn())
     CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(this->m_soundPath.c_str()); 
 }
 
@@ -108,7 +107,7 @@ void GameButton::playAnimation(int animationIndex, bool suppressSound)
   switch (animationIndex)
   {
   case BLINK: 
-    if (!suppressSound && m_gameContext->getIsSoundOn())
+    if (!suppressSound && m_pGameContext->getIsSoundOn())
       CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(this->m_soundPath.c_str());    
   break;
   }

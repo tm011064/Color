@@ -10,7 +10,7 @@ public:
   ArcadeHardGameScene(GameContext* gameContext);
   ~ArcadeHardGameScene()
   {
-    this->m_gameContext = NULL;
+    this->m_pGameContext = NULL;
   }  
   
 protected:  

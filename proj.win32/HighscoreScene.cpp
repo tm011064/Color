@@ -18,8 +18,8 @@ void HighscoreScene::onEnter()
     
     
     RepeatingSprite* bg = RepeatingSprite::create(
-      m_gameContext
-      , m_gameContext->getImageMap()->getTile("background")
+      m_pGameContext
+      , m_pGameContext->getImageMap()->getTile("background")
       , HORIZONTAL
       , NORMAL
       , visibleRect.size);
@@ -27,11 +27,11 @@ void HighscoreScene::onEnter()
     this->addChild(bg, -1);
     bg = NULL;
         
-    float padding = m_gameContext->getDefaultPadding();
-    float borderThickness = m_gameContext->getDefaultBorderThickness();
+    float padding = m_pGameContext->getDefaultPadding();
+    float borderThickness = m_pGameContext->getDefaultBorderThickness();
 
-    float verticalSpacing = m_gameContext->getFontHeightNormal() + padding;
-    float verticalSpacingLarge = m_gameContext->getFontHeightLarge() + padding*3;
+    float verticalSpacing = m_pGameContext->getFontHeightNormal() + padding;
+    float verticalSpacingLarge = m_pGameContext->getFontHeightLarge() + padding*3;
             
     m_panelRectLeftTop = ccp ( 0, m_visibleRectRightTop.y * .825);
     m_panelRectLeftBottom = ccp ( 0, m_visibleRectRightTop.y * .26 );
@@ -52,11 +52,11 @@ void HighscoreScene::onEnter()
         
     float posY = round( m_panelRectInnerRightTop.y + verticalSpacingLarge/2 );
 
-    CCLabelBMFont* label = CCLabelBMFont::create("HIGHSCORE", m_gameContext->getFontLargePath().c_str());
+    CCLabelBMFont* label = CCLabelBMFont::create("HIGHSCORE", m_pGameContext->getFontLargePath().c_str());
     label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY );
     this->addChild(label);
 
-    label = CCLabelBMFont::create("off", m_gameContext->getFontNormalPath().c_str());
+    label = CCLabelBMFont::create("off", m_pGameContext->getFontNormalPath().c_str());
     CCSize size = label->getContentSize();
     
     size.setSize(size.width + padding * 12, size.height + padding * 4); 
@@ -71,43 +71,43 @@ void HighscoreScene::onEnter()
     
     posY = round( m_panelRectInnerRightTop.y - verticalSpacing * 2 );    
         
-    GameScore gameScore = m_gameContext->getGameScore();
+    GameScore gameScore = m_pGameContext->getGameScore();
         
     char str[256];        
 
-    label = CCLabelBMFont::create("Easy", m_gameContext->getFontNormalPath().c_str());
+    label = CCLabelBMFont::create("Easy", m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY);
     this->addChild(label);
-    sprintf(str, "%i", m_gameContext->getHighscoreEasy());
-    label = CCLabelBMFont::create(str, m_gameContext->getFontNormalPath().c_str());
+    sprintf(str, "%i", m_pGameContext->getHighscoreEasy());
+    label = CCLabelBMFont::create(str, m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_textIndentRight - label->getContentSize().width/2, posY);
     this->addChild(label);
 
     posY -= round( verticalSpacing );
-    label = CCLabelBMFont::create("Normal", m_gameContext->getFontNormalPath().c_str());
+    label = CCLabelBMFont::create("Normal", m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY);
     this->addChild(label);
-    sprintf(str, "%i", m_gameContext->getHighscoreNormal());
-    label = CCLabelBMFont::create(str, m_gameContext->getFontNormalPath().c_str());
+    sprintf(str, "%i", m_pGameContext->getHighscoreNormal());
+    label = CCLabelBMFont::create(str, m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_textIndentRight - label->getContentSize().width/2, posY);
     this->addChild(label);
 
     posY -= round( verticalSpacing );
-    label = CCLabelBMFont::create("Hard", m_gameContext->getFontNormalPath().c_str());
+    label = CCLabelBMFont::create("Hard", m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY);
     this->addChild(label);
-    sprintf(str, "%i", m_gameContext->getHighscoreHard());
-    label = CCLabelBMFont::create(str, m_gameContext->getFontNormalPath().c_str());
+    sprintf(str, "%i", m_pGameContext->getHighscoreHard());
+    label = CCLabelBMFont::create(str, m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_textIndentRight - label->getContentSize().width/2, posY);
     this->addChild(label);
     
-    TextButton* textButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+    TextButton* textButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
       , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
       , "back"
-      , m_gameContext->getDefaultButtonSize()
+      , m_pGameContext->getDefaultButtonSize()
       , borderThickness
-      , this->m_gameContext
+      , this->m_pGameContext
       , callfuncO_selector(HighscoreScene::showMenuCallback)
       , this);
     textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
@@ -147,9 +147,9 @@ void HighscoreScene::draw()
 
 void HighscoreScene::showMenuCallback(CCObject* pSender)
 { 
-  NavigationManager::showScene(MENU_SCENE, m_gameContext, NEW);
+  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
 }
 void HighscoreScene::onBackKeyPressed()
 {
-  NavigationManager::showScene(MENU_SCENE, m_gameContext, NEW);
+  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
 }

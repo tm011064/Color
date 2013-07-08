@@ -13,7 +13,7 @@ private:
   float m_padding;
   float m_borderThickness;
 
-  GameContext* m_gameContext; 
+  GameContext* m_pGameContext; 
   CCSize m_size;
 
   void goBackCallback(CCObject* pSender); 
@@ -27,7 +27,7 @@ public:
     , CCSize size
     , SEL_CallFuncO goBackDelegate
     , CCNode* callbackTarget)
-    : m_gameContext(gameContext)
+    : m_pGameContext(gameContext)
     , m_fnpGoBackDelegate(goBackDelegate)
     , m_pTarget(callbackTarget)
     , m_size(size)
@@ -35,7 +35,7 @@ public:
   { }
   ~WildcardPopupBuyCoinsPanel() 
   { 
-    this->m_gameContext = NULL;
+    this->m_pGameContext = NULL;
     this->m_pTarget = NULL;
   }
   

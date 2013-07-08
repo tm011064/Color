@@ -20,8 +20,6 @@ ImageButton* ImageButton::create(CCNode *pTarget, SEL_CallFuncO touchEndedDelega
   imageButton->setTouchPriority(touchPriority);
   imageButton->init();    // Must call init for latest version cocos2d-x
   imageButton->autorelease();
-
-  pTarget->addChild(imageButton);
   
   imageButton->setAnimationFrames(gameContext->getImageMap()->getTiles(animationGroupName)); 
     

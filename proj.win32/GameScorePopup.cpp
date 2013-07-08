@@ -12,13 +12,13 @@ void GameScorePopup::onEnter()
     m_visibleRectLeftBottom = VisibleRect::leftBottom();
     m_visibleRectRightTop = VisibleRect::rightTop();
         
-    GameScore gameScore = m_gameContext->getGameScore();
+    GameScore gameScore = m_pGameContext->getGameScore();
         
-    this->m_padding = m_gameContext->getDefaultPadding();
-    this->m_borderThickness = m_gameContext->getDefaultBorderThickness();
+    this->m_padding = m_pGameContext->getDefaultPadding();
+    this->m_borderThickness = m_pGameContext->getDefaultBorderThickness();
 
-    float verticalSpacing = m_gameContext->getFontHeightNormal() + m_padding;
-    float verticalSpacingLarge = m_gameContext->getFontHeightLarge() + m_padding*3;
+    float verticalSpacing = m_pGameContext->getFontHeightNormal() + m_padding;
+    float verticalSpacingLarge = m_pGameContext->getFontHeightLarge() + m_padding*3;
             
     m_dialogRectLeftTop = ccpRounded ( 0, m_visibleRectRightTop.y * .825);
     m_dialogRectLeftBottom = ccpRounded ( 0, m_visibleRectRightTop.y * .26 );
@@ -38,7 +38,7 @@ void GameScorePopup::onEnter()
     this->m_textIndentRight = m_dialogRectInnerRightTop.x - m_padding * 3;
     
     float posY = m_dialogRectInnerRightTop.y - verticalSpacingLarge/2 - this->m_padding * 4;
-    CCLabelBMFont* label = CCLabelBMFont::create("GAME OVER", m_gameContext->getFontLargePath().c_str());
+    CCLabelBMFont* label = CCLabelBMFont::create("GAME OVER", m_pGameContext->getFontLargePath().c_str());
     label->setPosition(center.x, posY );
     this->addChild(label);
     
@@ -46,29 +46,29 @@ void GameScorePopup::onEnter()
 
     posY -= (verticalSpacingLarge/2 + verticalSpacing/2 + this->m_padding * 8);
 
-    m_pointsLabelDescription = CCLabelBMFont::create("Points", m_gameContext->getFontNormalPath().c_str());
+    m_pointsLabelDescription = CCLabelBMFont::create("Points", m_pGameContext->getFontNormalPath().c_str());
     m_pointsLabelDescription->setPosition(this->m_textIndentLeft + m_pointsLabelDescription->getContentSize().width/2, posY);
     this->addChild(m_pointsLabelDescription);
     sprintf(str, "%i", (int)(gameScore.totalPoints));
-    m_pointsLabel = CCLabelBMFont::create(str, m_gameContext->getFontNormalPath().c_str());
+    m_pointsLabel = CCLabelBMFont::create(str, m_pGameContext->getFontNormalPath().c_str());
     m_pointsLabel->setPosition(this->m_textIndentRight - m_pointsLabel->getContentSize().width/2, posY);
     this->addChild(m_pointsLabel);
     
     posY -= verticalSpacing;
-    m_levelBonusLabelDescription = CCLabelBMFont::create("Level bonus", m_gameContext->getFontNormalPath().c_str());
+    m_levelBonusLabelDescription = CCLabelBMFont::create("Level bonus", m_pGameContext->getFontNormalPath().c_str());
     m_levelBonusLabelDescription->setPosition(this->m_textIndentLeft + m_levelBonusLabelDescription->getContentSize().width/2, posY);
     this->addChild(m_levelBonusLabelDescription);
     sprintf(str, "%i", (int)(gameScore.totalLevelBonus));
-    m_levelBonusLabel = CCLabelBMFont::create(str, m_gameContext->getFontNormalPath().c_str());
+    m_levelBonusLabel = CCLabelBMFont::create(str, m_pGameContext->getFontNormalPath().c_str());
     m_levelBonusLabel->setPosition(this->m_textIndentRight - m_levelBonusLabel->getContentSize().width/2, posY);
     this->addChild(m_levelBonusLabel);
     
     posY -= verticalSpacing;
-    m_timeBonusLabelDescription = CCLabelBMFont::create("Time bonus", m_gameContext->getFontNormalPath().c_str());
+    m_timeBonusLabelDescription = CCLabelBMFont::create("Time bonus", m_pGameContext->getFontNormalPath().c_str());
     m_timeBonusLabelDescription->setPosition(this->m_textIndentLeft + m_timeBonusLabelDescription->getContentSize().width/2, posY);
     this->addChild(m_timeBonusLabelDescription);
     sprintf(str, "%i", (int)(gameScore.totalButtonBonus));
-    m_timeBonusLabel = CCLabelBMFont::create(str, m_gameContext->getFontNormalPath().c_str());
+    m_timeBonusLabel = CCLabelBMFont::create(str, m_pGameContext->getFontNormalPath().c_str());
     m_timeBonusLabel->setPosition(this->m_textIndentRight - m_timeBonusLabel->getContentSize().width/2, posY);
     this->addChild(m_timeBonusLabel);
     
@@ -77,28 +77,28 @@ void GameScorePopup::onEnter()
     m_separatorLineRightTop = ccp ( this->m_textIndentRight, posY );
   
     posY -= (verticalSpacing/2 + this->m_padding * 6);
-    label = CCLabelBMFont::create("Total Points", m_gameContext->getFontNormalPath().c_str());
+    label = CCLabelBMFont::create("Total Points", m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY);
     this->addChild(label);
-    m_totalPointsLabel = CCLabelBMFont::create("0", m_gameContext->getFontNormalPath().c_str());
+    m_totalPointsLabel = CCLabelBMFont::create("0", m_pGameContext->getFontNormalPath().c_str());
     m_totalPointsLabel->setPosition(this->m_textIndentRight - m_totalPointsLabel->getContentSize().width/2, posY);
     this->addChild(m_totalPointsLabel);
 
     posY -= verticalSpacing;
-    label = CCLabelBMFont::create("Coins earned", m_gameContext->getFontNormalPath().c_str());
+    label = CCLabelBMFont::create("Coins earned", m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY);
     this->addChild(label);
-    m_coinsEarnedLabel = CCLabelBMFont::create("0", m_gameContext->getFontNormalPath().c_str());
+    m_coinsEarnedLabel = CCLabelBMFont::create("0", m_pGameContext->getFontNormalPath().c_str());
     m_coinsEarnedLabel->setPosition(this->m_textIndentRight - m_coinsEarnedLabel->getContentSize().width/2, posY);
     this->addChild(m_coinsEarnedLabel);
         
-    TextButton* textButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+    TextButton* textButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
       , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
       , "menu"
-      , m_gameContext->getDefaultButtonSize()
+      , m_pGameContext->getDefaultButtonSize()
       , this->m_borderThickness
-      , this->m_gameContext
+      , this->m_pGameContext
       , callfuncO_selector(GameScorePopup::mainMenuCallback)
       , this);
     textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
@@ -106,13 +106,13 @@ void GameScorePopup::onEnter()
       , m_dialogRectInnerLeftBottom.y + this->m_padding * 5 + textButton->getSize().height/2);
     this->addChild(textButton);
     
-    textButton = new TextButton(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+    textButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
       , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
       , "retry"
-      , m_gameContext->getDefaultButtonSize()
+      , m_pGameContext->getDefaultButtonSize()
       , this->m_borderThickness
-      , this->m_gameContext
+      , this->m_pGameContext
       , callfuncO_selector(GameScorePopup::playAgainCallback)
       , this);
     textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
@@ -138,7 +138,7 @@ void GameScorePopup::onEnter()
 void GameScorePopup::refresh()
 {
   char str[256];        
-  GameScore gameScore = m_gameContext->getGameScore();
+  GameScore gameScore = m_pGameContext->getGameScore();
   
   m_totalPointsLabel->setString("0");
   m_totalPointsLabel->setPositionX(this->m_textIndentRight - m_totalPointsLabel->getContentSize().width/2);
@@ -189,7 +189,7 @@ void GameScorePopup::updateCoinsDisplay(float dt)
 {
   m_elaspeTimeCoins += dt;
 
-  GameScore gameScore = m_gameContext->getGameScore();
+  GameScore gameScore = m_pGameContext->getGameScore();
 
   float val = m_elaspeTimeCoins * gameScore.coinsEarned / m_targetTime;
   if (val >= 1)
@@ -212,7 +212,7 @@ void GameScorePopup::updatePointsDisplay(float dt)
 {
   m_elaspeTimePoints += dt;
   
-  GameScore gameScore = m_gameContext->getGameScore();
+  GameScore gameScore = m_pGameContext->getGameScore();
   float points = gameScore.totalPoints - gameScore.totalLevelBonus - gameScore.totalButtonBonus;
   float val = m_elaspeTimePoints * gameScore.totalPoints / m_targetTime;
   if (val >= 0)

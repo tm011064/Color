@@ -50,7 +50,7 @@ void BaseChallengeScene::onEnter()
     this->m_anchor.setPoint(center.x, top.y * .5); // TODO (Roman): positioning   
         
     // TODO (Roman): loading screen
-    m_loadingScreen = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("background"));
+    m_loadingScreen = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("background"));
     m_loadingScreen->setPosition(center);
     m_loadingScreen->setVisible(true);
 
@@ -58,8 +58,8 @@ void BaseChallengeScene::onEnter()
         
     
     RepeatingSprite* bg = RepeatingSprite::create(
-      m_gameContext
-      , m_gameContext->getImageMap()->getTile("background")
+      m_pGameContext
+      , m_pGameContext->getImageMap()->getTile("background")
       , HORIZONTAL
       , NORMAL
       , visibleRect.size);
@@ -67,7 +67,7 @@ void BaseChallengeScene::onEnter()
     bg = NULL;
 
     /********** CONSOLE **********/    
-    m_consoleBackground = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("console"));
+    m_consoleBackground = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("console"));
     m_consoleBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
     this->addChild(m_consoleBackground);    
 
@@ -82,7 +82,7 @@ void BaseChallengeScene::onEnter()
     m_consoleButton = ImageButton::create(this
       , callfuncO_selector( BaseChallengeScene::consoleButtonTouchEndedCallback )
       , NULL
-      , m_gameContext
+      , m_pGameContext
       , "gameConsoleButton"
       , 0
       , 0
@@ -91,12 +91,13 @@ void BaseChallengeScene::onEnter()
       , 0
       , 0
       , TOUCH_PRIORITY_NORMAL);
+    this->addChild(m_consoleButton);
     m_consoleButton->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
     m_consoleButton->setScale(consoleBackgroundScale);
     /********** CONSOLE **********/
         
     /********** TOP BAR **********/
-    m_topBar = new TopBar(m_gameContext);
+    m_topBar = new TopBar(m_pGameContext);
     m_topBar->autorelease();
     this->addChild(m_topBar);
     
@@ -106,7 +107,7 @@ void BaseChallengeScene::onEnter()
 
     /********** WILDCARD POPUP **********/
     m_wildcardPopup = new WildcardPopup(
-      this->m_gameContext
+      this->m_pGameContext
       , callfuncO_selector(BaseChallengeScene::replaySequenceCallback) 
       , callfuncO_selector(BaseChallengeScene::showNextSequenceItemCallback) 
       , callfuncO_selector(BaseChallengeScene::replayFromCurrentCallback) 
@@ -122,7 +123,7 @@ void BaseChallengeScene::onEnter()
 
     /********** GAME SCORE POPUP **********/
     m_gameScorePopup = new GameScorePopup(
-      this->m_gameContext
+      this->m_pGameContext
       , callfuncO_selector(BaseChallengeScene::newGameCallback) 
       , callfuncO_selector(BaseChallengeScene::mainMenuCallback) 
       , this
@@ -135,7 +136,7 @@ void BaseChallengeScene::onEnter()
     
     /********** DESCRIPTION POPUP **********/
     m_descriptionPopup = new DescriptionPopup(
-      this->m_gameContext
+      this->m_pGameContext
       , callfuncO_selector(BaseChallengeScene::newGameCallback)
       , this);
     m_descriptionPopup->setZOrder(100);
@@ -166,13 +167,13 @@ void BaseChallengeScene::draw()
     CCARRAY_FOREACH(this->m_buttons, o)
     {
       if (!((GameButton*)o)->hasAlphaMap())
-        ((GameButton*)o)->refreshAlphaMap(m_gameContext->getOriginalSize(), m_gameContext->getResolutionPolicy());  
+        ((GameButton*)o)->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());  
 
       ((GameButton*)o)->load();
     }
 
     if (!this->m_consoleButton->hasAlphaMap())
-      this->m_consoleButton->refreshAlphaMap(m_gameContext->getOriginalSize(), m_gameContext->getResolutionPolicy());
+      this->m_consoleButton->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());
 
     this->m_wildcardPopup->hide();
     this->m_gameScorePopup->hide();
@@ -186,22 +187,22 @@ void BaseChallengeScene::draw()
 
 int BaseChallengeScene::updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition)
 {
-  int challengeInfo = m_gameContext->getChallengeInfo(this->m_challengeIndex);
+  int challengeInfo = m_pGameContext->getChallengeInfo(this->m_challengeIndex);
   if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->MininimumPointsForThreeStars )
   {
-    m_gameContext->setChallengeInfo(this->m_challengeIndex, 4);
+    m_pGameContext->setChallengeInfo(this->m_challengeIndex, 4);
     return 4;
   }
   else if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->MininimumPointsForTwoStars 
     && challengeInfo < 3 )
   {       
-    m_gameContext->setChallengeInfo(this->m_challengeIndex, 3);
+    m_pGameContext->setChallengeInfo(this->m_challengeIndex, 3);
     return 3;
   }
   else if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->MininimumPointsForOneStar
     && challengeInfo < 2 )
   {       
-    m_gameContext->setChallengeInfo(this->m_challengeIndex, 2);
+    m_pGameContext->setChallengeInfo(this->m_challengeIndex, 2);
     return 2;
   }
 
@@ -266,7 +267,7 @@ void BaseChallengeScene::onBackKeyPressed()
   }
   else
   {
-    NavigationManager::showScene(MENU_SCENE, m_gameContext, NEW);
+    NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
   }
 }
 
@@ -309,7 +310,7 @@ void BaseChallengeScene::newGameCallback(CCObject* pSender)
 
 void BaseChallengeScene::mainMenuCallback(CCObject* pSender)
 {
-  NavigationManager::showScene(MENU_SCENE, m_gameContext, NEW);
+  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
 }
 
 

@@ -18,7 +18,7 @@ void RepeatOneOffSequenceChallengeScene::onLoadLayout()
   switch (this->m_totalButtons)
   {
   case 3:
-    this->m_buttons = LayoutController::createThreeButtons(this->m_gameContext, this->m_debugDraw, this->m_anchor, this
+    this->m_buttons = LayoutController::createThreeButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback ));      
@@ -26,14 +26,14 @@ void RepeatOneOffSequenceChallengeScene::onLoadLayout()
 
   case 4:
         
-    this->m_buttons = LayoutController::createFourButtons(this->m_gameContext, this->m_debugDraw, this->m_anchor, this
+    this->m_buttons = LayoutController::createFourButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback ));      
     break;
 
   case 5:
-    this->m_buttons = LayoutController::createFiveButtons(this->m_gameContext, this->m_debugDraw, this->m_anchor, this
+    this->m_buttons = LayoutController::createFiveButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback ));      
@@ -170,7 +170,7 @@ void RepeatOneOffSequenceChallengeScene::onCorrectButtonPressed()
     if (m_buttonSequenceIndex == m_levelToReach)
     {
       m_topBar->setScore((long)this->m_gameScore.totalPoints);
-      m_gameContext->setGameScore( m_gameScore );
+      m_pGameContext->setGameScore( m_gameScore );
       
       int levelReached = this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
 
@@ -191,7 +191,7 @@ void RepeatOneOffSequenceChallengeScene::onCorrectButtonPressed()
       m_gameScore.totalPoints += this->m_challengePointScoreDefinition.levelBonus;
       m_gameScore.totalPoints = (int)m_gameScore.totalPoints - (int)m_gameScore.totalPoints % 10;
 
-      this->m_gameContext->setTotalCoins(this->m_gameContext->getTotalCoins() + 1);           
+      this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + 1);           
       
       m_topBar->setLevel(m_gameScore.level + 1);      
       m_topBar->setScore((long)this->m_gameScore.totalPoints);
@@ -204,7 +204,7 @@ void RepeatOneOffSequenceChallengeScene::onCorrectButtonPressed()
 void RepeatOneOffSequenceChallengeScene::onIncorrectButtonPressed()
 {
   m_topBar->setScore((long)this->m_gameScore.totalPoints);
-  m_gameContext->setGameScore( m_gameScore );
+  m_pGameContext->setGameScore( m_gameScore );
     
   m_gameScorePopup->refresh();
   m_gameScorePopup->show();

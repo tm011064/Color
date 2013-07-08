@@ -14,12 +14,12 @@ private:
   bool m_isEnabled;
   void setButtonState(ButtonState buttonState);
 
-  GameContext* m_gameContext;
+  GameContext* m_pGameContext;
 
 public:
   ~ImageButton() 
   { 
-    this->m_gameContext = NULL;
+    this->m_pGameContext = NULL;
   }
 
   static ImageButton* create(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate
@@ -49,7 +49,7 @@ protected:
               , GameContext* gameContext)   
     : BaseSprite(pTarget, touchEndedDelegate, preLoadDelegate)
     , m_buttonState(UNGRABBED)
-    , m_gameContext(gameContext)
+    , m_pGameContext(gameContext)
     , m_isEnabled(true)
   {
 

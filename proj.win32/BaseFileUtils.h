@@ -16,6 +16,8 @@ public:
   { }
   ~BaseFileUtils() { }
 
+  std::vector<std::string> getNumberedKeys(const char *key);
   std::vector<std::string> getNumberedResourceFiles(const char *key);
+  std::string valueForKey(std::string key);
 };
 #endif  // __BASEFILEUTILS_H__

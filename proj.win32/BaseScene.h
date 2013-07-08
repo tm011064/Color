@@ -13,7 +13,7 @@ protected:
 #endif
   
   SceneState m_sceneState;
-  GameContext* m_gameContext;
+  GameContext* m_pGameContext;
 
 public:
   
@@ -21,7 +21,7 @@ public:
     : m_debugDraw(0)
     , m_sceneState(UNLOADED)
   {
-    this->m_gameContext = gameContext;
+    this->m_pGameContext = gameContext;
 
 #if IS_DEBUG
   if (!m_debugDraw)
@@ -34,7 +34,7 @@ public:
 
   ~BaseScene()
   {
-    this->m_gameContext = NULL;
+    this->m_pGameContext = NULL;
   }
 
   virtual void onBackKeyPressed() { }

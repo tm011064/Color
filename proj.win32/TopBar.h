@@ -13,7 +13,7 @@ private:
   CCLabelBMFont* m_levelLabel;
   CCLabelBMFont* m_scoreLabel;
 
-  GameContext* m_gameContext; 
+  GameContext* m_pGameContext; 
   bool m_isLayoutInitialized;
 
   CCPoint m_rectOrigin;
@@ -29,14 +29,14 @@ private:
 
 public:  
   TopBar(GameContext* gameContext)
-    : m_gameContext(gameContext)
+    : m_pGameContext(gameContext)
     , m_isLayoutInitialized(false)
   {
 
   }
   ~TopBar()
   {
-    this->m_gameContext = NULL;
+    this->m_pGameContext = NULL;
   }
   
   CCRect getBoundingBox() { return CCRectMake(m_borderOrigin.x, m_borderOrigin.y, m_rectDestination.x - m_borderOrigin.x, m_rectDestination.y - m_borderOrigin.y); }

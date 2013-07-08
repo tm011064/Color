@@ -13,7 +13,7 @@ enum SceneType
   ARCADE_HARD_GAME_SCENE = 3,
   CHALLENGE = 4,
   OPTIONS_SCENE = 5,
-  HIGHSCORE_SCENE = 6
+  HIGHSCORE_SCENE = 6 
 };
 
 enum ChallengeSceneType

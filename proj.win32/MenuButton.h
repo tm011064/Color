@@ -31,20 +31,27 @@ private:
   CCSprite* m_bgDisabled;
 
   CCNode* m_pTarget;
-  const char* m_text;
+  std::string m_text;
   bool m_isEnabled;
   bool m_isLayoutInitialized;
 
-  GameContext* m_gameContext; 
+  GameContext* m_pGameContext; 
   SEL_CallFuncO m_fnpTouchEndedDelegate;
 
   void refresh();
 
 public:  
+  /*
   MenuButton(CCSpriteFrame* bgNormal, CCSpriteFrame* bgSelected, CCSpriteFrame* bgDisabled
-    , const char* text
-    , GameContext* gameContext, SEL_CallFuncO fnpTouchEndedDelegate, CCNode *pTarget);
-  MenuButton(CCSpriteFrame* bgNormalLeft
+    , std::string text
+    , GameContext* gameContext, SEL_CallFuncO fnpTouchEndedDelegate, CCNode *pTarget);*/
+  
+  ~MenuButton()
+  {
+    this->m_pGameContext = NULL;
+    this->m_pTarget = NULL;
+  }
+  static MenuButton* create(CCSpriteFrame* bgNormalLeft
     , CCSpriteFrame* bgNormalMiddle
     , CCSpriteFrame* bgNormalRight
     , CCSpriteFrame* bgSelectedLeft
@@ -56,13 +63,8 @@ public:
     , float normalMiddleScaleX
     , float selectedMiddleScaleX
     , float disabledMiddleScaleX
-    , const char* text
+    , std::string text
     , GameContext* gameContext, SEL_CallFuncO fnpTouchEndedDelegate, CCNode *pTarget);
-  ~MenuButton()
-  {
-    this->m_gameContext = NULL;
-    this->m_pTarget = NULL;
-  }
   
   void setEnabled(bool isEnabled) { this->m_isEnabled = isEnabled; }
     
@@ -74,7 +76,8 @@ public:
   virtual void onExit();
 
   virtual bool containsTouchLocation(CCTouch* touch);
-
+protected:
+  MenuButton(std::string text, GameContext* gameContext, SEL_CallFuncO fnpTouchEndedDelegate, CCNode *pTarget);
 };
 
 #endif  // __MENUBUTTON_H__

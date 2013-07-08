@@ -4,14 +4,52 @@
 #include "Types.h"
 #include <cstring> 
 
- MenuButton::MenuButton(CCSpriteFrame* bgNormalLeft, CCSpriteFrame* bgNormalMiddle, CCSpriteFrame* bgNormalRight
-    , CCSpriteFrame* bgSelectedLeft, CCSpriteFrame* bgSelectedMiddle, CCSpriteFrame* bgSelectedRight
-    , CCSpriteFrame* bgDisabledLeft, CCSpriteFrame* bgDisabledMiddle, CCSpriteFrame* bgDisabledRight
-    , float normalMiddleScaleX, float selectedMiddleScaleX, float disabledMiddleScaleX
-    , const char* text
+MenuButton* MenuButton::create(CCSpriteFrame* bgNormalLeft
+    , CCSpriteFrame* bgNormalMiddle
+    , CCSpriteFrame* bgNormalRight
+    , CCSpriteFrame* bgSelectedLeft
+    , CCSpriteFrame* bgSelectedMiddle
+    , CCSpriteFrame* bgSelectedRight
+    , CCSpriteFrame* bgDisabledLeft
+    , CCSpriteFrame* bgDisabledMiddle
+    , CCSpriteFrame* bgDisabledRight
+    , float normalMiddleScaleX
+    , float selectedMiddleScaleX
+    , float disabledMiddleScaleX
+    , std::string text
+    , GameContext* gameContext, SEL_CallFuncO fnpTouchEndedDelegate, CCNode *pTarget)
+{
+  MenuButton* menuButton = new MenuButton(text, gameContext, fnpTouchEndedDelegate, pTarget);
+  menuButton->autorelease();
+  
+  menuButton->m_bgNormalLeft = CCSprite::createWithSpriteFrame(bgNormalLeft);
+  menuButton->m_bgNormalMiddle = CCSprite::createWithSpriteFrame(bgNormalMiddle);
+  menuButton->m_bgNormalRight = CCSprite::createWithSpriteFrame(bgNormalRight);
+  menuButton->m_bgSelectedLeft = CCSprite::createWithSpriteFrame(bgSelectedLeft);
+  menuButton->m_bgSelectedMiddle = CCSprite::createWithSpriteFrame(bgSelectedMiddle); 
+  menuButton->m_bgSelectedRight = CCSprite::createWithSpriteFrame(bgSelectedRight);
+  menuButton->m_bgDisabledLeft = CCSprite::createWithSpriteFrame(bgDisabledLeft);
+  menuButton->m_bgDisabledMiddle = CCSprite::createWithSpriteFrame(bgDisabledMiddle); 
+  menuButton->m_bgDisabledRight = CCSprite::createWithSpriteFrame(bgDisabledRight);
+
+  menuButton->m_bgNormalLeft->setPositionX(-(normalMiddleScaleX/2) - menuButton->m_bgNormalLeft->getContentSize().width/2);
+  menuButton->m_bgNormalMiddle->setScaleX(normalMiddleScaleX);
+  menuButton->m_bgNormalRight->setPositionX(normalMiddleScaleX/2 + menuButton->m_bgNormalRight->getContentSize().width/2);
+  
+  menuButton->m_bgSelectedLeft->setPositionX(-(selectedMiddleScaleX/2) - menuButton->m_bgSelectedLeft->getContentSize().width/2);
+  menuButton->m_bgSelectedMiddle->setScaleX(selectedMiddleScaleX);
+  menuButton->m_bgSelectedRight->setPositionX(selectedMiddleScaleX/2 + menuButton->m_bgSelectedRight->getContentSize().width/2);
+
+  menuButton->m_bgDisabledLeft->setPositionX(-(disabledMiddleScaleX/2) - menuButton->m_bgDisabledLeft->getContentSize().width/2);
+  menuButton->m_bgDisabledMiddle->setScaleX(disabledMiddleScaleX);
+  menuButton->m_bgDisabledRight->setPositionX(disabledMiddleScaleX/2 + menuButton->m_bgDisabledRight->getContentSize().width/2);
+
+  return menuButton;
+}
+ MenuButton::MenuButton(std::string text
     , GameContext* gameContext, SEL_CallFuncO fnpTouchEndedDelegate, CCNode *pTarget)
   : m_buttonState(UNGRABBED)
-  , m_gameContext(gameContext)
+  , m_pGameContext(gameContext)
   , m_bgNormal(NULL)
   , m_bgSelected(NULL)
   , m_bgDisabled(NULL)
@@ -30,56 +68,7 @@
   , m_bgDisabledMiddle(NULL)
   , m_bgDisabledRight(NULL)
  {
-  m_bgNormalLeft = CCSprite::createWithSpriteFrame(bgNormalLeft);
-  m_bgNormalMiddle = CCSprite::createWithSpriteFrame(bgNormalMiddle);
-  m_bgNormalRight = CCSprite::createWithSpriteFrame(bgNormalRight);
-  m_bgSelectedLeft = CCSprite::createWithSpriteFrame(bgSelectedLeft);
-  m_bgSelectedMiddle = CCSprite::createWithSpriteFrame(bgSelectedMiddle); 
-  m_bgSelectedRight = CCSprite::createWithSpriteFrame(bgSelectedRight);
-  m_bgDisabledLeft = CCSprite::createWithSpriteFrame(bgDisabledLeft);
-  m_bgDisabledMiddle = CCSprite::createWithSpriteFrame(bgDisabledMiddle); 
-  m_bgDisabledRight = CCSprite::createWithSpriteFrame(bgDisabledRight);
-
-  m_bgNormalLeft->setPositionX(-(normalMiddleScaleX/2) - m_bgNormalLeft->getContentSize().width/2);
-  m_bgNormalMiddle->setScaleX(normalMiddleScaleX);
-  m_bgNormalRight->setPositionX(normalMiddleScaleX/2 + m_bgNormalRight->getContentSize().width/2);
-  
-  m_bgSelectedLeft->setPositionX(-(selectedMiddleScaleX/2) - m_bgSelectedLeft->getContentSize().width/2);
-  m_bgSelectedMiddle->setScaleX(selectedMiddleScaleX);
-  m_bgSelectedRight->setPositionX(selectedMiddleScaleX/2 + m_bgSelectedRight->getContentSize().width/2);
-
-  m_bgDisabledLeft->setPositionX(-(disabledMiddleScaleX/2) - m_bgDisabledLeft->getContentSize().width/2);
-  m_bgDisabledMiddle->setScaleX(disabledMiddleScaleX);
-  m_bgDisabledRight->setPositionX(disabledMiddleScaleX/2 + m_bgDisabledRight->getContentSize().width/2);
  }
-
-MenuButton::MenuButton(CCSpriteFrame* bgNormal, CCSpriteFrame* bgSelected, CCSpriteFrame* bgDisabled
-  , const char* text
-  , GameContext* gameContext, SEL_CallFuncO fnpTouchEndedDelegate, CCNode *pTarget)
-  : m_buttonState(UNGRABBED)
-  , m_gameContext(gameContext)
-  , m_bgNormal(NULL)
-  , m_bgSelected(NULL)
-  , m_bgDisabled(NULL)
-  , m_fnpTouchEndedDelegate(fnpTouchEndedDelegate)
-  , m_isEnabled(true)
-  , m_pTarget(pTarget)
-  , m_text(text)
-  , m_isLayoutInitialized(false)
-  , m_bgNormalLeft(NULL)
-  , m_bgNormalMiddle(NULL)
-  , m_bgNormalRight(NULL)
-  , m_bgSelectedLeft(NULL)
-  , m_bgSelectedMiddle(NULL)
-  , m_bgSelectedRight(NULL)
-  , m_bgDisabledLeft(NULL)
-  , m_bgDisabledMiddle(NULL)
-  , m_bgDisabledRight(NULL)
-{    
-  m_bgNormal = CCSprite::createWithSpriteFrame(bgNormal);
-  m_bgSelected = CCSprite::createWithSpriteFrame(bgSelected); 
-  m_bgDisabled = CCSprite::createWithSpriteFrame(bgDisabled); 
-}
 
 bool MenuButton::containsTouchLocation(CCTouch* touch)
 {
@@ -188,7 +177,7 @@ void MenuButton::onEnter()
 
     std::string s;
     char c[256];
-    strcpy(c, m_text);
+    strcpy(c, m_text.c_str());
     char* splitted = strtok(c, " ");
     while (splitted)
     {
@@ -196,11 +185,11 @@ void MenuButton::onEnter()
 
       tagCounter++;
 
-      CCLabelBMFont* body = CCLabelBMFont::create(s.substr(1, std::strlen(splitted) - 1).c_str(), m_gameContext->getFontNormalPath().c_str());
+      CCLabelBMFont* body = CCLabelBMFont::create(s.substr(1, std::strlen(splitted) - 1).c_str(), m_pGameContext->getFontNormalPath().c_str());
       this->addChild(body, tagCounter, tagCounter);
     
       tagCounter++;
-      CCLabelBMFont* capLetter  = CCLabelBMFont::create(s.substr(0, 1).c_str(), m_gameContext->getFontLargePath().c_str());
+      CCLabelBMFont* capLetter  = CCLabelBMFont::create(s.substr(0, 1).c_str(), m_pGameContext->getFontLargePath().c_str());
       this->addChild(capLetter, tagCounter, tagCounter); 
     
       bodySize = body->getContentSize();
@@ -219,7 +208,7 @@ void MenuButton::onEnter()
     for (int i = 1; i <= tagCounter; i++)
     {
       CCNode* node = this->getChildByTag(i);
-      node->setPositionX(node->getPositionX() - totalWidth/2);      
+      node->setPositionX(node->getPositionX() - totalWidth/2);  
     }
 
     CC_SAFE_DELETE(splitted);

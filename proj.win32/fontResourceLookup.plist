@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>filenames</key>
+  <dict>
+	  <key>fs_12</key>
+	  <string>fonts/RussoOne_fs12.fnt</string>
+	  <key>fs_19</key>
+	  <string>fonts/RussoOne_fs19.fnt</string>
+	  <key>fs_26</key>
+	  <string>fonts/RussoOne_fs26.fnt</string>
+	  <key>fs_30</key>
+	  <string>fonts/RussoOne_fs30.fnt</string>
+	  <key>fs_38</key>
+	  <string>fonts/RussoOne_fs38.fnt</string>
+	  <key>fs_50</key>
+	  <string>fonts/RussoOne_fs50.fnt</string>
+	  <key>fs_60</key>
+	  <string>fonts/RussoOne_fs60.fnt</string>
+	  <key>fs_64</key>
+	  <string>fonts/RussoOne_fs64.fnt</string>
+	  <key>fs_72</key>
+	  <string>fonts/RussoOne_fs72.fnt</string>
+	  <key>fs_78</key>
+	  <string>fonts/RussoOne_fs78.fnt</string>
+	  <key>fs_85</key>
+	  <string>fonts/RussoOne_fs85.fnt</string>
+	  <key>fs_105</key>
+	  <string>fonts/RussoOne_fs105.fnt</string>
+	  <key>fs_120</key>
+	  <string>fonts/RussoOne_fs120.fnt</string>
+	  <key>fs_128</key>
+	  <string>fonts/RussoOne_fs128.fnt</string>	  
+  </dict>
+  <key>metadata</key>
+  <dict>
+	  <key>version</key>
+	  <integer>1</integer>
+  </dict>
+</dict>
+</plist>

@@ -12,7 +12,7 @@
 
 using namespace cocos2d;
 
-std::string NavigationManager::getPath(GameContext* gameContext, const char* fileName)
+std::string NavigationManager::getPath(GameContext* gameContext, std::string fileName)
 {
   std::string s;
   s.append(gameContext->getResourceDefinition().directory);
@@ -68,8 +68,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     pLayer->autorelease();
 
     arcadeEasyGameScene->addChild(pLayer); 
-    //arcadeEasyGameScene->autorelease();
-
+    
     return arcadeEasyGameScene;
     
   case ARCADE_HARD_GAME_SCENE: 
@@ -260,7 +259,6 @@ void NavigationManager::showChallengeScene(GameContext* gameContext, int challen
 void NavigationManager::showScene(SceneType sceneType, GameContext* gameContext, SceneRenderMode sceneRenderMode)
 {    
   CCScene* scene;
-  CCScene* s2;
   CCDirector::sharedDirector()->purgeCachedData();
   
   switch(sceneRenderMode)

@@ -21,7 +21,7 @@ public:
   static void showScene(SceneType sceneType, GameContext* gameContext, SceneRenderMode sceneRenderMode);
   static void showChallengeScene(GameContext* gameContext, int challengeIndex, SceneRenderMode sceneRenderMode);
 
-  static std::string getPath(GameContext* gameContext, const char* fileName);
+  static std::string getPath(GameContext* gameContext, std::string fileName);
 
 };
 

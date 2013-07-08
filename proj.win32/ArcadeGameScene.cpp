@@ -32,7 +32,7 @@ ArcadeGameScene::ArcadeGameScene(GameContext* gameContext, SceneType sceneType, 
 
 ArcadeGameScene::~ArcadeGameScene()
 {  
-  
+  //m_buttons->release();
 }
 
 void ArcadeGameScene::onExit()
@@ -43,7 +43,7 @@ void ArcadeGameScene::onExit()
     CC_SAFE_DELETE(m_lastLevelStartTime); 
         
     m_lastButtonPressed = NULL;    
-    m_nextSequenceButton = NULL;    
+    m_nextSequenceButton = NULL;  
   }
 
   CCScene::onExit();
@@ -64,13 +64,13 @@ void ArcadeGameScene::onEnter()
     float availableWidth = visibleRect.size.width / 2;         
 
     // TODO (Roman): loading screen
-    m_loadingScreenText = CCLabelBMFont::create("LOADING", m_gameContext->getFontLargePath().c_str());
+    m_loadingScreenText = CCLabelBMFont::create("LOADING", m_pGameContext->getFontLargePath().c_str());
     m_loadingScreenText->setPosition(center);
     this->addChild(m_loadingScreenText, 1001);
     
     m_loadingScreen = RepeatingSprite::create(
-      m_gameContext
-      , m_gameContext->getImageMap()->getTile("background")
+      m_pGameContext
+      , m_pGameContext->getImageMap()->getTile("background")
       , HORIZONTAL
       , NORMAL
       , visibleRect.size);    
@@ -79,8 +79,8 @@ void ArcadeGameScene::onEnter()
     
     
     RepeatingSprite* bg = RepeatingSprite::create(
-      m_gameContext
-      , m_gameContext->getImageMap()->getTile("background")
+      m_pGameContext
+      , m_pGameContext->getImageMap()->getTile("background")
       , HORIZONTAL
       , NORMAL
       , visibleRect.size);    
@@ -89,7 +89,7 @@ void ArcadeGameScene::onEnter()
     bg = NULL;
         
     /********** TOP BAR **********/
-    m_topBar = new TopBar(m_gameContext);
+    m_topBar = new TopBar(m_pGameContext);
     m_topBar->autorelease();
     this->addChild(m_topBar);
 
@@ -98,7 +98,7 @@ void ArcadeGameScene::onEnter()
     /********** TOP BAR **********/
     
     /********** CONSOLE **********/    
-    m_consoleBackground = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("console"));
+    m_consoleBackground = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("console"));
     this->addChild(m_consoleBackground);    
     
     CCSize consoleBackgroundSize = m_consoleBackground->getContentSize();
@@ -106,7 +106,7 @@ void ArcadeGameScene::onEnter()
 
     m_consoleBackground->setScale(consoleBackgroundScale);
             
-    CCSprite* consoleButtonBackground = CCSprite::createWithSpriteFrame(m_gameContext->getImageMap()->getTile("gameConsoleButtonBackground"));
+    CCSprite* consoleButtonBackground = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("gameConsoleButtonBackground"));
     consoleButtonBackground->setScale(consoleBackgroundScale);
     this->addChild(consoleButtonBackground);    
     
@@ -115,7 +115,7 @@ void ArcadeGameScene::onEnter()
     m_consoleButton = ImageButton::create(this
       , callfuncO_selector( ArcadeGameScene::consoleButtonTouchEndedCallback )
       , NULL
-      , m_gameContext
+      , m_pGameContext
       , "coin_large"
       , 0
       , 0
@@ -124,14 +124,21 @@ void ArcadeGameScene::onEnter()
       , 0
       , 0
       , TOUCH_PRIORITY_NORMAL);
-
+    m_consoleButton->setScale(consoleBackgroundScale);
+    this->addChild(m_consoleButton);
     CCRect topBarBoundingBox = m_topBar->getBoundingBox();
     CCSize consoleSize = m_consoleBackground->getContentSize();
     
     // we have the top bar, so we can get the border...
     this->m_anchor = ccpRounded(
       center.x
-      , (topBarBoundingBox.origin.y - (consoleBackgroundScale * consoleSize.height)/2 - topBarBoundingBox.size.height/8.0f));
+      , (   topBarBoundingBox.origin.y 
+          - (consoleBackgroundScale * consoleSize.height)/2 
+          - topBarBoundingBox.size.height/8.0f
+        ));
+    
+    float consoleHeight = consoleBackgroundSize.height * consoleBackgroundScale;
+    float availableHeight = topBarBoundingBox.origin.y - visibleRect.origin.y;
     
     consoleButtonBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
     m_consoleBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
@@ -140,9 +147,16 @@ void ArcadeGameScene::onEnter()
     /********** CONSOLE **********/
 
     /********** LEVEL DONE MESSAGE **********/
-    m_levelDoneLabel = CCLabelBMFont::create("WELL DONE", m_gameContext->getFontLargePath().c_str());
-    m_levelDoneLabel->setPosition(ccp(this->m_anchor.x, this->m_anchor.y - consoleBackgroundSize.height*consoleBackgroundScale/2
-                                                                         - m_gameContext->getFontHeightLarge()/2));
+    m_levelDoneLabel = CCLabelBMFont::create("WELL DONE", m_pGameContext->getFontLargePath().c_str());
+    float posY = this->m_anchor.y - consoleBackgroundSize.height*consoleBackgroundScale/2
+                                  - m_pGameContext->getFontHeightLarge()/2;
+
+    float minPosY = m_pGameContext->getFontHeightLarge()/2 * 1.1 
+                    + m_pGameContext->getDefaultPadding(); // 1.1 = scale factor in animation
+    if (posY < minPosY)
+      posY = minPosY;
+
+    m_levelDoneLabel->setPosition(ccp(this->m_anchor.x, posY));
     m_levelDoneLabel->setOpacity(.0f);
     this->addChild(m_levelDoneLabel, 1000);
     /********** LEVEL DONE MESSAGE **********/
@@ -150,7 +164,7 @@ void ArcadeGameScene::onEnter()
 
     /********** MODAL LAYER **********/
     m_wildcardPopup = new WildcardPopup(
-      this->m_gameContext
+      this->m_pGameContext
       , callfuncO_selector(ArcadeGameScene::replaySequenceCallback) 
       , callfuncO_selector(ArcadeGameScene::showNextSequenceItemCallback) 
       , callfuncO_selector(ArcadeGameScene::replayFromCurrentCallback) 
@@ -166,11 +180,12 @@ void ArcadeGameScene::onEnter()
 
     /********** MODAL LAYER **********/
     m_gameScorePopup = new GameScorePopup(
-      this->m_gameContext
+      this->m_pGameContext
       , callfuncO_selector(ArcadeGameScene::newGameCallback) 
       , callfuncO_selector(ArcadeGameScene::mainMenuCallback) 
       , this
       );
+    m_gameScorePopup->autorelease();
     m_gameScorePopup->setPosition(ccp(0, 0));    
     m_gameScorePopup->setZOrder( MODAL_ZORDER ); 
     
@@ -267,13 +282,13 @@ void ArcadeGameScene::draw()
     CCARRAY_FOREACH(this->m_buttons, o)
     {
       if (!((GameButton*)o)->hasAlphaMap())
-        ((GameButton*)o)->refreshAlphaMap(m_gameContext->getOriginalSize(), m_gameContext->getResolutionPolicy());  
+        ((GameButton*)o)->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());  
 
       ((GameButton*)o)->load();
     }
 
     if (!this->m_consoleButton->hasAlphaMap())
-      this->m_consoleButton->refreshAlphaMap(m_gameContext->getOriginalSize(), m_gameContext->getResolutionPolicy());
+      this->m_consoleButton->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());
 
     this->m_wildcardPopup->hide();
     this->m_gameScorePopup->hide();
@@ -281,7 +296,7 @@ void ArcadeGameScene::draw()
     this->m_bIsFirstDraw = false;
   }
   
-  CCScene::draw();
+  //CCScene::draw();
 
 }
 
@@ -378,16 +393,16 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
     m_topBar->setScore((long)this->m_gameScore.totalPoints);
     
     this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
-    this->m_gameContext->setTotalCoins(this->m_gameContext->getTotalCoins() + m_gameScore.coinsEarned);
+    this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);
 
-    m_gameContext->setGameScore( m_gameScore );
+    m_pGameContext->setGameScore( m_gameScore );
 
     onGameOver();
 
-    if (this->m_gameContext->getIsSoundOn())
+    if (this->m_pGameContext->getIsSoundOn())
     {      
       // TODO (Roman): global path
-      std::string s = m_gameContext->getSoundPath() + "button_wrong.wav";
+      std::string s = m_pGameContext->getSoundPath() + "button_wrong.wav";
       CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(s.c_str());      
     }
       
@@ -538,7 +553,7 @@ void ArcadeGameScene::onBackKeyPressed()
   }
   else
   {
-    NavigationManager::showScene(MENU_SCENE, m_gameContext, NEW);
+    NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
   }
 }
 
@@ -601,5 +616,5 @@ void ArcadeGameScene::newGameCallback(CCObject* pSender)
 
 void ArcadeGameScene::mainMenuCallback(CCObject* pSender)
 {
-  NavigationManager::showScene(MENU_SCENE, m_gameContext, NEW);
+  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
 }  

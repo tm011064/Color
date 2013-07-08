@@ -13,7 +13,7 @@ private:
   float m_padding;
   float m_borderThickness;
 
-  GameContext* m_gameContext; 
+  GameContext* m_pGameContext; 
   CCSize m_size;
 
   void replaySequenceCallback(CCObject* pSender);
@@ -35,7 +35,7 @@ public:
     , SEL_CallFuncO replayFromCurrentCallbackDelegate
     , SEL_CallFuncO moreCoinsCallbackDelegate
     , CCNode* callbackTarget)
-    : m_gameContext(gameContext)
+    : m_pGameContext(gameContext)
     , m_fnpReplaySequenceCallbackDelegate(replaySequenceCallbackDelegate)
     , m_fnpShowNextSequenceItemCallbackDelegate(showNextSequenceItemCallbackDelegate)
     , m_fnpSaveTryCallbackDelegate(replayFromCurrentCallbackDelegate)
@@ -46,7 +46,7 @@ public:
   { }
   ~WildcardPopupButtonPanel() 
   { 
-    this->m_gameContext = NULL;
+    this->m_pGameContext = NULL;
     this->m_pTarget = NULL;
   }
   

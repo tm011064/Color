@@ -42,7 +42,7 @@ private:
   ccColor4F m_currentBackgroundColor;
   ccColor3B m_currentBorderColor;
   
-  GameContext* m_gameContext; 
+  GameContext* m_pGameContext; 
   SEL_CallFuncO m_fnpChangedDelegate;
   
   int m_touchPriority;
@@ -50,11 +50,15 @@ private:
   void refresh();
 
 public:  
-  TextButton(ccColor3B borderColorOn, ccColor3B borderColorOff, ccColor4F backgroundColorOn
+  static TextButton* create(ccColor3B borderColorOn, ccColor3B borderColorOff, ccColor4F backgroundColorOn
     , ccColor4F backgroundColorOff, ccColor3B textColorOn, ccColor3B textColorOff
     , std::string text, CCSize size, float borderWidth
     , GameContext* gameContext, SEL_CallFuncO m_fnpChangedDelegate, CCNode *pTarget);
-  ~TextButton() { }
+  ~TextButton() 
+  { 
+    this->m_pGameContext = NULL;
+    this->m_pTarget = NULL;
+  }
   
   void setEnabled(bool isEnabled) { this->m_isEnabled = isEnabled; }
   CCSize getSize() { return this->m_size; }    
@@ -71,6 +75,31 @@ public:
   
   int getTouchPriority() { return this->m_touchPriority; }
   void setTouchPriority(int priority) { this->m_touchPriority = priority; }
+
+protected:  
+ TextButton(ccColor3B borderColorOn, ccColor3B borderColorOff, ccColor4F backgroundColorOn
+    , ccColor4F backgroundColorOff, ccColor3B textColorOn, ccColor3B textColorOff
+    , std::string text, CCSize size, float borderWidth
+    , GameContext* gameContext, SEL_CallFuncO fnpChangedDelegate, CCNode *pTarget)
+  : m_buttonState(UNGRABBED)
+  , m_pGameContext(gameContext)
+  , m_fnpChangedDelegate(fnpChangedDelegate)
+  , m_isEnabled(true)
+  , m_pTarget(pTarget)
+  , m_isLayoutInitialized(false)
+  , m_borderColorOn(borderColorOn)
+  , m_borderColorOff(borderColorOff)
+  , m_backgroundColorOn(backgroundColorOn)
+  , m_backgroundColorOff(backgroundColorOff)
+  , m_textColorOn(textColorOn)
+  , m_textColorOff(textColorOff)
+  , m_text(text)
+  , m_size(size)
+  , m_borderWidth(borderWidth)
+ {
+
+ }
+
 };
 
 #endif  // __TEXTBUTTON_H__

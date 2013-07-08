@@ -4,27 +4,16 @@
 #include "Types.h"
 #include <cstring> 
 
- TextToggleButton::TextToggleButton(ccColor4F borderColorOn, ccColor4F borderColorOff, ccColor4F backgroundColorOn
+ TextToggleButton* TextToggleButton::create(ccColor4F borderColorOn, ccColor4F borderColorOff, ccColor4F backgroundColorOn
     , ccColor4F backgroundColorOff, ccColor3B textColorOn, ccColor3B textColorOff
     , std::string text, ToggleState toggleState, CCSize size
     , GameContext* gameContext, SEL_CallFuncO fnpToggleChangedDelegate, CCNode *pTarget)
-  : m_buttonState(UNGRABBED)
-  , m_gameContext(gameContext)
-  , m_fnpToggleChangedDelegate(fnpToggleChangedDelegate)
-  , m_isEnabled(true)
-  , m_pTarget(pTarget)
-  , m_isLayoutInitialized(false)
-  , m_borderColorOn(borderColorOn)
-  , m_borderColorOff(borderColorOff)
-  , m_backgroundColorOn(backgroundColorOn)
-  , m_backgroundColorOff(backgroundColorOff)
-  , m_textColorOn(textColorOn)
-  , m_textColorOff(textColorOff)
-  , m_text(text)
-  , m_toggleState(toggleState)
-  , m_size(size)
  {
-
+   TextToggleButton* textToggleButton = new TextToggleButton(borderColorOn, borderColorOff, backgroundColorOn
+    , backgroundColorOff, textColorOn, textColorOff
+    , text, toggleState, size, gameContext, fnpToggleChangedDelegate, pTarget);
+   textToggleButton->autorelease();
+   return textToggleButton;
  }
 
 bool TextToggleButton::containsTouchLocation(CCTouch* touch)
@@ -47,7 +36,7 @@ void TextToggleButton::onEnter()
   {  
     this->m_isLayoutInitialized = true;
     
-    m_textLabel = CCLabelBMFont::create(m_text.c_str(), m_gameContext->getFontNormalPath().c_str());
+    m_textLabel = CCLabelBMFont::create(m_text.c_str(), m_pGameContext->getFontNormalPath().c_str());
     this->addChild(m_textLabel);
 
     refresh();
@@ -69,8 +58,8 @@ void TextToggleButton::refresh()
   this->m_borderOrigin.setPoint(round(-this->m_size.width/2),round(-this->m_size.height/2)); 
   this->m_borderDestination.setPoint(round(this->m_size.width/2),round(this->m_size.height/2));
         
-  this->m_backgroundOrigin.setPoint(round(this->m_borderOrigin.x + this->m_gameContext->getDefaultBorderThickness()),round(this->m_borderOrigin.y + this->m_gameContext->getDefaultBorderThickness())); 
-  this->m_backgroundDestination.setPoint(round(this->m_borderDestination.x - this->m_gameContext->getDefaultBorderThickness()),round(this->m_borderDestination.y - this->m_gameContext->getDefaultBorderThickness()));
+  this->m_backgroundOrigin.setPoint(round(this->m_borderOrigin.x + this->m_pGameContext->getDefaultBorderThickness()),round(this->m_borderOrigin.y + this->m_pGameContext->getDefaultBorderThickness())); 
+  this->m_backgroundDestination.setPoint(round(this->m_borderDestination.x - this->m_pGameContext->getDefaultBorderThickness()),round(this->m_borderDestination.y - this->m_pGameContext->getDefaultBorderThickness()));
 
   switch (this->m_toggleState)
   {
