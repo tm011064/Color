@@ -32,6 +32,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     //eglView->setFrameSize(240, 320);
 
    
+    //eglView->setFrameSize(576, 1024);    // 640  x  960: IPhone 4
     //eglView->setFrameSize(1536, 2048);  // 1536 x 2048: IPad HD (3:4)
     //eglView->setFrameSize(768, 1280);   // 768  x 1280: Nexus 4
     //eglView->setFrameSize(720, 1280);   // 720  x 1280: Galaxy SIII (9:16)

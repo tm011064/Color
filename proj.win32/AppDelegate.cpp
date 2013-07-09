@@ -69,8 +69,6 @@ bool AppDelegate::applicationDidFinishLaunching()
   searchPaths.push_back(gameContext->getResourceDefinition().directory);
   CCFileUtils::sharedFileUtils()->setSearchPaths(searchPaths);
 
-  //pDirector->setContentScaleFactor(gameContext->getResourceDefinition().size.width/DESIGN_RESOLUTION_SIZE.width);
-    
   gameContext->setHorizontalScaleFactor(gameContext->getResourceDefinition().size.width/frameSize.width);
   gameContext->setVerticalScaleFactor(1.0f);
 
@@ -160,7 +158,7 @@ bool AppDelegate::applicationDidFinishLaunching()
   CCSize letterSize = label->getContentSize();
   
   gameContext->setFontHeightNormal(letterSize.height);
-  gameContext->setDefaultButtonSize(round(letterSize.width * 1.5), round(letterSize.height * 1.2));
+  gameContext->setDefaultButtonSize(round(letterSize.width * 1.5), round(letterSize.height * 1.5));
   
   gameContext->setDefaultPadding(round(letterSize.height * .1));
   if (gameContext->getDefaultPadding() < 2.0f)

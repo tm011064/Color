@@ -55,7 +55,6 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     pLayer->autorelease();
 
     normalGameScene->addChild(pLayer); 
-    //normalGameScene->autorelease();
     return normalGameScene;
 
   case ARCADE_EASY_GAME_SCENE: 
@@ -81,7 +80,6 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     pLayer->autorelease();
 
     arcadeHardGameScene->addChild(pLayer); 
-    //arcadeHardGameScene->autorelease();
     return arcadeHardGameScene;
     
   case OPTIONS_SCENE: 

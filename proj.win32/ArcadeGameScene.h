@@ -13,8 +13,6 @@
 class ArcadeGameScene : public BaseScene
 {
 private:
-
-  bool m_bIsFirstDraw;  
   
   std::vector<GameButton*> m_buttonSequence;
   
@@ -58,6 +56,8 @@ private:
   void closeCallback(CCObject* pSender); 
 
   void startNewGame();
+  void preLoadCallback(float dt);
+
 
 protected:
   int m_totalButtons;
@@ -79,14 +79,32 @@ protected:
   struct cc_timeval *m_lastLevelStartTime;
 
 public:
+  
+  ArcadeGameScene(GameContext* gameContext, SceneType sceneType, int totalButtons)   
+    : BaseScene(gameContext)
+    , m_isLayoutInitialized(false) 
+    , m_buttonScale(.0f)
+    , m_buttons(NULL)
+    , m_loadingScreen(0)
+    , m_loadingScreenText(NULL)
+    , m_lastButtonPressedTime(0)
+    , m_lastLevelStartTime(0)
+    , m_totalButtons(totalButtons)
+    , m_sceneType(sceneType)
+    , m_consoleBackground(NULL)
+    , m_topBar(NULL)
+    , m_wildcardPopup(NULL)
+    , m_gameScorePopup(NULL)
+    , m_lastButtonPressed(NULL)
+    , m_nextSequenceButton(NULL)
+  { }
 
-  ArcadeGameScene(GameContext* gameContext, SceneType sceneType, int totalButtons);
-  ~ArcadeGameScene();
+  ~ArcadeGameScene() { }
   
   virtual void onEnter();
   virtual void onExit();
-  virtual void draw();
   virtual void onBackKeyPressed();
+  virtual bool init();
 
 protected:
   virtual void buttonTouchEndedCallback(CCObject* pSender);
@@ -96,6 +114,7 @@ protected:
 
   virtual void onGameOver() { /* can be overridden */ }
   virtual void onLoadLayout() { /* can be overridden */ }
+  virtual void onPreLoad() { /* can be overridden */ }
 };
 
 #endif  // __ARCADEGAME_SCENE_H__

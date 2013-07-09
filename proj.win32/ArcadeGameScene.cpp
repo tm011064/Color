@@ -4,35 +4,15 @@
 
 using namespace cocos2d;
 
-ArcadeGameScene::ArcadeGameScene(GameContext* gameContext, SceneType sceneType, int totalButtons)   
-  : BaseScene(gameContext)
-  , m_isLayoutInitialized(false) 
-  , m_bIsFirstDraw(true)
-  , m_buttonScale(.0f)
-  , m_buttons(NULL)
-  , m_loadingScreen(0)
-  , m_loadingScreenText(NULL)
-  , m_lastButtonPressedTime(0)
-  , m_lastLevelStartTime(0)
-  , m_totalButtons(totalButtons)
-  , m_sceneType(sceneType)
-  , m_consoleBackground(NULL)
-  , m_topBar(NULL)
-  , m_wildcardPopup(NULL)
-  , m_gameScorePopup(NULL)
-  , m_lastButtonPressed(NULL)
-  , m_nextSequenceButton(NULL)
-{ 
+bool ArcadeGameScene::init()
+{
   m_gameScore.totalPoints = 0;
   m_gameScore.totalLevelBonus = 0;
   m_gameScore.totalButtonBonus = 0;
   m_gameScore.level = 0;
   m_gameScore.totalTimeElapsed = 0;
-}
 
-ArcadeGameScene::~ArcadeGameScene()
-{  
-  //m_buttons->release();
+  return CCScene::init();
 }
 
 void ArcadeGameScene::onExit()
@@ -193,14 +173,36 @@ void ArcadeGameScene::onEnter()
     /********** MODAL LAYER **********/
     
     this->onLoadLayout();
-
+    
     this->m_lastButtonPressedTime = new struct cc_timeval();
     this->m_lastLevelStartTime = new struct cc_timeval();
 
     this->m_isLayoutInitialized = true;
+
+    this->m_sceneState = LOADING;
+    this->scheduleOnce(schedule_selector(ArcadeGameScene::preLoadCallback), 0);
   }    
 }
 
+void ArcadeGameScene::preLoadCallback(float dt)
+{  
+  CCObject* o;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    if (!((GameButton*)o)->hasAlphaMap())
+      ((GameButton*)o)->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());  
+
+    ((GameButton*)o)->load();
+  }
+
+  if (!this->m_consoleButton->hasAlphaMap())
+    this->m_consoleButton->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());
+
+  this->m_wildcardPopup->hide();
+  this->m_gameScorePopup->hide();
+
+  this->onPreLoad();
+}
 void ArcadeGameScene::runSequenceAnimation(bool doAddButton, int startIndex, int endIndex)
 {
   this->m_sceneState = RUNNING_SEQUENCE_ANIMATION;
@@ -270,34 +272,6 @@ void ArcadeGameScene::buttonBlinkCallback(CCObject* pSender)
     this->m_buttonSequenceIndex = this->m_lastStartIndex;
     this->m_sceneState = AWAITING_INPUT;
   }
-}
-
-void ArcadeGameScene::draw()
-{
-  if ( this->m_bIsFirstDraw )
-  {
-    this->m_sceneState = LOADING;
-
-    CCObject* o;
-    CCARRAY_FOREACH(this->m_buttons, o)
-    {
-      if (!((GameButton*)o)->hasAlphaMap())
-        ((GameButton*)o)->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());  
-
-      ((GameButton*)o)->load();
-    }
-
-    if (!this->m_consoleButton->hasAlphaMap())
-      this->m_consoleButton->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());
-
-    this->m_wildcardPopup->hide();
-    this->m_gameScorePopup->hide();
-
-    this->m_bIsFirstDraw = false;
-  }
-  
-  //CCScene::draw();
-
 }
 
 float ArcadeGameScene::updateTimeVal(cc_timeval* time)
@@ -531,8 +505,6 @@ void ArcadeGameScene::buttonLoadedCallback(CCObject* pSender)
       return;
   }
   
-  //this->scheduleOnce(schedule_selector(ArcadeGameScene::startNewGame), 3.0f);
-  // GAME START
   this->startNewGame();
 }
 
