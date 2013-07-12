@@ -6,14 +6,13 @@ void MenuScene::onEnter()
 {
   CCScene::onEnter();
 
-        // TODO (Roman): memory management for all enter methods
   if (!this->m_isLayoutInitialized)
   {  
     this->m_isLayoutInitialized = true;
 
-    CCLOG("initializing MenuScene");
     CCPoint center = VisibleRect::center();
     CCPoint rightTop = VisibleRect::rightTop();
+    CCPoint leftBottom = VisibleRect::leftBottom();
     CCRect visibleRect = VisibleRect::getVisibleRect();
         
     RepeatingSprite* bg = RepeatingSprite::create(
@@ -26,15 +25,13 @@ void MenuScene::onEnter()
     this->addChild(bg, 0);
     bg = NULL;
         
-    CCSprite* header = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("header"));
-    CCSize size = header->getContentSize();
-    header->setScale(visibleRect.size.width / size.height); 
-    header->setRotation(-90);
-    header->setPosition(ccp(center.x, rightTop.y - (size.width / 2) * header->getScale()));
-    this->addChild(header);
+    m_header = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("header"));
+    CCSize size = m_header->getContentSize();
+    m_header->setScale(visibleRect.size.width / size.height); 
+    m_header->setRotation(-90);
+    m_header->setPosition(ccp(center.x, rightTop.y - (size.width / 2) * m_header->getScale()));
+    this->addChild(m_header);
 
-    float startPosY = round( rightTop.y - size.width*header->getScale() - size.width*header->getScale()*.1 );
-    float posY = startPosY;
     float buttonWidth = visibleRect.size.width * .75;
 
     /*************** HOME ***************/
@@ -43,12 +40,20 @@ void MenuScene::onEnter()
       , m_pGameContext->getImageMap()->getTile("menubutton_on_left"), m_pGameContext->getImageMap()->getTile("menubutton_on_center"), m_pGameContext->getImageMap()->getTile("menubutton_on_right")
       , m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
       , buttonWidth, buttonWidth, buttonWidth
-      , "STORY MODE", m_pGameContext, menu_selector(MenuScene::showStoryModeMenu), this);
-    m_homeStoryMode->setPosition(center.x, posY);
+      , "CHALLENGES", m_pGameContext, menu_selector(MenuScene::showStoryModeMenu), this);
     this->addChild(m_homeStoryMode);
-    size = this->m_homeStoryMode->getContentSize();
-    float spacing = size.height * 1.38f;
+        
+    float topY = round( rightTop.y - size.width*m_header->getScale());
+    float availableHeight = round( topY - leftBottom.y );
+    
+    CCSize buttonSize = this->m_homeStoryMode->getContentSize();
+    float posY, spacing;
+    float targetedSpacingToButtonHeightRatio = 1.38f;
 
+    CalculateButtonLayoutCoordinates(topY, buttonSize.height, targetedSpacingToButtonHeightRatio, availableHeight, 4, posY, spacing);
+    
+    m_homeStoryMode->setPosition(center.x, posY);
+    
 #if GAME_VERSION < 2
     m_homeStoryMode->setVisible(false);
 #endif
@@ -83,10 +88,9 @@ void MenuScene::onEnter()
     m_homeOptions->setPosition(center.x, posY);
     this->addChild(m_homeOptions);
 
-    posY = startPosY;
-
     /*************** ARCADE ***************/
-    posY -= spacing;
+    CalculateButtonLayoutCoordinates(topY, buttonSize.height, targetedSpacingToButtonHeightRatio, availableHeight, 3, posY, spacing);
+
     m_arcadeEasy = MenuButton::create(
       m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
       , m_pGameContext->getImageMap()->getTile("menubutton_on_left"), m_pGameContext->getImageMap()->getTile("menubutton_on_center"), m_pGameContext->getImageMap()->getTile("menubutton_on_right")
@@ -116,159 +120,28 @@ void MenuScene::onEnter()
     m_arcadeHard->setPosition(center.x + visibleRect.size.width, posY);
     this->addChild(m_arcadeHard);    
  
-#if GAME_VERSION > 1
-    /*************** STORY MODE ***************/
-    int nextReleasingFrames[] = { 24 };
-    int nextPressingFrames[] = { 24 };
-    m_storyModeNextPage = ImageButton::create(this, callfuncO_selector(MenuScene::nextStoryModePage), NULL, m_pGameContext
-      , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
-      , 24
-      , nextReleasingFrames, 1
-      , nextPressingFrames, 1
-      , 24
-      , 24
-      , TOUCH_PRIORITY_NORMAL);
-    this->addChild(m_storyModeNextPage);
-    m_storyModeNextPage->setPosition(ccp( VisibleRect::right().x - 60, VisibleRect::top().y - 60 ) );
-    m_storyModeNextPage->setVisible(false);
-    
-    int previousReleasingFrames[] = { 24 };
-    int previousPressingFrames[] = { 24 };
-    m_storyModePreviousPage = ImageButton::create(this, callfuncO_selector(MenuScene::previousStoryModePage), NULL, m_pGameContext
-      , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
-      , 24
-      , previousReleasingFrames, 1
-      , previousPressingFrames, 1
-      , 24
-      , 24
-      , TOUCH_PRIORITY_NORMAL);
-    this->addChild(m_storyModePreviousPage);
-    m_storyModePreviousPage->setPosition(ccp( VisibleRect::left().x + 60, VisibleRect::top().y - 60 ) );
-    m_storyModePreviousPage->setVisible(false);
+    this->m_challengeButtonPanel = ChallengeButtonPanel::create(this->m_pGameContext
+      , callfunc_selector(MenuScene::onBackKeyPressed), this);
+    this->m_challengeButtonPanel->setPosition(center);
+    this->addChild(m_challengeButtonPanel);
 
-    // 16 - 0
-    // 17 - 1
-    // 18 - 2
-    // 19 - 3
-    // 20 - locked
-    int challenge_0_ReleasingFrames[] = { 20 };
-    int challenge_0_PressingFrames[] = { 20 };
-    int challenge_1_ReleasingFrames[] = { 16 };
-    int challenge_1_PressingFrames[] = { 16 };
-    int challenge_2_ReleasingFrames[] = { 17 };
-    int challenge_2_PressingFrames[] = { 17 };
-    int challenge_3_ReleasingFrames[] = { 18 };
-    int challenge_3_PressingFrames[] = { 18 };
-    int challenge_4_ReleasingFrames[] = { 19 };
-    int challenge_4_PressingFrames[] = { 19 };
-    
-    int lastChallengeStatus = 1;
-    int newChallengeStatus = 0;
-
-    // TODO (Roman): positioning
-    // TODO (Roman): proper images    
-    int index = 0;
-    ImageButton* imageButton;
-    
-    for (int i = 0; i < STORYMODE_TOTAL_PAGES; ++i)
-    {
-      for (int j = 0; j < STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE; ++j)
-      {        
-        for (int k = 0; k < STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE; ++k)
-        {
-          newChallengeStatus = this->m_pGameContext->getChallengeInfo(index);
-          switch (newChallengeStatus)
-          {
-          case 0: 
-            if (lastChallengeStatus > 0)
-            {
-              imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_pGameContext
-                , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
-                , 16
-                , challenge_1_ReleasingFrames, 1
-                , challenge_1_PressingFrames, 1
-                , 16
-                , 16
-                , TOUCH_PRIORITY_NORMAL);
-              this->addChild(imageButton);
-            }
-            else
-            {
-              imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_pGameContext
-                , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
-                , 20
-                , challenge_0_ReleasingFrames, 1
-                , challenge_0_PressingFrames, 1
-                , 20
-                , 20
-                , TOUCH_PRIORITY_NORMAL);
-              this->addChild(imageButton);
-            }
-            lastChallengeStatus = 0;
-          break;
-          case 1: 
-          imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_pGameContext
-            , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
-            , 16
-            , challenge_1_ReleasingFrames, 1
-            , challenge_1_PressingFrames, 1
-            , 16
-            , 16
-            , TOUCH_PRIORITY_NORMAL);
-            lastChallengeStatus = 1;
-              this->addChild(imageButton);
-          break;
-          case 2: 
-          imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_pGameContext
-            , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
-            , 17
-            , challenge_2_ReleasingFrames, 1
-            , challenge_2_PressingFrames, 1
-            , 17
-            , 17
-            , TOUCH_PRIORITY_NORMAL);
-            lastChallengeStatus = 2;
-              this->addChild(imageButton);
-          break;
-          case 3: 
-          imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_pGameContext
-            , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
-            , 18
-            , challenge_3_ReleasingFrames, 1
-            , challenge_3_PressingFrames, 1
-            , 18
-            , 18
-            , TOUCH_PRIORITY_NORMAL);
-            lastChallengeStatus = 3;
-              this->addChild(imageButton);
-          break;
-          case 4: 
-          imageButton = ImageButton::create(this, callfuncO_selector(MenuScene::startChallenge), NULL, m_pGameContext
-            , this->m_pGameContext->getImageMapPListPath(), this->m_pGameContext->getImageMapPngPath(), -1
-            , 19
-            , challenge_4_ReleasingFrames, 1
-            , challenge_4_PressingFrames, 1
-            , 19
-            , 19
-            , TOUCH_PRIORITY_NORMAL);
-            lastChallengeStatus = 4;
-              this->addChild(imageButton);
-          break;
-          }
-
-          imageButton->setVisible(false);
-          this->m_challengeButtons.push_back(imageButton);
-          index++;
-        }
-      }
-    }
-
-    imageButton = NULL;
-#endif
-    
-    CCLOG("finished initializing MenuScene");
+    this->m_challengeButtonPanel->hide();
   }
 }
+
+void MenuScene::CalculateButtonLayoutCoordinates(float topY, float buttonHeight, float targetedSpacingToButtonHeightRatio, float availableHeight
+  , int totalButtons, float& startPosY, float& spacing)
+{
+  spacing = round( buttonHeight * targetedSpacingToButtonHeightRatio );
+  float overallHeight = spacing * (totalButtons - 1) + buttonHeight; 
+  if (overallHeight > availableHeight)
+  {
+    spacing = (availableHeight - buttonHeight*totalButtons) / totalButtons + buttonHeight;
+    overallHeight = spacing * (totalButtons - 1) + buttonHeight;
+  }
+  startPosY = round ( topY - (availableHeight - overallHeight)/2 - buttonHeight/2 );
+}
+
 
 void MenuScene::resetHomeButtons(bool isVisible)
 {  
@@ -287,44 +160,8 @@ void MenuScene::resetArcadeButtons(bool isVisible)
   m_arcadeHard->setVisible(isVisible);
 }
 
-void MenuScene::resetChallengeButtons(bool isVisible, bool areNavigationButtonsVisible)
-{
-#if GAME_VERSION > 1
-  m_storyModeNextPage->setVisible(areNavigationButtonsVisible);
-  m_storyModePreviousPage->setVisible(areNavigationButtonsVisible);
-
-  ImageButton* imageButton;
-  int totalChallenges = STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE 
-                      * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE
-                      * STORYMODE_TOTAL_PAGES;
-  CCRect visibleRect = VisibleRect::getVisibleRect();
-
-  float topY = visibleRect.size.height * .7;
-  float leftX = visibleRect.origin.x + visibleRect.size.width * .2;
-    
-  int index = 0;
-  for (int i = 0; i < STORYMODE_TOTAL_PAGES; ++i)
-  {
-    for (int j = 0; j < STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE; ++j)
-    {        
-      for (int k = 0; k < STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE; ++k)
-      {
-        imageButton = (ImageButton*)(this->m_challengeButtons.at(index));
-          
-        imageButton->setPosition(ccp(leftX + k * 80, topY - j * 80));
-        imageButton->setVisible(isVisible);
-
-        ++index;
-      }
-    }
-  }
-  imageButton = NULL;
-#endif
-}
-
 void MenuScene::showView(MenuViewType menuViewType)
 {
-  CCLOG("Show scene");
   CCActionInterval* moveLeft = CCMoveBy::create(.3f, ccp(-(VisibleRect::getVisibleRect().size.width),0));
   CCActionInterval* moveRight = CCMoveBy::create(.3f, ccp((VisibleRect::getVisibleRect().size.width),0));
   
@@ -333,6 +170,8 @@ void MenuScene::showView(MenuViewType menuViewType)
   float easeRate = .5f;
   float posLeft = center.x - visibleRect.size.width;
   float posRight = center.x + visibleRect.size.width;
+    
+  m_header->setVisible(true);
 
   switch(menuViewType)
   {
@@ -344,7 +183,7 @@ void MenuScene::showView(MenuViewType menuViewType)
     
       resetHomeButtons(true);
       resetArcadeButtons(false);
-      resetChallengeButtons(false, false);
+      m_challengeButtonPanel->hide();
 
       m_homeStoryMode->setPositionX(center.x);
       m_homeArcade->setPositionX(center.x);
@@ -356,7 +195,7 @@ void MenuScene::showView(MenuViewType menuViewType)
     case ARCADE:
       resetHomeButtons(true);
       resetArcadeButtons(true);
-      resetChallengeButtons(false, false);
+      m_challengeButtonPanel->hide();
 
       m_homeStoryMode->setPositionX(posLeft);
       m_homeArcade->setPositionX(posLeft);
@@ -380,7 +219,7 @@ void MenuScene::showView(MenuViewType menuViewType)
     
     resetHomeButtons(true);
     resetArcadeButtons(true);
-    resetChallengeButtons(false, false);
+    m_challengeButtonPanel->hide();
 
     m_homeStoryMode->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
     m_homeArcade->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
@@ -401,18 +240,10 @@ void MenuScene::showView(MenuViewType menuViewType)
   
     resetHomeButtons(false);
     resetArcadeButtons(false);
-    resetChallengeButtons(false, true);
 
-    this->m_storyModePreviousPage->setIsEnabled(false);
-    this->m_storyModeNextPage->setIsEnabled(true);
-
-    ImageButton* imageButton;
-    for (int i = 0; i < STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE; i++)
-    {
-      imageButton = (ImageButton*)this->m_challengeButtons.at(i);
-      imageButton->setVisible(true);
-    }
-    imageButton = NULL;
+    m_header->setVisible(false);
+    m_challengeButtonPanel->show();
+    m_challengeButtonPanel->reset();
 
   break;
   }
@@ -440,95 +271,6 @@ void MenuScene::showStoryModeMenu(CCObject* pSender)
 void MenuScene::showArcadeMenu(CCObject* pSender)
 { 
   showView(ARCADE);
-}
-
-void MenuScene::startChallenge(CCObject* pSender)
-{
-  ImageButton* sender = (ImageButton*)pSender;
-  
-  int challengeIndex = 0;
-  std::vector<ImageButton*>::iterator it;
-  for(it=this->m_challengeButtons.begin();it!=this->m_challengeButtons.end();++it)
-  {
-    if (*it == sender)
-    {
-      challengeIndex = it - this->m_challengeButtons.begin();
-      break;
-    }
-  }
-
-  NavigationManager::showChallengeScene(m_pGameContext, challengeIndex, NEW);
-}
-void MenuScene::nextStoryModePage(CCObject* pSender)
-{  
-  resetChallengeButtons(false, true);
-  CCRect visibleRect = VisibleRect::getVisibleRect();
-
-  float easeRate = .5f;
-  CCActionInterval* moveLeft = CCMoveBy::create(.3f, ccp(-(visibleRect.size.width),0));
-  CCActionInterval* moveRight = CCMoveBy::create(.3f, ccp((visibleRect.size.width),0));
-    
-  ImageButton* imageButton;
-  
-  int startIndex = this->m_storyModePageIndex * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
-  int endIndex = (this->m_storyModePageIndex + 1 ) * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
-  for (int i = startIndex; i < endIndex; ++i)
-  {
-    imageButton = (ImageButton*)this->m_challengeButtons.at(i);
-    imageButton->setVisible(true);
-    imageButton->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
-  }
-  startIndex = (this->m_storyModePageIndex + 1) * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
-  endIndex = (this->m_storyModePageIndex + 2 ) * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
-  for (int i = startIndex; i < endIndex; ++i)
-  {
-    imageButton = (ImageButton*)this->m_challengeButtons.at(i);
-    imageButton->setVisible(true);
-    imageButton->setPositionX(imageButton->getPositionX() + visibleRect.size.width);
-    imageButton->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
-  }
-
-  imageButton = NULL;
-
-  this->m_storyModePageIndex++;
-  
-  this->m_storyModePreviousPage->setIsEnabled(true);
-  this->m_storyModeNextPage->setIsEnabled(this->m_storyModePageIndex < STORYMODE_TOTAL_PAGES - 1);
-}
-void MenuScene::previousStoryModePage(CCObject* pSender)
-{  
-  resetChallengeButtons(false, true);
-  CCRect visibleRect = VisibleRect::getVisibleRect();
-
-  float easeRate = .5f;
-  CCActionInterval* moveLeft = CCMoveBy::create(.3f, ccp(-(visibleRect.size.width),0));
-  CCActionInterval* moveRight = CCMoveBy::create(.3f, ccp((visibleRect.size.width),0));
-    
-  ImageButton* imageButton;
-  
-  int startIndex = this->m_storyModePageIndex * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
-  int endIndex = (this->m_storyModePageIndex + 1 ) * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
-  for (int i = startIndex; i < endIndex; ++i)
-  {
-    imageButton = (ImageButton*)this->m_challengeButtons.at(i);
-    imageButton->setVisible(true);
-    imageButton->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
-  }
-  startIndex = (this->m_storyModePageIndex - 1) * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
-  endIndex = (this->m_storyModePageIndex ) * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
-  for (int i = startIndex; i < endIndex; ++i)
-  {
-    imageButton = (ImageButton*)this->m_challengeButtons.at(i);
-    imageButton->setVisible(true);
-    imageButton->setPositionX(imageButton->getPositionX() - visibleRect.size.width);
-    imageButton->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
-  }
-
-  imageButton = NULL;
-
-  this->m_storyModePageIndex--;
-  this->m_storyModePreviousPage->setIsEnabled(this->m_storyModePageIndex > 0);
-  this->m_storyModeNextPage->setIsEnabled(true);
 }
 
 void MenuScene::showOptions(CCObject* pSender)

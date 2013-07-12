@@ -30,7 +30,7 @@ void GameContext::init(int totalChallenges)
     sprintf(str, "l%i", i);
     this->m_challengeStatuses.push_back(userDefault->getIntegerForKey(str));
   }
-
+    
   this->m_spriteFrameCache = new SpriteFrameCache();
   this->m_spriteFrameCache->init();
 }

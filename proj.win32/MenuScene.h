@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "GameEngineIncludes.h"
 #include "BaseScene.h"
+#include "ChallengeButtonPanel.h"
 
 enum MenuViewType
 {
@@ -27,26 +28,25 @@ private:
   MenuButton* m_arcadeNormal;
   MenuButton* m_arcadeHard;
 
-  ImageButton* m_storyModeNextPage;
-  ImageButton* m_storyModePreviousPage;
-  std::vector<ImageButton*> m_challengeButtons;
+  CCSprite* m_header;
 
-  int m_storyModePageIndex;
-  void resetChallengeButtons(bool isVisible, bool areNavigationButtonsVisible);
+  ChallengeButtonPanel* m_challengeButtonPanel; 
+
   void resetHomeButtons(bool isVisible);
   void resetArcadeButtons(bool isVisible);
 
   bool m_isLayoutInitialized;
   void showView(MenuViewType menuViewType);
 
+  void CalculateButtonLayoutCoordinates(float topY, float buttonHeight, float targetedSpacingToButtonHeightRatio, float availableHeight
+    , int totalButtons, float& startPosY, float& spacing);
+
 public:
   MenuScene(GameContext* gameContext)   
     : BaseScene(gameContext)
     , m_menuViewType(HOME)
     , m_isLayoutInitialized(false)
-    , m_storyModePageIndex(0)
-    , m_storyModeNextPage(NULL)
-    , m_storyModePreviousPage(NULL)
+    , m_challengeButtonPanel(NULL)
     , m_homeStoryMode(NULL)
     , m_homeArcade(NULL)
     , m_homeOptions(NULL)
@@ -54,6 +54,7 @@ public:
     , m_arcadeEasy(NULL)
     , m_arcadeNormal(NULL)
     , m_arcadeHard(NULL)
+    , m_header(NULL)
   {
 
   }
@@ -70,10 +71,6 @@ public:
   virtual void startArcadeNormalGameCallback(CCObject* pSender);
   virtual void startArcadeEasyGameCallback(CCObject* pSender);
   virtual void startArcadeHardGameCallback(CCObject* pSender);
-  
-  virtual void startChallenge(CCObject* pSender);
-  virtual void nextStoryModePage(CCObject* pSender);
-  virtual void previousStoryModePage(CCObject* pSender);
 };
 
 #endif  // __MENU_SCENE_H__

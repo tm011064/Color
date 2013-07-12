@@ -139,9 +139,7 @@ void MenuButton::onEnter()
   CCNode::onEnter();
   
   if (!this->m_isLayoutInitialized)
-  {  
-    CCLOG("initializing MenuButton");
-
+  { 
     /* Full Images */
     if (m_bgNormal)
       this->addChild(m_bgNormal);
@@ -200,11 +198,11 @@ void MenuButton::onEnter()
         totalWidth + bodySize.width/2 + capsSize.width
         ,-(capsSize.height/2 - bodySize.height/2)/2);
 
-      totalWidth += bodySize.width + capsSize.width + FONT_SPACE_WIDTH;
+      totalWidth += bodySize.width + capsSize.width + m_pGameContext->getFontSpaceWidthLarge();
       splitted = strtok(NULL, " ");
     }
 
-    totalWidth -= FONT_SPACE_WIDTH;
+    totalWidth -= m_pGameContext->getFontSpaceWidthLarge();
     for (int i = 1; i <= tagCounter; i++)
     {
       CCNode* node = this->getChildByTag(i);
@@ -220,7 +218,6 @@ void MenuButton::onEnter()
 
     this->refresh();
 
-    CCLOG("finished initializing MenuButton");
     this->m_isLayoutInitialized = true;
   }
 }

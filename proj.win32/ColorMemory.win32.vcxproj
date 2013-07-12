@@ -152,6 +152,7 @@
     <ClInclude Include="BaseScene.h" />
     <ClInclude Include="BaseSprite.h" />
     <ClInclude Include="BaseTileMap.h" />
+    <ClInclude Include="ChallengeButtonPanel.h" />
     <ClInclude Include="DescriptionPopup.h" />
     <ClInclude Include="GameButton.h" />
     <ClInclude Include="DebugDraw.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="BaseScene.cpp" />
     <ClCompile Include="BaseSprite.cpp" />
     <ClCompile Include="BaseTileMap.cpp" />
+    <ClCompile Include="ChallengeButtonPanel.cpp" />
     <ClCompile Include="DescriptionPopup.cpp" />
     <ClCompile Include="GameButton.cpp" />
     <ClCompile Include="DebugDraw.cpp" />

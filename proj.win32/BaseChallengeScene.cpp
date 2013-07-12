@@ -1,44 +1,33 @@
 #include "BaseChallengeScene.h"
 
 using namespace cocos2d;
-
-BaseChallengeScene::BaseChallengeScene(GameContext* gameContext, int challengeIndex, ChallengeSceneType challengeSceneType, int totalButtons)   
-  : BaseScene(gameContext)
-  , m_isLayoutInitialized(false) 
-  , m_bIsFirstDraw(true)
-  , m_buttons(0)
-  , m_loadingScreen(0)
-  , m_lastButtonPressedTime(0)
-  , m_lastLevelStartTime(0)
-  , m_totalButtons(totalButtons)
-  , m_challengeSceneType(challengeSceneType)
-  , m_consoleBackground(NULL)
-  , m_topBar(NULL)
-  , m_wildcardPopup(NULL)
-  , m_gameScorePopup(NULL)
-  , m_challengeIndex(challengeIndex)
-{ 
+  
+bool BaseChallengeScene::init()
+{
   m_gameScore.totalPoints = 0;
   m_gameScore.totalLevelBonus = 0;
   m_gameScore.totalButtonBonus = 0;
   m_gameScore.level = 0;
   m_gameScore.totalTimeElapsed = 0;
+
+  return CCScene::init();
 }
 void BaseChallengeScene::onExit()
 {
   if(this->m_isLayoutInitialized)
-  {
-    CC_SAFE_FREE(m_buttons);    
+  {   
     CC_SAFE_DELETE(m_lastButtonPressedTime);
-    CC_SAFE_DELETE(m_lastLevelStartTime);    
+    CC_SAFE_DELETE(m_lastLevelStartTime); 
   }
+
+  CCScene::onExit();
 }
 
 void BaseChallengeScene::onEnter()
 {
   CCScene::onEnter();
   if (!this->m_isLayoutInitialized)
-  {              
+  {    
     CCPoint top = VisibleRect::top();
     CCPoint right = VisibleRect::right();
     CCPoint center = VisibleRect::center();
@@ -46,44 +35,62 @@ void BaseChallengeScene::onEnter()
         
     CCRect visibleRect = VisibleRect::getVisibleRect();   
     
-    // set the anchor here, will be used later on
-    this->m_anchor.setPoint(center.x, top.y * .5); // TODO (Roman): positioning   
-        
-    // TODO (Roman): loading screen
-    m_loadingScreen = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("background"));
-    m_loadingScreen->setPosition(center);
-    m_loadingScreen->setVisible(true);
+    float availableWidth = visibleRect.size.width / 2;         
 
-    this->addChild(m_loadingScreen, 1000);        
-        
+    // TODO (Roman): loading screen
+    m_loadingScreenText = CCLabelBMFont::create("LOADING", m_pGameContext->getFontLargePath().c_str());
+    m_loadingScreenText->setPosition(center);
+    this->addChild(m_loadingScreenText, 1001);
+    
+    m_loadingScreen = RepeatingSprite::create(
+      m_pGameContext
+      , m_pGameContext->getImageMap()->getTile("background")
+      , HORIZONTAL
+      , NORMAL
+      , visibleRect.size);    
+    m_loadingScreen->setPosition(center);
+    this->addChild(m_loadingScreen, 1000);
+    
     
     RepeatingSprite* bg = RepeatingSprite::create(
       m_pGameContext
       , m_pGameContext->getImageMap()->getTile("background")
       , HORIZONTAL
       , NORMAL
-      , visibleRect.size);
+      , visibleRect.size);    
+    bg->setPosition(center);
     this->addChild(bg, 0);
     bg = NULL;
+        
+    /********** TOP BAR **********/
+    m_topBar = new TopBar(m_pGameContext);
+    m_topBar->autorelease();
+    this->addChild(m_topBar);
 
+    m_topBar->setLevel(1);      
+    m_topBar->setScore(0);
+    /********** TOP BAR **********/
+    
     /********** CONSOLE **********/    
     m_consoleBackground = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("console"));
-    m_consoleBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
     this->addChild(m_consoleBackground);    
-
+    
     CCSize consoleBackgroundSize = m_consoleBackground->getContentSize();
-    float availableWidth = visibleRect.size.width / 2;         
-    float consoleBackgroundScale = availableWidth * 1.12 / (consoleBackgroundSize.height/2);
+    float consoleBackgroundScale = availableWidth / (consoleBackgroundSize.width/2);
 
-    m_consoleBackground->setScale(consoleBackgroundScale);    
-        
+    m_consoleBackground->setScale(consoleBackgroundScale);
+            
+    CCSprite* consoleButtonBackground = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("gameConsoleButtonBackground"));
+    consoleButtonBackground->setScale(consoleBackgroundScale);
+    this->addChild(consoleButtonBackground);    
+    
     int releasingFrames[] = { 0 };
     int pressingFrames[] = { 0 };
     m_consoleButton = ImageButton::create(this
       , callfuncO_selector( BaseChallengeScene::consoleButtonTouchEndedCallback )
       , NULL
       , m_pGameContext
-      , "gameConsoleButton"
+      , "coin_large"
       , 0
       , 0
       , pressingFrames, 1
@@ -91,21 +98,45 @@ void BaseChallengeScene::onEnter()
       , 0
       , 0
       , TOUCH_PRIORITY_NORMAL);
-    this->addChild(m_consoleButton);
-    m_consoleButton->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
     m_consoleButton->setScale(consoleBackgroundScale);
-    /********** CONSOLE **********/
-        
-    /********** TOP BAR **********/
-    m_topBar = new TopBar(m_pGameContext);
-    m_topBar->autorelease();
-    this->addChild(m_topBar);
+    this->addChild(m_consoleButton);
+    CCRect topBarBoundingBox = m_topBar->getBoundingBox();
+    CCSize consoleSize = m_consoleBackground->getContentSize();
     
-    m_topBar->setLevel(1);      
-    m_topBar->setScore(0);
-    /********** TOP BAR **********/
+    // we have the top bar, so we can get the border...
+    this->m_anchor = ccpRounded(
+      center.x
+      , (   topBarBoundingBox.origin.y 
+          - (consoleBackgroundScale * consoleSize.height)/2 
+          - topBarBoundingBox.size.height/8.0f
+        ));
+    
+    float consoleHeight = consoleBackgroundSize.height * consoleBackgroundScale;
+    float availableHeight = topBarBoundingBox.origin.y - visibleRect.origin.y;
+    
+    consoleButtonBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
+    m_consoleBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
+    m_consoleButton->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
 
-    /********** WILDCARD POPUP **********/
+    /********** CONSOLE **********/
+
+    /********** LEVEL DONE MESSAGE **********/
+    m_levelDoneLabel = CCLabelBMFont::create("WELL DONE", m_pGameContext->getFontLargePath().c_str());
+    float posY = this->m_anchor.y - consoleBackgroundSize.height*consoleBackgroundScale/2
+                                  - m_pGameContext->getFontHeightLarge()/2;
+
+    float minPosY = m_pGameContext->getFontHeightLarge()/2 * 1.1 
+                    + m_pGameContext->getDefaultPadding(); // 1.1 = scale factor in animation
+    if (posY < minPosY)
+      posY = minPosY;
+
+    m_levelDoneLabel->setPosition(ccp(this->m_anchor.x, posY));
+    m_levelDoneLabel->setOpacity(.0f);
+    this->addChild(m_levelDoneLabel, 1000);
+    /********** LEVEL DONE MESSAGE **********/
+	
+
+    /********** MODAL LAYER **********/
     m_wildcardPopup = new WildcardPopup(
       this->m_pGameContext
       , callfuncO_selector(BaseChallengeScene::replaySequenceCallback) 
@@ -119,21 +150,22 @@ void BaseChallengeScene::onEnter()
     m_wildcardPopup->setZOrder( MODAL_ZORDER );
     
     this->addChild(m_wildcardPopup);
-    /********** WILDCARD POPUP **********/
+    /********** MODAL LAYER **********/
 
-    /********** GAME SCORE POPUP **********/
+    /********** MODAL LAYER **********/
     m_gameScorePopup = new GameScorePopup(
       this->m_pGameContext
       , callfuncO_selector(BaseChallengeScene::newGameCallback) 
       , callfuncO_selector(BaseChallengeScene::mainMenuCallback) 
       , this
       );
+    m_gameScorePopup->autorelease();
     m_gameScorePopup->setPosition(ccp(0, 0));    
-    m_gameScorePopup->setZOrder( MODAL_ZORDER );
+    m_gameScorePopup->setZOrder( MODAL_ZORDER ); 
     
     this->addChild(m_gameScorePopup);
-    /********** GAME SCORE POPUP **********/
-    
+    /********** MODAL LAYER **********/
+        
     /********** DESCRIPTION POPUP **********/
     m_descriptionPopup = new DescriptionPopup(
       this->m_pGameContext
@@ -142,14 +174,37 @@ void BaseChallengeScene::onEnter()
     m_descriptionPopup->setZOrder(100);
     this->addChild(m_descriptionPopup);
     /********** DESCRIPTION POPUP **********/
-
-    this->onLoadLayout(); // for derived classes    
+	
+    this->onLoadLayout();
     
     this->m_lastButtonPressedTime = new struct cc_timeval();
     this->m_lastLevelStartTime = new struct cc_timeval();
 
     this->m_isLayoutInitialized = true;
-  }    
+
+    this->m_sceneState = LOADING;
+    this->scheduleOnce(schedule_selector(BaseChallengeScene::preLoadCallback), 0);
+  }
+}
+
+void BaseChallengeScene::preLoadCallback(float dt)
+{  
+  CCObject* o;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    if (!((GameButton*)o)->hasAlphaMap())
+      ((GameButton*)o)->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());  
+
+    ((GameButton*)o)->load();
+  }
+
+  if (!this->m_consoleButton->hasAlphaMap())
+    this->m_consoleButton->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());
+
+  this->m_wildcardPopup->hide();
+  this->m_gameScorePopup->hide();
+
+  this->onPreLoad();
 }
 
 void BaseChallengeScene::buttonBlinkCallback(CCObject* pSender)
@@ -157,56 +212,28 @@ void BaseChallengeScene::buttonBlinkCallback(CCObject* pSender)
   onSequenceBlinkCallback((GameButton*)pSender);
 }
 
-void BaseChallengeScene::draw()
-{
-  if ( this->m_bIsFirstDraw )
-  {
-    this->m_sceneState = LOADING;
-
-    CCObject* o;
-    CCARRAY_FOREACH(this->m_buttons, o)
-    {
-      if (!((GameButton*)o)->hasAlphaMap())
-        ((GameButton*)o)->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());  
-
-      ((GameButton*)o)->load();
-    }
-
-    if (!this->m_consoleButton->hasAlphaMap())
-      this->m_consoleButton->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());
-
-    this->m_wildcardPopup->hide();
-    this->m_gameScorePopup->hide();
-    this->m_descriptionPopup->show();
-    
-    this->m_bIsFirstDraw = false;
-  }
-  
-  CCScene::draw();
-}
-
 int BaseChallengeScene::updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition)
 {
   int challengeInfo = m_pGameContext->getChallengeInfo(this->m_challengeIndex);
   if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->MininimumPointsForThreeStars )
   {
-    m_pGameContext->setChallengeInfo(this->m_challengeIndex, 4);
-    return 4;
-  }
-  else if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->MininimumPointsForTwoStars 
-    && challengeInfo < 3 )
-  {       
     m_pGameContext->setChallengeInfo(this->m_challengeIndex, 3);
     return 3;
   }
-  else if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->MininimumPointsForOneStar
+  else if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->MininimumPointsForTwoStars 
     && challengeInfo < 2 )
   {       
-    m_pGameContext->setChallengeInfo(this->m_challengeIndex, 2);
+    m_pGameContext->setChallengeInfo(this->m_challengeIndex, 3);
     return 2;
   }
+  else if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->MininimumPointsForOneStar
+    && challengeInfo < 1 )
+  {       
+    m_pGameContext->setChallengeInfo(this->m_challengeIndex, 2);
+    return 1;
+  }
 
-  return 1;
+  return 0;
 }
 float BaseChallengeScene::updateTimeVal(cc_timeval* time)
 {

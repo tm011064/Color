@@ -68,7 +68,7 @@ void TextButton::draw()
 { 
   ccDrawSolidRect(m_backgroundOrigin, m_backgroundDestination, m_currentBackgroundColor);
   ccDrawColor4B(m_currentBorderColor.r, m_currentBorderColor.g,m_currentBorderColor.b,255);
-  ccDrawRect(m_borderOrigin, m_borderDestination);
+  ccDrawRect(m_borderOrigin, m_borderDestination);  
 }
 
 void TextButton::setButtonState(ButtonState buttonState)

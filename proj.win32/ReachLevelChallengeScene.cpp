@@ -17,7 +17,15 @@ void ReachLevelChallengeScene::onLoadLayout()
 {  
   switch (this->m_totalButtons)
   {
+  case 2:
+    this->m_buttons = LayoutController::createTwoButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
+      , callfuncO_selector( ReachLevelChallengeScene::buttonTouchEndedCallback )
+      , callfuncO_selector( ReachLevelChallengeScene::buttonLoadedCallback )
+      , callfuncO_selector( ReachLevelChallengeScene::buttonBlinkCallback ));      
+    break;
+
   case 3:
+        
     this->m_buttons = LayoutController::createThreeButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( ReachLevelChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( ReachLevelChallengeScene::buttonLoadedCallback )
@@ -25,20 +33,18 @@ void ReachLevelChallengeScene::onLoadLayout()
     break;
 
   case 4:
-        
     this->m_buttons = LayoutController::createFourButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( ReachLevelChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( ReachLevelChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( ReachLevelChallengeScene::buttonBlinkCallback ));      
     break;
+  }   
 
-  case 5:
-    this->m_buttons = LayoutController::createFiveButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
-      , callfuncO_selector( ReachLevelChallengeScene::buttonTouchEndedCallback )
-      , callfuncO_selector( ReachLevelChallengeScene::buttonLoadedCallback )
-      , callfuncO_selector( ReachLevelChallengeScene::buttonBlinkCallback ));      
-    break;
-  }       
+  CCObject* o;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    this->addChild((GameButton*)o);
+  }  
 
   // TODO (Roman): text
   m_descriptionPopup->setText("Get 10 buttons in a row right\nto clear this stage\n\nDo it as quickly as possible to\ncollect stars!");
@@ -67,8 +73,9 @@ void ReachLevelChallengeScene::startNewGame()
 
   this->m_topBar->setScore(0);
   this->m_topBar->setLevel(1);
-
+  
   this->m_loadingScreen->setVisible(false);  
+  this->m_loadingScreenText->setVisible(false);   
   runSequenceAnimation(true, 0, -1);
 }
 
@@ -82,7 +89,13 @@ void ReachLevelChallengeScene::runSequenceAnimation(bool doAddButton, int startI
   {
     std::srand(time(NULL));
     GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    while (!button->getIsEnabled())
+    {
+      button = NULL;
+      button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    }
     m_buttonSequence.push_back(button);
+    button = NULL;
   }
 
   m_buttonSequenceIndex = startIndex;

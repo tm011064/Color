@@ -58,15 +58,7 @@ static ResourceDefinition SIZE_720x960    =  { cocos2d::CCSizeMake(720, 960),   
 static ResourceDefinition SIZE_960x1280   =  { cocos2d::CCSizeMake(960, 1280),  "s960x1280"   };
 static ResourceDefinition SIZE_1536x2048  =  { cocos2d::CCSizeMake(1536, 2048), "s1536x2048"   };
 
-/*
-static const char* FONT_MENU_LARGE = "SquareFontLarge.fnt";
-static const char* FONT_MENU_NORMAL = "SquareFont.fnt";
-*/
-static const int FONT_SPACE_WIDTH = 8;
-
 static const float BUTTON_QUARTER_SCALE = .98f;
-static const float BUTTON_THIRD_SCALE = .92f;
-static const float BUTTON_FIFTH_SCALE = .93f;
 
 static inline float floor_float(float f)
 {
@@ -77,7 +69,7 @@ static inline float floor_float(float f)
 #define ccpRounded(__X__,__Y__) cocos2d::CCPointMake( floor_float( (float)(__X__) + .5f), floor_float((float)(__Y__) + .5f))
 #define round(__X__) floor_float( (float)(__X__) + .5f)
 
-#define GAME_VERSION 1
+#define GAME_VERSION 2
 #define IS_DEBUG 1
 
 #define TOUCH_PRIORITY_MODAL_PANEL   -2147483646 
@@ -90,8 +82,8 @@ static inline float floor_float(float f)
 #define COINS_COST_SHOW_NEXT_ITEM     100
 #define COINS_COST_SHOW_REMAINING     200
 
-#define STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE       3
-#define STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE    3
-#define STORYMODE_TOTAL_PAGES                         3
+#define STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE       4
+#define STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE    4
+#define STORYMODE_TOTAL_PAGES                         1
 
 #endif  // __GAME_CONSTANTS_H__

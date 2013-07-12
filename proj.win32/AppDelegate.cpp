@@ -171,6 +171,9 @@ bool AppDelegate::applicationDidFinishLaunching()
   label = CCLabelBMFont::create("Replay", largePath.c_str()); 
   gameContext->setFontHeightLarge(label->getContentSize().height);
 
+  label = CCLabelBMFont::create(" ", largePath.c_str()); 
+  gameContext->setFontSpaceWidthLarge(label->getContentSize().width);
+
   label->release();  
 
   this->m_pGameContext = gameContext;

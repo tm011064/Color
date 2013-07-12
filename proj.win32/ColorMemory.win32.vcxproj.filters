@@ -202,6 +202,9 @@
     <ClInclude Include="BaseFileUtils.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="ChallengeButtonPanel.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseScene.cpp">
@@ -320,6 +323,9 @@
     </ClCompile>
     <ClCompile Include="BaseFileUtils.cpp">
       <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="ChallengeButtonPanel.cpp">
+      <Filter>include\Controls</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

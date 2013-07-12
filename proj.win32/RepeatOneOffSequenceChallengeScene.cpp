@@ -17,7 +17,15 @@ void RepeatOneOffSequenceChallengeScene::onLoadLayout()
 {  
   switch (this->m_totalButtons)
   {
+  case 2:
+    this->m_buttons = LayoutController::createTwoButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
+      , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
+      , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
+      , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback ));      
+    break;
+
   case 3:
+        
     this->m_buttons = LayoutController::createThreeButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
@@ -25,20 +33,18 @@ void RepeatOneOffSequenceChallengeScene::onLoadLayout()
     break;
 
   case 4:
-        
     this->m_buttons = LayoutController::createFourButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback ));      
     break;
-
-  case 5:
-    this->m_buttons = LayoutController::createFiveButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
-      , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
-      , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
-      , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback ));      
-    break;
   }       
+
+  CCObject* o;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    this->addChild((GameButton*)o);
+  }  
 
   // TODO (Roman): text
   m_descriptionPopup->setText("Repeat the button sequence\nas quickly as you can!");
@@ -67,17 +73,24 @@ void RepeatOneOffSequenceChallengeScene::startNewGame()
 
   this->m_topBar->setScore(0);
   this->m_topBar->setLevel(1);
-
-  this->m_loadingScreen->setVisible(false); 
+  
+  this->m_loadingScreen->setVisible(false);  
+  this->m_loadingScreenText->setVisible(false);   
 
   GameButton* button = NULL;
   std::srand(time(NULL));
   for (int i = 0; i < this->m_levelToReach; ++i)
   {
-    button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    while (!button->getIsEnabled())
+    {
+      button = NULL;
+      button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    }
     m_buttonSequence.push_back(button);
     button = NULL;
   }
+
   runSequenceAnimation(false, 0, -1);
 }
 
@@ -91,7 +104,13 @@ void RepeatOneOffSequenceChallengeScene::runSequenceAnimation(bool doAddButton, 
   {
     std::srand(time(NULL));
     GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    while (!button->getIsEnabled())
+    {
+      button = NULL;
+      button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    }
     m_buttonSequence.push_back(button);
+    button = NULL;
   }
 
   m_buttonSequenceIndex = startIndex;

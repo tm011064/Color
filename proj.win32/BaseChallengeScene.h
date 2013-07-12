@@ -14,8 +14,6 @@ class BaseChallengeScene : public BaseScene
 {
 private:
 
-  bool m_bIsFirstDraw;
-
   ChallengeSceneType m_challengeSceneType;
 
   ImageButton* m_consoleButton;
@@ -35,7 +33,8 @@ protected:
   bool m_isLayoutInitialized;
   int m_challengeIndex;
 
-  CCSprite* m_loadingScreen;
+  CCLabelBMFont* m_loadingScreenText;
+  RepeatingSprite* m_loadingScreen;
   CCSprite* m_consoleBackground;
 
   WildcardPopup* m_wildcardPopup; 
@@ -55,16 +54,33 @@ protected:
 
   TopBar* m_topBar;
   DescriptionPopup* m_descriptionPopup;
+  CCLabelBMFont* m_levelDoneLabel;
   
   struct cc_timeval *m_lastButtonPressedTime;
   struct cc_timeval *m_lastLevelStartTime;
 
   float updateTimeVal(cc_timeval* time);
   int updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition);
+  void preLoadCallback(float dt);
 
 public:
-
-  BaseChallengeScene(GameContext* gameContext, int challengeIndex, ChallengeSceneType challengeSceneType, int totalButtons);
+    
+  BaseChallengeScene::BaseChallengeScene(GameContext* gameContext, int challengeIndex, ChallengeSceneType challengeSceneType, int totalButtons)   
+    : BaseScene(gameContext)
+    , m_isLayoutInitialized(false) 
+    , m_buttons(NULL)
+    , m_loadingScreen(NULL)
+    , m_lastButtonPressedTime(0)
+    , m_lastLevelStartTime(0)
+    , m_totalButtons(totalButtons)
+    , m_challengeSceneType(challengeSceneType)
+    , m_consoleBackground(NULL)
+    , m_topBar(NULL)
+    , m_wildcardPopup(NULL)
+    , m_gameScorePopup(NULL)
+    , m_challengeIndex(challengeIndex)
+    , m_loadingScreenText(NULL)
+  { }
   ~BaseChallengeScene()
   {
     // TODO (Roman): memory management...
@@ -72,8 +88,8 @@ public:
   
   virtual void onExit();
   virtual void onEnter();
-  virtual void draw();
   virtual void onBackKeyPressed();
+  virtual bool init();
 
 protected:
 
@@ -89,6 +105,7 @@ protected:
 
   virtual void onLoadLayout() { /* can be overridden */ }
   virtual void onLayoutLoaded() { /* can be overridden */ }
+  virtual void onPreLoad() { /* can be overridden */ }
 };
 
 #endif  // __BASECHALLENGESCENE_SCENE_H__

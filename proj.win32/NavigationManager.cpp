@@ -152,7 +152,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
 
     reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, challengeIndex, 3, challengePointScoreDefinition
       , (int)levelToReach);
-    reachLevelChallengeScene->init();
+    //reachLevelChallengeScene->init();
     
     pLayer = new BaseLayer(reachLevelChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
     pLayer->init(); 

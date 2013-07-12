@@ -19,6 +19,7 @@ private:
   bool m_isSoundOn;
   bool m_isVibrateOn;
   
+  float m_fontSpaceWidthLarge;
   float m_fontHeightNormal;
   float m_fontHeightLarge;
   float m_defaultBorderThickness;
@@ -97,7 +98,10 @@ public:
   
   float getFontHeightLarge() { return this->m_fontHeightLarge; }
   void setFontHeightLarge(float fontHeightLarge) { this->m_fontHeightLarge = fontHeightLarge; }
-
+  
+  float getFontSpaceWidthLarge() { return this->m_fontSpaceWidthLarge; }
+  void setFontSpaceWidthLarge(float fontSpaceWidthLarge) { this->m_fontSpaceWidthLarge = fontSpaceWidthLarge; }
+  
   float getFontHeightNormal() { return this->m_fontHeightNormal; }
   void setFontHeightNormal(float fontHeightNormal) { this->m_fontHeightNormal = fontHeightNormal; }
   
