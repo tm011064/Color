@@ -2,31 +2,35 @@
 #define __GAMESCORE_POPUP_H__
 
 #include "ModalControl.h"
+#include "GameScorePointsPanel.h"
+#include "GameScoreTimePanel.h"
 
 using namespace cocos2d;
+
+enum GameScorePopupType
+{
+  GSPTYPE_POINTS = 0,
+  GSPTYPE_TIME_INTERVALS = 1,
+};
 
 class GameScorePopup : public ModalControl
 {  
 private:
 
+  GameScorePopupType m_gameScorePopupType;
+
   GameContext* m_pGameContext; 
     
+  CCLabelBMFont* m_headerTextLabel;
+
   CCPoint m_separatorLineLeftBottom;
   CCPoint m_separatorLineRightTop;
     
   CCPoint m_dialogRectLeftTop;
   CCPoint m_dialogRectRightBottom;
-    
-  CCLabelBMFont* m_pointsLabel;
-  CCLabelBMFont* m_pointsLabelDescription;
-  CCLabelBMFont* m_levelBonusLabel;
-  CCLabelBMFont* m_levelBonusLabelDescription;
-  CCLabelBMFont* m_timeBonusLabel;
-  CCLabelBMFont* m_timeBonusLabelDescription;
 
-  CCLabelBMFont* m_totalPointsLabel;
-  CCLabelBMFont* m_coinsEarnedLabel;
-  
+  BaseNode* m_gameScorePanel;
+
   void playAgainCallback(CCObject* pSender);
   void mainMenuCallback(CCObject* pSender);
   
@@ -39,35 +43,39 @@ private:
   float m_elaspeTimeCoins;
   float m_targetTime;
 
+  std::string m_headerText;
+
   void updatePointsDisplay(float dt);
   void updateCoinsDisplay(float dt);
 
 public:
-  GameScorePopup(GameContext* gameContext
+  static GameScorePopup* create(GameContext* gameContext, std::string headerText
     , SEL_CallFuncO playAgainCallbackDelegate
     , SEL_CallFuncO mainMenuCallbackDelegate
-    , CCNode* callbackTarget)
-    : m_pGameContext(gameContext)
-    , m_fnpPlayAgainCallbackDelegate(playAgainCallbackDelegate)
-    , m_fnpMainMenuCallbackDelegate(mainMenuCallbackDelegate)
-    , m_pTarget(callbackTarget)
-    , m_pointsLabel(NULL)
-    , m_pointsLabelDescription(NULL)
-    , m_levelBonusLabel(NULL)
-    , m_levelBonusLabelDescription(NULL)
-    , m_timeBonusLabel(NULL)
-    , m_timeBonusLabelDescription(NULL)
-    , m_totalPointsLabel(NULL)
-    , m_coinsEarnedLabel(NULL)
-  { }
+    , CCNode* callbackTarget, GameScorePopupType gameScorePopupType);
   ~GameScorePopup() { }
   
-  void refresh();
+  void setHeaderText(std::string text);
 
   virtual void onEnter();
   virtual void draw();
   virtual bool ccTouchBegan(CCTouch* pTouch, CCEvent* pEvent) { return ModalControl::ccTouchBegan(pTouch, pEvent); }
 
   virtual void show();
+
+protected:  
+  GameScorePopup(GameContext* gameContext, std::string headerText
+    , SEL_CallFuncO playAgainCallbackDelegate
+    , SEL_CallFuncO mainMenuCallbackDelegate
+    , CCNode* callbackTarget, GameScorePopupType gameScorePopupType)
+    : m_pGameContext(gameContext)
+    , m_fnpPlayAgainCallbackDelegate(playAgainCallbackDelegate)
+    , m_fnpMainMenuCallbackDelegate(mainMenuCallbackDelegate)
+    , m_pTarget(callbackTarget)
+    , m_gameScorePanel(NULL)
+    , m_headerText(headerText)
+    , m_headerTextLabel(NULL)
+    , m_gameScorePopupType(gameScorePopupType)
+  { }
 };
 #endif  // __GAMESCORE_POPUP_H__

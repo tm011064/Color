@@ -159,13 +159,14 @@ void ArcadeGameScene::onEnter()
     /********** MODAL LAYER **********/
 
     /********** MODAL LAYER **********/
-    m_gameScorePopup = new GameScorePopup(
+    m_gameScorePopup = GameScorePopup::create(
       this->m_pGameContext
+      , "GAME OVER"
       , callfuncO_selector(ArcadeGameScene::newGameCallback) 
       , callfuncO_selector(ArcadeGameScene::mainMenuCallback) 
       , this
+      , GSPTYPE_POINTS
       );
-    m_gameScorePopup->autorelease();
     m_gameScorePopup->setPosition(ccp(0, 0));    
     m_gameScorePopup->setZOrder( MODAL_ZORDER ); 
     
@@ -400,6 +401,7 @@ void ArcadeGameScene::runSequenceAnimationTimerCallback(float dt)
 {      
   runSequenceAnimation(true, 0, -1);
 }
+
 void ArcadeGameScene::eogReleaseLastButton(float dt)
 {
   m_lastButtonPressed->playAnimation(RELEASING);
@@ -460,7 +462,7 @@ void ArcadeGameScene::eogGrayOutLastButton(float dt)
     this->unschedule(schedule_selector(ArcadeGameScene::eogGrayOutLastButton));              
   }
   
-  ccColor3B  orignialColor = m_lastButtonPressed->getOriginalColor();    
+  ccColor3B orignialColor = m_lastButtonPressed->getOriginalColor();    
   ccColor3B currentColor;
   currentColor.r = orignialColor.r + (float)(BUTTON_COLOR_BLACK.r - orignialColor.r) * percentageDone;
   currentColor.g = orignialColor.g + (float)(BUTTON_COLOR_BLACK.g - orignialColor.g) * percentageDone;

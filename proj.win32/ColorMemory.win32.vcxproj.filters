@@ -19,12 +19,6 @@
     <Filter Include="include\Scenes">
       <UniqueIdentifier>{56a0a6a2-31ba-4cad-ba79-ce3b8f416b7d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resource\s240x320">
-      <UniqueIdentifier>{b2adbd13-e78a-4f75-a214-e6dc4cc88a3d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resource\s320x480">
-      <UniqueIdentifier>{f83a98ee-ce9f-441c-9060-cf9a915f866d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include\Scenes\Challenges">
       <UniqueIdentifier>{1b08d3a6-020e-457c-8426-7d804d87cea8}</UniqueIdentifier>
     </Filter>
@@ -37,40 +31,6 @@
     <Filter Include="include\Controls\Buttons">
       <UniqueIdentifier>{a241d314-9c1f-4672-b546-91f9aa4ef4d7}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\ColorMemory.ico">
-      <Filter>resource</Filter>
-    </None>
-    <None Include="..\Resources\s320x480\bg_classic.png">
-      <Filter>resource\s320x480</Filter>
-    </None>
-    <None Include="..\Resources\s320x480\bg_loading.png">
-      <Filter>resource\s320x480</Filter>
-    </None>
-    <None Include="..\Resources\s320x480\buttonmap.plist">
-      <Filter>resource\s320x480</Filter>
-    </None>
-    <None Include="..\Resources\s320x480\buttonmap.png">
-      <Filter>resource\s320x480</Filter>
-    </None>
-    <None Include="..\Resources\s240x320\bg_classic.png">
-      <Filter>resource\s240x320</Filter>
-    </None>
-    <None Include="..\Resources\s240x320\bg_loading.png">
-      <Filter>resource\s240x320</Filter>
-    </None>
-    <None Include="..\Resources\s240x320\buttonmap.plist">
-      <Filter>resource\s240x320</Filter>
-    </None>
-    <None Include="..\Resources\s240x320\buttonmap.png">
-      <Filter>resource\s240x320</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="ColorMemory.rc">
-      <Filter>resource</Filter>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -205,6 +165,15 @@
     <ClInclude Include="ChallengeButtonPanel.h">
       <Filter>include\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="ExactLengthChallengeScene.h">
+      <Filter>include\Scenes\Challenges</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScorePointsPanel.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScoreTimePanel.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseScene.cpp">
@@ -325,6 +294,15 @@
       <Filter>include</Filter>
     </ClCompile>
     <ClCompile Include="ChallengeButtonPanel.cpp">
+      <Filter>include\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="ExactLengthChallengeScene.cpp">
+      <Filter>include\Scenes\Challenges</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScorePointsPanel.cpp">
+      <Filter>include\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScoreTimePanel.cpp">
       <Filter>include\Controls</Filter>
     </ClCompile>
   </ItemGroup>

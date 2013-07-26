@@ -18,6 +18,9 @@ void BaseChallengeScene::onExit()
   {   
     CC_SAFE_DELETE(m_lastButtonPressedTime);
     CC_SAFE_DELETE(m_lastLevelStartTime); 
+        
+    m_lastButtonPressed = NULL;    
+    m_nextSequenceButton = NULL;  
   }
 
   CCScene::onExit();
@@ -153,13 +156,14 @@ void BaseChallengeScene::onEnter()
     /********** MODAL LAYER **********/
 
     /********** MODAL LAYER **********/
-    m_gameScorePopup = new GameScorePopup(
+    m_gameScorePopup = GameScorePopup::create(
       this->m_pGameContext
+      , "GAME OVER"
       , callfuncO_selector(BaseChallengeScene::newGameCallback) 
       , callfuncO_selector(BaseChallengeScene::mainMenuCallback) 
       , this
+      , m_gameScorePopupType
       );
-    m_gameScorePopup->autorelease();
     m_gameScorePopup->setPosition(ccp(0, 0));    
     m_gameScorePopup->setZOrder( MODAL_ZORDER ); 
     
@@ -215,24 +219,29 @@ void BaseChallengeScene::buttonBlinkCallback(CCObject* pSender)
 int BaseChallengeScene::updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition)
 {
   int challengeInfo = m_pGameContext->getChallengeInfo(this->m_challengeIndex);
-  if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->MininimumPointsForThreeStars )
+  if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->mininimumPointsForThreeStars )
   {
-    m_pGameContext->setChallengeInfo(this->m_challengeIndex, 3);
+    this->m_challengeCompleted = true;
+    if (challengeInfo < 3)
+      m_pGameContext->setChallengeInfo(this->m_challengeIndex, 3);
     return 3;
   }
-  else if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->MininimumPointsForTwoStars 
-    && challengeInfo < 2 )
+  else if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->mininimumPointsForTwoStars )
   {       
-    m_pGameContext->setChallengeInfo(this->m_challengeIndex, 3);
+    this->m_challengeCompleted = true;
+    if (challengeInfo < 2)
+      m_pGameContext->setChallengeInfo(this->m_challengeIndex, 2);
     return 2;
   }
-  else if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->MininimumPointsForOneStar
-    && challengeInfo < 1 )
+  else if ( this->m_gameScore.totalPoints >= challengePointScoreDefinition->mininimumPointsForOneStar )
   {       
-    m_pGameContext->setChallengeInfo(this->m_challengeIndex, 2);
+    this->m_challengeCompleted = true;
+    if (challengeInfo < 1)
+      m_pGameContext->setChallengeInfo(this->m_challengeIndex, 1);
     return 1;
   }
-
+  
+  this->m_challengeCompleted = false;
   return 0;
 }
 float BaseChallengeScene::updateTimeVal(cc_timeval* time)
@@ -248,10 +257,10 @@ float BaseChallengeScene::updateTimeVal(cc_timeval* time)
 
 void BaseChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
 {
-  GameButton* bSeq = m_buttonSequence.at(m_buttonSequenceIndex);
-  GameButton* button = ((GameButton*)pSender);
+  m_lastButtonPressed = ((GameButton*)pSender);
+  m_nextSequenceButton = m_buttonSequence.at(m_buttonSequenceIndex);
     
-  if (bSeq == button)
+  if (m_nextSequenceButton == m_lastButtonPressed)
   {
     this->onCorrectButtonPressed();
   }
@@ -295,6 +304,189 @@ void BaseChallengeScene::onBackKeyPressed()
   else
   {
     NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
+  }
+}
+
+void BaseChallengeScene::playConsoleLabelAnimation(std::string text){ this->playConsoleLabelAnimation(text, .82f, 1.1f, .0f); }
+void BaseChallengeScene::playConsoleLabelAnimation(std::string text, float d, float maxScale, float delay)
+{
+  ccColor3B color = { 255.0f, 255.0f, 255.0f };
+  playConsoleLabelAnimation(text, d, maxScale, delay, color);
+}
+void BaseChallengeScene::playConsoleLabelAnimation(std::string text, float d, float maxScale, float delay, ccColor3B color)
+{
+  m_levelDoneLabel->setString(text.c_str());
+
+  m_levelDoneLabel->setScale(1.0f);
+
+  float fadeInTime = .12f;
+  float fadeOutTime = .5f;
+  float delayTime = d - fadeInTime - fadeOutTime;
+  if (delayTime < .0f)
+  {
+    fadeInTime = d*.2f;
+    fadeOutTime = d*.8f;
+    delayTime = .0f;
+  }
+
+  m_levelDoneLabel->setColor(color);
+  m_levelDoneLabel->runAction(CCSequence::create(
+    CCDelayTime::create( delay )
+    , CCFadeIn::create( fadeInTime )
+    , CCDelayTime::create( delayTime )
+    , CCFadeOut::create( fadeOutTime )
+    , NULL));
+  m_levelDoneLabel->runAction(CCSequence::create(
+    CCScaleTo::create(d, maxScale)
+    , NULL));
+}
+
+void BaseChallengeScene::playHighlightButtonsAnimation(float d, float delay)
+{
+  this->scheduleOnce(schedule_selector(BaseChallengeScene::allButtonsPressingAnimationCallback), delay);
+  this->scheduleOnce(schedule_selector(BaseChallengeScene::allButtonsReleaseAnimationCallback), delay + d);
+}
+void BaseChallengeScene::allButtonsPressingAnimationCallback(float dt)
+{
+  CCObject* o;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    if (((GameButton*)o)->getIsEnabled())
+      ((GameButton*)o)->playAnimation(PRESSING);      
+  }
+}
+void BaseChallengeScene::allButtonsReleaseAnimationCallback(float dt)
+{
+  CCObject* o;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    if (((GameButton*)o)->getIsEnabled())
+      ((GameButton*)o)->playAnimation(RELEASING);      
+  }
+}
+
+void BaseChallengeScene::playBlinkButtonsAnimation(int totalBlinks, float interval, float delay)
+{
+  this->schedule(schedule_selector(BaseChallengeScene::blinkButtonCallback), interval, totalBlinks, delay);
+}
+void BaseChallengeScene::blinkButtonCallback(float dt)
+{
+  CCObject* o;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    if (((GameButton*)o)->getIsEnabled())
+      ((GameButton*)o)->playAnimation(BLINK);      
+  }
+}
+
+void BaseChallengeScene::showGameScorePopupCallback(float dt)
+{
+  if ( this->m_challengeCompleted == true )
+  {
+    m_gameScorePopup->setHeaderText("LEVEL COMPLETED");
+  }
+  else
+  {
+    m_gameScorePopup->setHeaderText("LEVEL FAILED");
+  }
+  m_gameScorePopup->show();
+}
+
+/******** END OF GAME ANIMATION **********/
+
+void BaseChallengeScene::eogReleaseLastButton(float dt)
+{
+  m_lastButtonPressed->playAnimation(RELEASING);
+}
+void BaseChallengeScene::eogBlinkCorrectButton(float dt)
+{
+  this->m_eogTotalWrongButtonBlinks--;
+  if (this->m_eogTotalWrongButtonBlinks < 0)
+  {
+    this->m_nextSequenceButton->setColor(BUTTON_COLOR_BLACK);
+    this->unschedule(schedule_selector(BaseChallengeScene::eogBlinkCorrectButton)); 
+    this->schedule(schedule_selector(BaseChallengeScene::eogAnimationFinish), 0, 0, .65f); // framerate: 1/48        
+  }
+  else
+  {
+    this->m_nextSequenceButton->setColor(this->m_nextSequenceButton->getOriginalColor());
+    this->m_nextSequenceButton->playAnimation(BLINK);
+  }
+}
+void BaseChallengeScene::eogAnimationFinish(float dt)
+{
+  m_gameScorePopup->show();
+
+  this->m_eogElaspedTime = 0;
+  this->schedule(schedule_selector(BaseChallengeScene::eogResetButtons), 0.021f); // framerate: 1/48
+}
+void BaseChallengeScene::eogResetButtons(float dt)
+{
+  m_eogElaspedTime += dt;
+  float percentageDone = this->m_eogElaspedTime / this->m_eogTargetTime;
+  if (percentageDone >= 1.0)
+  {
+    percentageDone = 1.0;
+    this->unschedule(schedule_selector(BaseChallengeScene::eogResetButtons));              
+  }
+  
+  CCObject* o;
+  ccColor3B orignialColor;
+  ccColor3B currentColor;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    orignialColor = ((GameButton*)o)->getOriginalColor();
+    
+    currentColor.r = BUTTON_COLOR_BLACK.r + (float)(orignialColor.r - BUTTON_COLOR_BLACK.r) * percentageDone;
+    currentColor.g = BUTTON_COLOR_BLACK.g + (float)(orignialColor.g - BUTTON_COLOR_BLACK.g) * percentageDone;
+    currentColor.b = BUTTON_COLOR_BLACK.b + (float)(orignialColor.b - BUTTON_COLOR_BLACK.b) * percentageDone;
+
+    ((GameButton*)o)->setColor(currentColor);
+  }
+}
+void BaseChallengeScene::eogGrayOutLastButton(float dt)
+{  
+  m_eogElapsedTimeWrongButton += dt;
+  float percentageDone = this->m_eogElapsedTimeWrongButton / this->m_eogTargetTimeLastButton;
+  if (percentageDone >= 1.0)
+  {
+    percentageDone = 1.0;
+    this->unschedule(schedule_selector(BaseChallengeScene::eogGrayOutLastButton));              
+  }
+  
+  ccColor3B  orignialColor = m_lastButtonPressed->getOriginalColor();    
+  ccColor3B currentColor;
+  currentColor.r = orignialColor.r + (float)(BUTTON_COLOR_BLACK.r - orignialColor.r) * percentageDone;
+  currentColor.g = orignialColor.g + (float)(BUTTON_COLOR_BLACK.g - orignialColor.g) * percentageDone;
+  currentColor.b = orignialColor.b + (float)(BUTTON_COLOR_BLACK.b - orignialColor.b) * percentageDone;
+
+  m_lastButtonPressed->setColor(currentColor);  
+}
+void BaseChallengeScene::eogGrayOutButtons(float dt)
+{
+  m_eogElaspedTime += dt;
+  float percentageDone = this->m_eogElaspedTime / this->m_eogTargetTime;
+  if (percentageDone >= 1.0)
+  {
+    percentageDone = 1.0;
+    this->unschedule(schedule_selector(BaseChallengeScene::eogGrayOutButtons));              
+  }
+  
+  CCObject* o;
+  ccColor3B orignialColor;
+  ccColor3B currentColor;
+  CCARRAY_FOREACH(this->m_buttons, o)
+  {
+    if ( ((GameButton*)o) == m_lastButtonPressed )
+      continue;
+
+    orignialColor = ((GameButton*)o)->getOriginalColor();
+    
+    currentColor.r = orignialColor.r + (float)(BUTTON_COLOR_BLACK.r - orignialColor.r) * percentageDone;
+    currentColor.g = orignialColor.g + (float)(BUTTON_COLOR_BLACK.g - orignialColor.g) * percentageDone;
+    currentColor.b = orignialColor.b + (float)(BUTTON_COLOR_BLACK.b - orignialColor.b) * percentageDone;
+
+    ((GameButton*)o)->setColor(currentColor);
   }
 }
 

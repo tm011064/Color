@@ -21,6 +21,7 @@ BaseSprite::BaseSprite(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate, SEL_Ca
 , m_touchPriority(0)
 , m_totalFrames(0)
 , m_animationFrames(NULL)
+, m_lastAnimationIndex(-1)
 { }
 
 BaseSprite::~BaseSprite() 
@@ -253,7 +254,7 @@ void BaseSprite::playAnimation(int animationIndex)
       stopAnimation();
       m_elaspeTime = 0.0f;
   }
-  
+  this->m_lastAnimationIndex = animationIndex;
   this->m_currentAnimationDefinition = &m_animationDefinitions[animationIndex];
 
   //Assign values.

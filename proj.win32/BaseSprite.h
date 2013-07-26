@@ -6,7 +6,6 @@
 #include "GameConstants.h"
 #include "DebugDraw.h"
 #include "GameContext.h"
-#include <queue>
 
 using namespace cocos2d;
 
@@ -22,6 +21,8 @@ class BaseSprite : public cocos2d::CCSprite, public cocos2d::CCTargetedTouchDele
   //Loopoing variable.
   int m_runningLoop;// , m_totalLoops;
     
+  int m_lastAnimationIndex;
+
   //Frame Rate.
   float m_frameRate;
     
@@ -65,6 +66,8 @@ public:
   virtual bool containsTouchLocation(CCTouch* touch);
      
   bool getIsLoaded() { return this->m_isLoaded; }
+
+  int getLastAnimationIndex() { return this->m_lastAnimationIndex; }
 
   int getTouchPriority() { return this->m_touchPriority; }
   void setTouchPriority(int priority) { this->m_touchPriority = priority; }

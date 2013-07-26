@@ -33,7 +33,7 @@ void MenuScene::onEnter()
     this->addChild(m_header);
 
     float buttonWidth = visibleRect.size.width * .75;
-
+        
     /*************** HOME ***************/
     m_homeStoryMode = MenuButton::create(
       m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
@@ -53,7 +53,7 @@ void MenuScene::onEnter()
     CalculateButtonLayoutCoordinates(topY, buttonSize.height, targetedSpacingToButtonHeightRatio, availableHeight, 4, posY, spacing);
     
     m_homeStoryMode->setPosition(center.x, posY);
-    
+
 #if GAME_VERSION < 2
     m_homeStoryMode->setVisible(false);
 #endif

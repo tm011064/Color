@@ -18,7 +18,8 @@ void ArcadeHardGameScene::onLoadLayout()
   this->m_buttons = LayoutController::createFourButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
     , callfuncO_selector( ArcadeHardGameScene::buttonTouchEndedCallback )
     , callfuncO_selector( ArcadeHardGameScene::buttonLoadedCallback )
-    , callfuncO_selector( ArcadeHardGameScene::buttonBlinkCallback ));   
+    , callfuncO_selector( ArcadeHardGameScene::buttonBlinkCallback )
+    , FIRE_ON_TOUCH_BEGAN);   
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
   {

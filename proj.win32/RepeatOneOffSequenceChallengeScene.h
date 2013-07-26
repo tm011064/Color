@@ -7,7 +7,6 @@ class RepeatOneOffSequenceChallengeScene : public BaseChallengeScene
 {
 private:
 
-  ChallengePointScoreDefinition m_challengePointScoreDefinition;
   int m_levelToReach;
   int m_lastStartIndex;
   int m_lastEndIndex;
@@ -19,8 +18,8 @@ private:
 
   RepeatOneOffSequenceChallengeScene(GameContext* gameContext, int challengeIndex, int totalButtons, ChallengeSceneType challengeSceneType, ChallengePointScoreDefinition challengePointScoreDefinition
     , int levelToReach)
-    : BaseChallengeScene(gameContext, challengeIndex, challengeSceneType, totalButtons)
-    , m_challengePointScoreDefinition(challengePointScoreDefinition)
+    : BaseChallengeScene(gameContext, challengeIndex, challengeSceneType, totalButtons, challengePointScoreDefinition
+                         , GSPTYPE_POINTS)
     , m_levelToReach(levelToReach)
   {
 

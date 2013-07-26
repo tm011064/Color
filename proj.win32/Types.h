@@ -18,7 +18,9 @@ enum SceneType
 
 enum ChallengeSceneType
 {
-  REACH_LEVEL = 0
+  REACH_LEVEL = 0,
+  REPEAT_ONE_OFF = 1,
+  EXACT_LENGTH = 2
 };
 
 
@@ -86,6 +88,11 @@ typedef struct
   int level;
   int coinsEarned;
   float totalTimeElapsed;
+
+  float averageButtonBlinkPercentage;
+  float averageButtonBlinkStartOffset;
+  float averageButtonBlinkDurationOffset;
+
 } GameScore;
 
 typedef struct 
@@ -98,10 +105,14 @@ typedef struct
 
   float coinsEarnedMultiplier;
 
-  int MininimumPointsForThreeStars;
-  int MininimumPointsForTwoStars;
-  int MininimumPointsForOneStar;
-  int MininimumPointsToPass;
+  int mininimumPointsForOneStar;
+  int mininimumPointsForTwoStars;
+  int mininimumPointsForThreeStars;
+
+  float minimumTotalTimePercentageForOneStar;
+  float minimumTotalTimePercentageForTwoStars;
+  float minimumTotalTimePercentageForThreeStars;
+
 } ChallengePointScoreDefinition;
 
 #endif  // __TYPES_H__

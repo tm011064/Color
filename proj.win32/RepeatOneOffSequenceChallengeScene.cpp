@@ -7,7 +7,7 @@ using namespace cocos2d;
 RepeatOneOffSequenceChallengeScene* RepeatOneOffSequenceChallengeScene::create(GameContext* gameContext, int challengeIndex
   , int totalButtons, ChallengePointScoreDefinition challengePointScoreDefinition, int levelToReach)
 {
-  RepeatOneOffSequenceChallengeScene* scene = new RepeatOneOffSequenceChallengeScene(gameContext, challengeIndex, totalButtons, REACH_LEVEL, challengePointScoreDefinition, levelToReach);
+  RepeatOneOffSequenceChallengeScene* scene = new RepeatOneOffSequenceChallengeScene(gameContext, challengeIndex, totalButtons, REPEAT_ONE_OFF, challengePointScoreDefinition, levelToReach);
   scene->init();
 
   return scene;
@@ -21,7 +21,8 @@ void RepeatOneOffSequenceChallengeScene::onLoadLayout()
     this->m_buttons = LayoutController::createTwoButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
-      , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback ));      
+      , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback )
+      , FIRE_ON_TOUCH_BEGAN);      
     break;
 
   case 3:
@@ -29,14 +30,16 @@ void RepeatOneOffSequenceChallengeScene::onLoadLayout()
     this->m_buttons = LayoutController::createThreeButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
-      , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback ));      
+      , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback )
+      , FIRE_ON_TOUCH_BEGAN);      
     break;
 
   case 4:
     this->m_buttons = LayoutController::createFourButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
-      , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback ));      
+      , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback )
+      , FIRE_ON_TOUCH_BEGAN);      
     break;
   }       
 
@@ -53,6 +56,7 @@ void RepeatOneOffSequenceChallengeScene::onLoadLayout()
 void RepeatOneOffSequenceChallengeScene::onLayoutLoaded()
 {  
   this->m_loadingScreen->setVisible(false);  
+  this->m_loadingScreenText->setVisible(false);  
 }
 
 void RepeatOneOffSequenceChallengeScene::startNewGame()
@@ -182,49 +186,46 @@ void RepeatOneOffSequenceChallengeScene::onCorrectButtonPressed()
   m_gameScore.totalPoints = (int)m_gameScore.totalPoints - (int)m_gameScore.totalPoints % 10;
     
   m_gameScore.level = m_buttonSequence.size();
-
-  if (m_buttonSequenceIndex >= m_gameScore.level)
-  {// correct, new animation
-
-    if (m_buttonSequenceIndex == m_levelToReach)
-    {
-      m_topBar->setScore((long)this->m_gameScore.totalPoints);
-      m_pGameContext->setGameScore( m_gameScore );
+  
+  if (m_buttonSequenceIndex == m_levelToReach)
+  {     
+    this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION; this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
       
-      int levelReached = this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
+    this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);
 
-      m_gameScorePopup->refresh();
-      m_gameScorePopup->show();
-    }
-    else
-    {
-      deltaTime = updateTimeVal(this->m_lastLevelStartTime);
-      float levelTimeThreshold = this->m_challengePointScoreDefinition.clickTimeThreshold * m_gameScore.level;
-      if (deltaTime < levelTimeThreshold)
-      {
-        bonus = this->m_challengePointScoreDefinition.maxLevelTimeBonus * (1 - deltaTime / levelTimeThreshold);  
-        bonus = (int)bonus - (int)bonus % 10;
-        m_gameScore.totalLevelBonus += bonus;
-        m_gameScore.totalPoints += bonus;
-      }
-      m_gameScore.totalPoints += this->m_challengePointScoreDefinition.levelBonus;
-      m_gameScore.totalPoints = (int)m_gameScore.totalPoints - (int)m_gameScore.totalPoints % 10;
-
-      this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + 1);           
+    m_topBar->setScore((long)this->m_gameScore.totalPoints);
+    m_pGameContext->setGameScore( m_gameScore );
       
-      m_topBar->setLevel(m_gameScore.level + 1);      
-      m_topBar->setScore((long)this->m_gameScore.totalPoints);
-
-      runSequenceAnimation(true, 0, -1);
-    }      
-  }
+    int levelReached = this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
+      
+    this->playBlinkButtonsAnimation(2, .25f, .8f);
+    this->scheduleOnce(schedule_selector(RepeatOneOffSequenceChallengeScene::showGameScorePopupCallback), 2.0f);
+  } 
 }
 
 void RepeatOneOffSequenceChallengeScene::onIncorrectButtonPressed()
 {
+  this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION;
+
+  this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
+  this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);
+
   m_topBar->setScore((long)this->m_gameScore.totalPoints);
   m_pGameContext->setGameScore( m_gameScore );
     
-  m_gameScorePopup->refresh();
-  m_gameScorePopup->show();
+  float wrongDelay = 1.6f;
+  float correctBlinkDelay = 2.3f;
+  this->m_eogTotalWrongButtonBlinks = 3;
+  this->m_eogElaspedTime = 0;
+  this->m_eogTargetTime = .8f;
+  this->m_eogTargetTimeLastButton = .55f;
+  this->m_eogElapsedTimeWrongButton = -wrongDelay;
+          
+  m_lastButtonPressed->playAnimation(PRESSED);
+
+  this->schedule(schedule_selector(RepeatOneOffSequenceChallengeScene::eogGrayOutButtons), 0.021f); // framerate: 1/48
+  this->schedule(schedule_selector(RepeatOneOffSequenceChallengeScene::eogGrayOutLastButton), 0.021f, -1, wrongDelay); // framerate: 1/48
+  this->schedule(schedule_selector(RepeatOneOffSequenceChallengeScene::eogReleaseLastButton), 0.021f, 0, wrongDelay); // framerate: 1/48
+  this->schedule(schedule_selector(RepeatOneOffSequenceChallengeScene::eogBlinkCorrectButton), 0.2f, -1, correctBlinkDelay); // framerate: 1/48    
+  
 }

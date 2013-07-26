@@ -21,7 +21,8 @@ void ReachLevelChallengeScene::onLoadLayout()
     this->m_buttons = LayoutController::createTwoButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( ReachLevelChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( ReachLevelChallengeScene::buttonLoadedCallback )
-      , callfuncO_selector( ReachLevelChallengeScene::buttonBlinkCallback ));      
+      , callfuncO_selector( ReachLevelChallengeScene::buttonBlinkCallback )
+      , FIRE_ON_TOUCH_BEGAN);      
     break;
 
   case 3:
@@ -29,14 +30,16 @@ void ReachLevelChallengeScene::onLoadLayout()
     this->m_buttons = LayoutController::createThreeButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( ReachLevelChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( ReachLevelChallengeScene::buttonLoadedCallback )
-      , callfuncO_selector( ReachLevelChallengeScene::buttonBlinkCallback ));      
+      , callfuncO_selector( ReachLevelChallengeScene::buttonBlinkCallback )
+      , FIRE_ON_TOUCH_BEGAN);      
     break;
 
   case 4:
     this->m_buttons = LayoutController::createFourButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
       , callfuncO_selector( ReachLevelChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( ReachLevelChallengeScene::buttonLoadedCallback )
-      , callfuncO_selector( ReachLevelChallengeScene::buttonBlinkCallback ));      
+      , callfuncO_selector( ReachLevelChallengeScene::buttonBlinkCallback )
+      , FIRE_ON_TOUCH_BEGAN);      
     break;
   }   
 
@@ -53,6 +56,7 @@ void ReachLevelChallengeScene::onLoadLayout()
 void ReachLevelChallengeScene::onLayoutLoaded()
 {  
   this->m_loadingScreen->setVisible(false);
+  this->m_loadingScreenText->setVisible(false);
 }
 
 void ReachLevelChallengeScene::startNewGame()
@@ -173,13 +177,18 @@ void ReachLevelChallengeScene::onCorrectButtonPressed()
 
     if (m_buttonSequenceIndex == m_levelToReach)
     {
+      this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION;
+
+      this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
+      this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);
+
       m_topBar->setScore((long)this->m_gameScore.totalPoints);
       m_pGameContext->setGameScore( m_gameScore );
       
       int levelReached = this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
-
-      m_gameScorePopup->refresh();
-      m_gameScorePopup->show();
+            
+      this->playBlinkButtonsAnimation(2, .25f, .8f);
+      this->scheduleOnce(schedule_selector(ReachLevelChallengeScene::showGameScorePopupCallback), 2.0f);
     }
     else
     {
@@ -200,16 +209,49 @@ void ReachLevelChallengeScene::onCorrectButtonPressed()
       m_topBar->setLevel(m_gameScore.level + 1);      
       m_topBar->setScore((long)this->m_gameScore.totalPoints);
 
-      runSequenceAnimation(true, 0, -1);
+      float mark = bonus / this->m_challengePointScoreDefinition.maxLevelTimeBonus;    
+      if (mark > .92f)
+        this->playConsoleLabelAnimation("PERFECT");
+      else if (mark > .88f)
+        this->playConsoleLabelAnimation("GREAT");
+      else if (mark > .75)
+        this->playConsoleLabelAnimation("GOOD");
+      else
+        this->playConsoleLabelAnimation("CORRECT");
+
+      this->scheduleOnce(schedule_selector(ReachLevelChallengeScene::runSequenceAnimationTimerCallback), .32f);
     }      
   }
 }
 
+void ReachLevelChallengeScene::runSequenceAnimationTimerCallback(float dt)
+{      
+  runSequenceAnimation(true, 0, -1);
+}
+
 void ReachLevelChallengeScene::onIncorrectButtonPressed()
 {
+  this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION;
+
+  this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
+  this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);
+
   m_topBar->setScore((long)this->m_gameScore.totalPoints);
   m_pGameContext->setGameScore( m_gameScore );
     
-  m_gameScorePopup->refresh();
-  m_gameScorePopup->show();
+  float wrongDelay = 1.6f;
+  float correctBlinkDelay = 2.3f;
+  this->m_eogTotalWrongButtonBlinks = 3;
+  this->m_eogElaspedTime = 0;
+  this->m_eogTargetTime = .8f;
+  this->m_eogTargetTimeLastButton = .55f;
+  this->m_eogElapsedTimeWrongButton = -wrongDelay;
+          
+  m_lastButtonPressed->playAnimation(PRESSED);
+
+  this->schedule(schedule_selector(ReachLevelChallengeScene::eogGrayOutButtons), 0.021f); // framerate: 1/48
+  this->schedule(schedule_selector(ReachLevelChallengeScene::eogGrayOutLastButton), 0.021f, -1, wrongDelay); // framerate: 1/48
+  this->schedule(schedule_selector(ReachLevelChallengeScene::eogReleaseLastButton), 0.021f, 0, wrongDelay); // framerate: 1/48
+  this->schedule(schedule_selector(ReachLevelChallengeScene::eogBlinkCorrectButton), 0.2f, -1, correctBlinkDelay); // framerate: 1/48    
+  
 }

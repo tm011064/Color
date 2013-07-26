@@ -7,40 +7,40 @@
 #include "Types.h"
 #include "GameContext.h"
 
+enum GameButtonTouchMode
+{
+  FIRE_ON_TOUCH_BEGAN = 0,
+  FIRE_ON_TOUCH_ENDED = 1
+};
+
 class GameButton : public BaseSprite
 {
 private:
   
   bool m_isEnabled;
+  GameButtonTouchMode m_gameButtonTouchMode;
   
   GameContext* m_pGameContext;
   std::string m_soundPath;
   ccColor3B m_originalColor;
+  
+  struct cc_timeval m_touchStartedTime;
+  struct cc_timeval m_touchEndedTime;
+  float m_lastTouchDuration;
 
 public:
-  GameButton(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, GameContext* gameContext
-    , std::string soundPath)   
-    : BaseSprite(pTarget, touchEndedDelegate, preLoadDelegate)
-    , m_pGameContext(gameContext)
-    , m_soundPath(soundPath)
-    , m_isEnabled(true)
-  {
-
-  }
-  ~GameButton()
-  {
-
-  }
+  ~GameButton() {}
+    
+  cc_timeval getLastTouchStartedTime() { return this->m_touchStartedTime; }
+  cc_timeval getLastTouchEndedTime() { return this->m_touchEndedTime; }
+  float getLastTouchDuration() { return this->m_lastTouchDuration; }
   
   int getIsEnabled() { return this->m_isEnabled; }
   void setIsEnabled(bool isEnabled) { this->m_isEnabled = isEnabled; }
 
   static GameButton* createQuarterButton(const ccColor3B& color, CCNode *pTarget
-    , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate, std::string soundPath, GameContext* gameContext);
-  static GameButton* createThirdButton(const ccColor3B& color, CCNode *pTarget
-    , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate, std::string soundPath, GameContext* gameContext);
-  static GameButton* createFifthButton(const ccColor3B& color, CCNode *pTarget
-    , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate, std::string soundPath, GameContext* gameContext);
+    , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate
+    , std::string soundPath, GameButtonTouchMode gameButtonTouchMode, GameContext* gameContext);
     
   void playSound();
 
@@ -51,8 +51,21 @@ public:
   virtual void playAnimation(int animationIndex, bool suppressSound);
 
   virtual bool ccTouchBegan(CCTouch* touch, CCEvent* event);
+  virtual void ccTouchMoved(CCTouch* touch, CCEvent* event);
+  virtual void ccTouchEnded(CCTouch* touch, CCEvent* event);
 
   virtual bool containsTouchLocation(CCTouch* touch);
+
+protected:  
+  GameButton(CCNode *pTarget, SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, GameContext* gameContext
+    , std::string soundPath, GameButtonTouchMode gameButtonTouchMode)   
+    : BaseSprite(pTarget, touchEndedDelegate, preLoadDelegate)
+    , m_pGameContext(gameContext)
+    , m_soundPath(soundPath)
+    , m_isEnabled(true)
+    , m_gameButtonTouchMode(gameButtonTouchMode)
+    , m_lastTouchDuration(-1)
+  { }
 };
 
 #endif  // __BUTTON4_H__

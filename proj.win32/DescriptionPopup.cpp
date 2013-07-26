@@ -48,8 +48,8 @@ void DescriptionPopup::draw()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   
   ccDrawSolidRect(m_visibleRectLeftBottom, m_visibleRectRightTop, m_backgroundColor);
-  ccDrawSolidRect(m_dialogRectLeftBottom, m_dialogRectRightTop, m_dialogColor);
-  
+  //ccDrawSolidRect(m_dialogRectLeftBottom, m_dialogRectRightTop, m_dialogColor);
+
   glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 }
 bool DescriptionPopup::ccTouchBegan(CCTouch* pTouch, CCEvent* pEvent) 

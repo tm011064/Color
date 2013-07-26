@@ -15,7 +15,7 @@ class BaseChallengeScene : public BaseScene
 private:
 
   ChallengeSceneType m_challengeSceneType;
-
+  GameScorePopupType m_gameScorePopupType;
   ImageButton* m_consoleButton;
   
   void newGameCallback(CCObject* pSender);
@@ -29,6 +29,20 @@ private:
   
 
 protected:
+  
+  GameButton* m_lastButtonPressed;
+  GameButton* m_nextSequenceButton;
+
+  float m_eogElaspedTime, m_eogElapsedTimeWrongButton;
+  float m_eogTargetTime, m_eogTargetTimeLastButton;
+  int m_eogTotalWrongButtonBlinks;
+  void eogGrayOutButtons(float dt);
+  void eogBlinkCorrectButton(float dt);
+  void eogGrayOutLastButton(float dt);
+  void eogReleaseLastButton(float dt);
+  void eogAnimationFinish(float dt);
+  void eogResetButtons(float dt);
+
   int m_totalButtons;
   bool m_isLayoutInitialized;
   int m_challengeIndex;
@@ -44,7 +58,7 @@ protected:
   std::vector<GameButton*> m_buttonSequence;
   GameScore m_gameScore;
 
-  void buttonTouchEndedCallback(CCObject* pSender);
+  virtual void buttonTouchEndedCallback(CCObject* pSender);
   void buttonLoadedCallback(CCObject* pSender);
   void buttonBlinkCallback(CCObject* pSender);
   void consoleButtonTouchEndedCallback(CCObject* pSender);
@@ -60,12 +74,28 @@ protected:
   struct cc_timeval *m_lastLevelStartTime;
 
   float updateTimeVal(cc_timeval* time);
-  int updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition);
+
+  bool m_challengeCompleted;
+  ChallengePointScoreDefinition m_challengePointScoreDefinition;
+  virtual int updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition);
+
+  void playConsoleLabelAnimation(std::string text);
+  void playConsoleLabelAnimation(std::string text, float d, float maxScale, float delay);
+  void playConsoleLabelAnimation(std::string text, float d, float maxScale, float delay, ccColor3B color);
+  void playBlinkButtonsAnimation(int totalBlinks, float interval, float delay);
+  void playHighlightButtonsAnimation(float d, float delay);
+
   void preLoadCallback(float dt);
+  void showGameScorePopupCallback(float dt);
+  void blinkButtonCallback(float dt);
+  void allButtonsPressingAnimationCallback(float dt);
+  void allButtonsReleaseAnimationCallback(float dt);
 
 public:
     
-  BaseChallengeScene::BaseChallengeScene(GameContext* gameContext, int challengeIndex, ChallengeSceneType challengeSceneType, int totalButtons)   
+  BaseChallengeScene::BaseChallengeScene(GameContext* gameContext, int challengeIndex
+    , ChallengeSceneType challengeSceneType, int totalButtons, ChallengePointScoreDefinition challengePointScoreDefinition
+    , GameScorePopupType gameScorePopupType)   
     : BaseScene(gameContext)
     , m_isLayoutInitialized(false) 
     , m_buttons(NULL)
@@ -80,6 +110,11 @@ public:
     , m_gameScorePopup(NULL)
     , m_challengeIndex(challengeIndex)
     , m_loadingScreenText(NULL)
+    , m_lastButtonPressed(NULL)
+    , m_nextSequenceButton(NULL)
+    , m_challengeCompleted(false)
+    , m_challengePointScoreDefinition(challengePointScoreDefinition)
+    , m_gameScorePopupType(gameScorePopupType)
   { }
   ~BaseChallengeScene()
   {

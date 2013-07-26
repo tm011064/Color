@@ -4,35 +4,11 @@
 #include "NavigationManager.h"
 #include "SimpleAudioEngine.h"
 
-GameButton* GameButton::createThirdButton(const ccColor3B& color, CCNode *pTarget
-    , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate, std::string soundPath, GameContext* gameContext)
-{
-  GameButton* gameButton = new GameButton(pTarget, touchEndedDelegate, preLoadDelegate, gameContext, soundPath);
-  gameButton->init();    // Must call init for latest version cocos2d-x
-
-  pTarget->addChild(gameButton);
-
-  gameButton->setAnimationFrames(gameContext->getImageMap()->getTiles("gamebuttons"));
-  
-  gameButton->setOriginalColor(color);
-  gameButton->setColor(color);
-  
-  gameButton->setAlphaMapStillFrameIndex(0);
-  gameButton->registerStillFrame(IDLE, 0, 0, false);  
-  int pressingFrames[] = { 0,2,4,6,10 };
-  gameButton->registerAnimation(PRESSING, pressingFrames, 5, 1, 0, 30, false, false);  
-  int releasingFrames[] = { 7,5,2,0 };
-  gameButton->registerAnimation(RELEASING, releasingFrames, 4, 1, 0, 30, false, false);  
-  gameButton->registerStillFrame(PRESSED, 10, 0, false);  
-  int blinkFrames[] = { 2,5,8,10,9,6,4,3,2,1,0 };
-  gameButton->registerAnimation(BLINK, blinkFrames, 11, 1, blinkEndedDelegate, 30, false, false);
-
-  return gameButton;
-}
 GameButton* GameButton::createQuarterButton(const ccColor3B& color, CCNode *pTarget
-    , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate, std::string soundPath, GameContext* gameContext)
+    , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate
+    , std::string soundPath, GameButtonTouchMode gameButtonTouchMode, GameContext* gameContext)
 {
-  GameButton* gameButton = new GameButton(pTarget, touchEndedDelegate, preLoadDelegate, gameContext, soundPath);
+  GameButton* gameButton = new GameButton(pTarget, touchEndedDelegate, preLoadDelegate, gameContext, soundPath, gameButtonTouchMode);
   
   gameButton->init();    // Must call init for latest version cocos2d-x
   gameButton->autorelease();
@@ -51,43 +27,7 @@ GameButton* GameButton::createQuarterButton(const ccColor3B& color, CCNode *pTar
   gameButton->registerStillFrame(PRESSED, 10, 0, false);  
   int blinkFrames[] = { 2,5,8,10,9,6,4,3,2,1,0 };
   gameButton->registerAnimation(BLINK, blinkFrames, 11, 1, blinkEndedDelegate, 30, false, false);
-  /*
-  gameButton->setAlphaMapStillFrameIndex(11);
-  gameButton->registerStillFrame(IDLE, 11, 0, false);  
-  int pressingFrames[] = { 11,13,15,17,21 };
-  gameButton->registerAnimation(PRESSING, pressingFrames, 5, 1, 0, 30, false, false);  
-  int releasingFrames[] = { 18,16,13,11 };
-  gameButton->registerAnimation(RELEASING, releasingFrames, 4, 1, 0, 30, false, false);  
-  gameButton->registerStillFrame(PRESSED, 21, 0, false);  
-  int blinkFrames[] = { 13,16,19,21,20,17,15,14,13,12,11 };
-  gameButton->registerAnimation(BLINK, blinkFrames, 11, 1, blinkEndedDelegate, 30, false, false);
-  */
-  return gameButton;
-}
-
-GameButton* GameButton::createFifthButton(const ccColor3B& color, CCNode *pTarget
-    , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate, std::string soundPath, GameContext* gameContext)
-{
-  GameButton* gameButton = new GameButton(pTarget, touchEndedDelegate, preLoadDelegate, gameContext, soundPath);
-  gameButton->init();    // Must call init for latest version cocos2d-x
-
-  pTarget->addChild(gameButton);
   
-  gameButton->setAnimationFrames(gameContext->getImageMap()->getTiles("gamebuttons"));  
-  
-  gameButton->setOriginalColor(color);
-  gameButton->setColor(color);
-  
-  gameButton->setAlphaMapStillFrameIndex(22);
-  gameButton->registerStillFrame(IDLE, 22, 0, false);  
-  int pressingFrames[] = { 22,24,26,28,32 };
-  gameButton->registerAnimation(PRESSING, pressingFrames, 5, 1, 0, 30, false, false);  
-  int releasingFrames[] = { 29,27,24,22 };
-  gameButton->registerAnimation(RELEASING, releasingFrames, 4, 1, 0, 30, false, false);  
-  gameButton->registerStillFrame(PRESSED, 32, 0, false);  
-  int blinkFrames[] = { 24,27,30,32,31,28,26,25,24,23,22 };
-  gameButton->registerAnimation(BLINK, blinkFrames, 11, 1, blinkEndedDelegate, 30, false, false);
-
   return gameButton;
 }
 
@@ -141,14 +81,54 @@ bool GameButton::ccTouchBegan(CCTouch* touch, CCEvent* event)
 
     if (containsTouchLocation(touch))
     { 
-      this->playAnimation(BLINK, true); // we don't play the sound here as this will be played only on a correct click
+      switch (this->m_gameButtonTouchMode)
+      {
+      case FIRE_ON_TOUCH_BEGAN:
+        this->playAnimation(BLINK, true); // we don't play the sound here as this will be played only on a correct click
 
-      // we react on the begin event...
-      if(m_pTarget != 0 && m_fnpTouchEndedDelegate != 0)
-          (m_pTarget->*m_fnpTouchEndedDelegate)(this);
+        // we react on the begin event...
+        if(m_pTarget != 0 && m_fnpTouchEndedDelegate != 0)
+            (m_pTarget->*m_fnpTouchEndedDelegate)(this);
+        break;
+
+      case FIRE_ON_TOUCH_ENDED:
+        this->playAnimation(PRESSING, true); 
+        CCTime::gettimeofdayCocos2d(&this->m_touchStartedTime, NULL);
+        break;
+      }
       
       return true;     
     }
 
     return false;
 }
+void GameButton::ccTouchMoved(CCTouch* touch, CCEvent* event)
+{
+  if (m_gameButtonTouchMode == FIRE_ON_TOUCH_ENDED)
+  {
+    if (containsTouchLocation(touch))
+    {      
+      //setButtonState(GRABBED);
+    }
+    else
+    {
+      //setButtonState(UNGRABBED);
+    }
+  }
+}
+void GameButton::ccTouchEnded(CCTouch* touch, CCEvent* event)
+{
+  if (m_gameButtonTouchMode == FIRE_ON_TOUCH_ENDED)
+  {    
+    if (containsTouchLocation(touch))
+    {      
+      this->playAnimation(RELEASING, true); 
+      
+      CCTime::gettimeofdayCocos2d(&this->m_touchEndedTime, NULL);      
+      this->m_lastTouchDuration = MAX(0, (this->m_touchEndedTime.tv_sec - this->m_touchStartedTime.tv_sec) + (this->m_touchEndedTime.tv_usec - this->m_touchStartedTime.tv_usec) / 1000000.0f);
+  
+      if(m_pTarget != 0 && m_fnpTouchEndedDelegate != 0)
+          (m_pTarget->*m_fnpTouchEndedDelegate)(this);
+    }
+  }
+} 

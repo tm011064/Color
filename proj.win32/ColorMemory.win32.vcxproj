@@ -125,20 +125,6 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\Resources\s240x320\bg_classic.png" />
-    <None Include="..\Resources\s240x320\bg_loading.png" />
-    <None Include="..\Resources\s240x320\buttonmap.plist" />
-    <None Include="..\Resources\s240x320\buttonmap.png" />
-    <None Include="..\Resources\s320x480\bg_classic.png" />
-    <None Include="..\Resources\s320x480\bg_loading.png" />
-    <None Include="..\Resources\s320x480\buttonmap.plist" />
-    <None Include="..\Resources\s320x480\buttonmap.png" />
-    <None Include="res\ColorMemory.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="ColorMemory.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\Classes\main.h" />
     <ClInclude Include="AppDelegate.h" />
     <ClInclude Include="ArcadeNormalGameScene.h" />
@@ -154,12 +140,15 @@
     <ClInclude Include="BaseTileMap.h" />
     <ClInclude Include="ChallengeButtonPanel.h" />
     <ClInclude Include="DescriptionPopup.h" />
+    <ClInclude Include="ExactLengthChallengeScene.h" />
     <ClInclude Include="GameButton.h" />
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="GameConstants.h" />
     <ClInclude Include="GameContext.h" />
     <ClInclude Include="GameEngineIncludes.h" />
+    <ClInclude Include="GameScorePointsPanel.h" />
     <ClInclude Include="GameScorePopup.h" />
+    <ClInclude Include="GameScoreTimePanel.h" />
     <ClInclude Include="HighscoreScene.h" />
     <ClInclude Include="ImageButton.h" />
     <ClInclude Include="LayoutController.h" />
@@ -200,10 +189,13 @@
     <ClCompile Include="BaseTileMap.cpp" />
     <ClCompile Include="ChallengeButtonPanel.cpp" />
     <ClCompile Include="DescriptionPopup.cpp" />
+    <ClCompile Include="ExactLengthChallengeScene.cpp" />
     <ClCompile Include="GameButton.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="GameContext.cpp" />
+    <ClCompile Include="GameScorePointsPanel.cpp" />
     <ClCompile Include="GameScorePopup.cpp" />
+    <ClCompile Include="GameScoreTimePanel.cpp" />
     <ClCompile Include="HighscoreScene.cpp" />
     <ClCompile Include="ImageButton.cpp" />
     <ClCompile Include="LayoutController.cpp" />
