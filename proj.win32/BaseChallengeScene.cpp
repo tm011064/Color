@@ -375,7 +375,7 @@ void BaseChallengeScene::blinkButtonCallback(float dt)
   CCARRAY_FOREACH(this->m_buttons, o)
   {
     if (((GameButton*)o)->getIsEnabled())
-      ((GameButton*)o)->playAnimation(BLINK);      
+      ((GameButton*)o)->playAnimation(BLINK, true);      
   }
 }
 

@@ -6,6 +6,7 @@
 #include "SpriteFrameCache.h"
 #include "Types.h"
 #include "BaseTileMap.h"
+#include "SimpleAudioEngine.h"
 
 using namespace cocos2d;
 
@@ -14,6 +15,7 @@ class GameContext
 private:
 
   std::vector<int> m_challengeStatuses;
+  std::map<std::string, std::string> m_soundLookup;
   int m_totalChallenges;
 
   bool m_isSoundOn;
@@ -46,9 +48,7 @@ private:
 
   std::string m_imageMapPListPath;
   std::string m_imageMapPngPath;
-
-  std::string m_soundPath;
-
+  
   unsigned int m_totalCoins;
   
 public:  
@@ -86,10 +86,7 @@ public:
   
   std::string getImageMapPngPath() { return this->m_imageMapPngPath; }
   void setImageMapPngPath(std::string imageMapPngPath) { this->m_imageMapPngPath = imageMapPngPath; }
-    
-  std::string getSoundPath() { return this->m_soundPath; }
-  void setSoundPath(std::string soundPath) { this->m_soundPath = soundPath; }
-  
+      
   float getDefaultBorderThickness() { return this->m_defaultBorderThickness; }
   void setDefaultBorderThickness(float defaultBorderThickness) { this->m_defaultBorderThickness = defaultBorderThickness; }
 
@@ -134,6 +131,13 @@ public:
   
   int getChallengeInfo(unsigned int index) { return this->m_challengeStatuses.at(index); }
   void setChallengeInfo(unsigned int index, int status);
+  
+  void registerSoundFile(std::string key, std::string filePath) 
+  { 
+    m_soundLookup[key] = filePath; 
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect( filePath.c_str() );
+  }
+  std::string getSoundPath(std::string key) { return m_soundLookup[key]; }
 };
 
 #endif  // __GAMECONTEXT_H__

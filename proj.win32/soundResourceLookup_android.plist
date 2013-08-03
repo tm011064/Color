@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>filenames</key>
+  <dict>
+	  <key>buttonsound_normal_1</key>
+	  <string>sounds_android/Bass_0001.wav</string>
+	  <key>buttonsound_normal_2</key>
+	  <string>sounds_android/SnareDrums_0011.wav</string>
+	  <key>buttonsound_normal_3</key>
+	  <string>sounds_android/SnareDrums_0013.wav</string>
+	  <key>buttonsound_normal_4</key>
+	  <string>sounds_android/TomTom_0004.wav</string>	    
+	  <key>buttonsound_long_1</key>
+	  <string>sounds_android/synth_1.ogg</string>
+	  <key>buttonsound_long_2</key>
+	  <string>sounds_android/synth_2.ogg</string>
+	  <key>buttonsound_long_3</key>
+	  <string>sounds_android/synth_3.ogg</string>
+	  <key>buttonsound_long_4</key>
+	  <string>sounds_android/synth_4.ogg</string>
+	  <key>buttonsound_wrong</key>
+	  <string>sounds_android/button_wrong.wav</string>
+  </dict>
+  <key>metadata</key>
+  <dict>
+	  <key>version</key>
+	  <integer>1</integer>
+  </dict>
+</dict>
+</plist>

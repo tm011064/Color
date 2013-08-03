@@ -6,11 +6,17 @@
 #include "GameConstants.h"
 #include "Types.h"
 #include "GameContext.h"
+#include "SimpleAudioEngine.h"
 
 enum GameButtonTouchMode
 {
   FIRE_ON_TOUCH_BEGAN = 0,
   FIRE_ON_TOUCH_ENDED = 1
+};
+enum GameButtonSoundMode
+{
+  DRUMS = 0,
+  OSCIL = 1
 };
 
 class GameButton : public BaseSprite
@@ -27,6 +33,7 @@ private:
   struct cc_timeval m_touchStartedTime;
   struct cc_timeval m_touchEndedTime;
   float m_lastTouchDuration;
+  unsigned int m_lastSoundId;
 
 public:
   ~GameButton() {}
@@ -40,9 +47,18 @@ public:
 
   static GameButton* createQuarterButton(const ccColor3B& color, CCNode *pTarget
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate
-    , std::string soundPath, GameButtonTouchMode gameButtonTouchMode, GameContext* gameContext);
+    , std::string soundPath, GameButtonTouchMode gameButtonTouchMode
+    , GameContext* gameContext);
     
-  void playSound();
+  unsigned int playSound(){ return playSound(false); }  
+  unsigned int playSound(bool doLoop);
+  void stopSound()
+  {
+    if (m_lastSoundId > 0)
+      CocosDenshion::SimpleAudioEngine::sharedEngine()->stopEffect(m_lastSoundId);
+  }
+  void fadeOutSound(float fadeTime);
+  void reduceVolumeCallback(float dt);
 
   ccColor3B getOriginalColor() { return m_originalColor; }
   void setOriginalColor(ccColor3B color) { this->m_originalColor = color; }
@@ -65,6 +81,7 @@ protected:
     , m_isEnabled(true)
     , m_gameButtonTouchMode(gameButtonTouchMode)
     , m_lastTouchDuration(-1)
+    , m_lastSoundId(0)
   { }
 };
 

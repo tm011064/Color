@@ -289,8 +289,62 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
     challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
 
-    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, challengeIndex, 3
+    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, challengeIndex, 4
+      , 1.2f, 1.2f
       , 1.0f, 1.0f
+      , challengePointScoreDefinition);
+    exactLengthChallengeScene->init();
+    
+    pLayer = new BaseLayer(exactLengthChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
+
+    exactLengthChallengeScene->addChild(pLayer); 
+
+    return exactLengthChallengeScene;
+
+  case 5:
+
+    levelToReach = 2;
+    totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
+
+    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_THREE_BUTTONS_MULTIPLIER;
+    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_THREE_BUTTONS;
+    // TODO (Roman): points!
+    
+    challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .75f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
+
+    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, challengeIndex, 1
+      , 6.0f, 6.0f
+      , 1.0f, 1.0f
+      , challengePointScoreDefinition);
+    exactLengthChallengeScene->init();
+    
+    pLayer = new BaseLayer(exactLengthChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
+
+    exactLengthChallengeScene->addChild(pLayer); 
+
+    return exactLengthChallengeScene;
+
+  case 6:
+
+    levelToReach = 2;
+    totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
+
+    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_THREE_BUTTONS_MULTIPLIER;
+    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_THREE_BUTTONS;
+    // TODO (Roman): points!
+    
+    challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .75f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
+
+    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, challengeIndex, 3
+      , 2.0f, 2.0f
       , 1.0f, 1.0f
       , challengePointScoreDefinition);
     exactLengthChallengeScene->init();

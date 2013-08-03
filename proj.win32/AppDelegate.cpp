@@ -81,15 +81,26 @@ bool AppDelegate::applicationDidFinishLaunching()
   gameContext->setImageMapPListPath(CCFileUtils::sharedFileUtils()->fullPathForFilename(NavigationManager::getPath(gameContext, "imagemap.plist").c_str()));
   gameContext->setImageMapPngPath(CCFileUtils::sharedFileUtils()->fullPathForFilename(NavigationManager::getPath(gameContext, "imagemap.png").c_str()));
 
-  gameContext->setSoundPath(CCFileUtils::sharedFileUtils()->fullPathForFilename("sounds/"));
-  SimpleAudioEngine::sharedEngine()->preloadEffect( (gameContext->getSoundPath() + "button_s1.wav").c_str() );
-  SimpleAudioEngine::sharedEngine()->preloadEffect( (gameContext->getSoundPath() + "button_s2.wav").c_str() );
-  SimpleAudioEngine::sharedEngine()->preloadEffect( (gameContext->getSoundPath() + "button_s3.wav").c_str() );
-  SimpleAudioEngine::sharedEngine()->preloadEffect( (gameContext->getSoundPath() + "button_s4.wav").c_str() );
-  SimpleAudioEngine::sharedEngine()->preloadEffect( (gameContext->getSoundPath() + "button_s5.wav").c_str() );
-  SimpleAudioEngine::sharedEngine()->preloadEffect( (gameContext->getSoundPath() + "button_wrong.wav").c_str() );
-
   BaseFileUtils* baseFileUtils = new BaseFileUtils(); 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+  baseFileUtils->loadFilenameLookupDictionaryFromFile(
+    CCFileUtils::sharedFileUtils()->fullPathForFilename("soundResourceLookup_android.plist").c_str());
+  CCLOG("Initializing android sound files");
+#else
+  baseFileUtils->loadFilenameLookupDictionaryFromFile(
+    CCFileUtils::sharedFileUtils()->fullPathForFilename("soundResourceLookup.plist").c_str());
+#endif
+  gameContext->registerSoundFile("buttonsound_normal_1", baseFileUtils->valueForKey("buttonsound_normal_1"));
+  gameContext->registerSoundFile("buttonsound_normal_2", baseFileUtils->valueForKey("buttonsound_normal_2"));
+  gameContext->registerSoundFile("buttonsound_normal_3", baseFileUtils->valueForKey("buttonsound_normal_3"));
+  gameContext->registerSoundFile("buttonsound_normal_4", baseFileUtils->valueForKey("buttonsound_normal_4"));
+  gameContext->registerSoundFile("buttonsound_wrong", baseFileUtils->valueForKey("buttonsound_wrong"));
+  gameContext->registerSoundFile("buttonsound_long_1", baseFileUtils->valueForKey("buttonsound_long_1"));
+  gameContext->registerSoundFile("buttonsound_long_2", baseFileUtils->valueForKey("buttonsound_long_2"));
+  gameContext->registerSoundFile("buttonsound_long_3", baseFileUtils->valueForKey("buttonsound_long_3"));
+  gameContext->registerSoundFile("buttonsound_long_4", baseFileUtils->valueForKey("buttonsound_long_4"));
+
+  baseFileUtils = new BaseFileUtils(); 
   baseFileUtils->loadFilenameLookupDictionaryFromFile(
     CCFileUtils::sharedFileUtils()->fullPathForFilename(NavigationManager::getPath(gameContext, "resourceLookup.plist").c_str()).c_str());
   std::vector<std::string> mapFiles = baseFileUtils->getNumberedResourceFiles("img_buttonmap");
@@ -175,7 +186,7 @@ bool AppDelegate::applicationDidFinishLaunching()
   gameContext->setFontSpaceWidthLarge(label->getContentSize().width);
 
   label->release();  
-  
+
   this->m_pGameContext = gameContext;
 
   NavigationManager::showScene(MENU_SCENE, gameContext, FIRST_RUN);

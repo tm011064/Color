@@ -1,5 +1,6 @@
 #include "ExactLengthChallengeScene.h"
 #include "LayoutController.h"
+#include "SimpleAudioEngine.h"
 #include <algorithm>
 
 using namespace cocos2d;
@@ -27,7 +28,7 @@ void ExactLengthChallengeScene::onLoadLayout()
       , callfuncO_selector( ExactLengthChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( ExactLengthChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( ExactLengthChallengeScene::buttonBlinkCallback )
-      , FIRE_ON_TOUCH_ENDED);      
+      , FIRE_ON_TOUCH_ENDED, OSCIL);      
     break;
 
   case 2:
@@ -35,7 +36,7 @@ void ExactLengthChallengeScene::onLoadLayout()
       , callfuncO_selector( ExactLengthChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( ExactLengthChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( ExactLengthChallengeScene::buttonBlinkCallback )
-      , FIRE_ON_TOUCH_ENDED);      
+      , FIRE_ON_TOUCH_ENDED, OSCIL);      
     break;
 
   case 3:
@@ -44,7 +45,7 @@ void ExactLengthChallengeScene::onLoadLayout()
       , callfuncO_selector( ExactLengthChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( ExactLengthChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( ExactLengthChallengeScene::buttonBlinkCallback )
-      , FIRE_ON_TOUCH_ENDED);      
+      , FIRE_ON_TOUCH_ENDED, OSCIL);      
     break;
 
   case 4:
@@ -52,7 +53,7 @@ void ExactLengthChallengeScene::onLoadLayout()
       , callfuncO_selector( ExactLengthChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( ExactLengthChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( ExactLengthChallengeScene::buttonBlinkCallback )
-      , FIRE_ON_TOUCH_ENDED);      
+      , FIRE_ON_TOUCH_ENDED, OSCIL);      
     break;
   }     
 
@@ -140,8 +141,9 @@ void ExactLengthChallengeScene::runSequenceAnimation()
   if (delay < BLINK_SPEED_THRESHOLD)
     delay = BLINK_SPEED_THRESHOLD;
   
-  m_buttonBlinkTimePeriods[0].startTime = 0;
-  m_buttonBlinkTimePeriods[0].endTime = m_buttonBlinkTimePeriods[0].duration;
+  // TODO (Roman): create timeval values based on tv sec and tv usec
+  m_buttonBlinkTimePeriods[0].startTime = UtilityHelper::getTimeValFromSeconds(.0f);
+  m_buttonBlinkTimePeriods[0].endTime = UtilityHelper::getTimeValFromSeconds(m_buttonBlinkTimePeriods[0].duration);
 
   this->runAction(CCSequence::create(CCDelayTime::create(delay)
                                    , CCCallFuncO::create(this, callfuncO_selector(ExactLengthChallengeScene::startButtonBlinkCallback), m_buttonBlinkTimePeriods[0].button), NULL));
@@ -152,16 +154,17 @@ void ExactLengthChallengeScene::runSequenceAnimation()
   {
     do
     {
-      m_buttonBlinkTimePeriods[i].startTime = m_buttonBlinkTimePeriods[i - 1].endTime 
-        + getRandom(this->m_minNextSignalDeltaFromLastEndTime, this->m_maxNextSignalDeltaFromLastEndTime);
-    }
-    while (m_buttonBlinkTimePeriods[i].startTime < m_buttonBlinkTimePeriods[i - 1].startTime);
-    m_buttonBlinkTimePeriods[i].endTime = m_buttonBlinkTimePeriods[i].startTime + m_buttonBlinkTimePeriods[i].duration;
+      m_buttonBlinkTimePeriods[i].startTime = UtilityHelper::addSeconds(m_buttonBlinkTimePeriods[i - 1].endTime, getRandom(this->m_minNextSignalDeltaFromLastEndTime, this->m_maxNextSignalDeltaFromLastEndTime));
+   }
+    while (UtilityHelper::isLessThan(m_buttonBlinkTimePeriods[i].startTime, m_buttonBlinkTimePeriods[i - 1].startTime));
     
-    this->runAction(CCSequence::create(CCDelayTime::create(delay + m_buttonBlinkTimePeriods[i].startTime)
-                                     , CCCallFuncO::create(this, callfuncO_selector(ExactLengthChallengeScene::startButtonBlinkCallback), m_buttonBlinkTimePeriods[i].button), NULL));
-    this->runAction(CCSequence::create(CCDelayTime::create(delay + m_buttonBlinkTimePeriods[i].startTime + m_buttonBlinkTimePeriods[i].duration)
-                                     , CCCallFuncO::create(this, callfuncO_selector(ExactLengthChallengeScene::endButtonBlinkCallback), m_buttonBlinkTimePeriods[i].button), NULL));
+    m_buttonBlinkTimePeriods[i].endTime = UtilityHelper::addSeconds(m_buttonBlinkTimePeriods[i].startTime, m_buttonBlinkTimePeriods[i].duration);
+   
+    this->runAction(CCSequence::create(CCDelayTime::create(delay + UtilityHelper::getSeconds(m_buttonBlinkTimePeriods[i].startTime))
+                                    , CCCallFuncO::create(this, callfuncO_selector(ExactLengthChallengeScene::startButtonBlinkCallback), m_buttonBlinkTimePeriods[i].button), NULL));
+    this->runAction(CCSequence::create(CCDelayTime::create(delay + UtilityHelper::getSeconds(UtilityHelper::addSeconds(m_buttonBlinkTimePeriods[i].startTime, m_buttonBlinkTimePeriods[i].duration)))
+                                    , CCCallFuncO::create(this, callfuncO_selector(ExactLengthChallengeScene::endButtonBlinkCallback), m_buttonBlinkTimePeriods[i].button), NULL));
+ 
   }
 }
 
@@ -171,7 +174,10 @@ void ExactLengthChallengeScene::startButtonBlinkCallback(CCObject* o)
   {
     if (m_buttonBlinkTimePeriods[i].button == o)
     {
-      m_buttonBlinkTimePeriods[i].button->playAnimation(PRESSING);
+      m_buttonBlinkTimePeriods[i].button->playAnimation(PRESSING); 
+      
+      if (m_pGameContext->getIsSoundOn())
+        m_buttonBlinkTimePeriods[i].button->playSound(false);
       break;
     }
   }
@@ -184,6 +190,7 @@ void ExactLengthChallengeScene::endButtonBlinkCallback(CCObject* o)
     if (m_buttonBlinkTimePeriods[i].button == o)
     {
       m_buttonBlinkTimePeriods[i].hasEnded = true;
+      m_buttonBlinkTimePeriods[i].button->fadeOutSound(.16f);
       m_buttonBlinkTimePeriods[i].button->playAnimation(RELEASING);
     }
     if (m_buttonBlinkTimePeriods[i].hasEnded)
@@ -207,54 +214,61 @@ void ExactLengthChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
     return;
   }
 
-  buttonBlinkTimePeriod.startTime = buttonBlinkTimePeriod.button->getLastTouchStartedTime().tv_sec
-                                  + buttonBlinkTimePeriod.button->getLastTouchStartedTime().tv_usec / 1000000.0f;
-  
-  buttonBlinkTimePeriod.endTime = buttonBlinkTimePeriod.button->getLastTouchEndedTime().tv_sec
-                                + buttonBlinkTimePeriod.button->getLastTouchEndedTime().tv_usec / 1000000.0f;
+  buttonBlinkTimePeriod.startTime = buttonBlinkTimePeriod.button->getLastTouchStartedTime();  
+  buttonBlinkTimePeriod.endTime = buttonBlinkTimePeriod.button->getLastTouchEndedTime();
   buttonBlinkTimePeriod.duration = buttonBlinkTimePeriod.button->getLastTouchDuration();
       
   m_userPressedTimePeriods.push_back(buttonBlinkTimePeriod);
 
   ButtonBlinkTimePeriodComparer comparer;
   std::sort(m_userPressedTimePeriods.begin(), m_userPressedTimePeriods.end(), comparer);  
-  float startTime = m_userPressedTimePeriods[0].startTime;
-
-  m_userPressedTimePeriods[index].startOffset = m_buttonBlinkTimePeriods[index].startTime - (m_userPressedTimePeriods[index].startTime - startTime);
+  cc_timeval startTime = m_userPressedTimePeriods[0].startTime;
+  
+  m_userPressedTimePeriods[index].startOffset = UtilityHelper::getSeconds(
+    UtilityHelper::substract(
+      m_buttonBlinkTimePeriods[index].startTime
+      , UtilityHelper::substract( m_userPressedTimePeriods[index].startTime, startTime )
+    )
+  );
   m_userPressedTimePeriods[index].durationOffset = m_buttonBlinkTimePeriods[index].duration - m_userPressedTimePeriods[index].duration;
   
-  m_userPressedTimePeriods[index].correctPercentage = 1 - (   std::abs(m_userPressedTimePeriods[index].startOffset) / (m_buttonBlinkTimePeriods[index].startTime == .0f ? 1 : m_buttonBlinkTimePeriods[index].startTime)
-                                                            + std::abs(m_userPressedTimePeriods[index].durationOffset) / (m_buttonBlinkTimePeriods[index].duration == .0f ? 1 : m_buttonBlinkTimePeriods[index].duration) );
-  
+  float durationCorrectPercentage = fabs(m_userPressedTimePeriods[index].durationOffset) / (m_buttonBlinkTimePeriods[index].duration == .0f ? 1.0f : m_buttonBlinkTimePeriods[index].duration);
+  float buttonStartTime = UtilityHelper::getSeconds(m_buttonBlinkTimePeriods[index].startTime);
+  m_userPressedTimePeriods[index].correctPercentage = 1 - (   fabs(m_userPressedTimePeriods[index].startOffset) / (buttonStartTime == .0f ? 1.0f : buttonStartTime)
+                                                            + durationCorrectPercentage );
+  durationCorrectPercentage = 1 - durationCorrectPercentage;
+
   this->m_gameScore.totalPoints += m_userPressedTimePeriods[index].correctPercentage * 100 * m_challengePointScoreDefinition.correctButtonScore;
   m_gameScore.totalPoints = (int)m_gameScore.totalPoints - (int)m_gameScore.totalPoints % 10;
   m_topBar->setScore((long)this->m_gameScore.totalPoints);
   m_pGameContext->setGameScore( m_gameScore );
   
-  char str[32];
-  sprintf(str, "+%.3f s", /*std::abs(m_userPressedTimePeriods[index].startOffset) 
-                        +*/ std::abs(m_userPressedTimePeriods[index].durationOffset));
+  char str[128];
+  //sprintf(str, "Timing: +%.3f s\nDuration: +%.3f s", fabs(m_userPressedTimePeriods[index].startOffset) 
+  //                             , fabs(m_userPressedTimePeriods[index].durationOffset));
+  sprintf(str, "+%.3f s", fabs(m_userPressedTimePeriods[index].durationOffset));
+ 
   ccColor3B color;
   
-  if (m_userPressedTimePeriods[index].correctPercentage > .95f) 
+  if (durationCorrectPercentage > .95f) 
   {
     color.r = .0f;
     color.g = 255.0f;
     color.b = .0f;
   }
-  else if (m_userPressedTimePeriods[index].correctPercentage > .9f)
+  else if (durationCorrectPercentage > .9f)
   {
     color.r = 180.0f;
     color.g = 255.0f;
     color.b = .0f;
   }
-  else if (m_userPressedTimePeriods[index].correctPercentage > .85f)
+  else if (durationCorrectPercentage > .85f)
   {
     color.r = 250.0f;
     color.g = 255.0f;
     color.b = .0f;
   }
-  else if (m_userPressedTimePeriods[index].correctPercentage > .75f)
+  else if (durationCorrectPercentage > .75f)
   {
     color.r = 255.0f;
     color.g = 160.0f;
@@ -278,13 +292,15 @@ void ExactLengthChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
     for (int i = 0; i < m_totalButtons; ++i)
     {
       this->m_gameScore.averageButtonBlinkPercentage += m_userPressedTimePeriods[i].correctPercentage;
-      this->m_gameScore.averageButtonBlinkStartOffset += m_userPressedTimePeriods[i].startOffset;
-      this->m_gameScore.averageButtonBlinkDurationOffset += m_userPressedTimePeriods[i].durationOffset;
+      this->m_gameScore.averageButtonBlinkStartOffset += fabs(m_userPressedTimePeriods[i].startOffset);
+      this->m_gameScore.averageButtonBlinkDurationOffset += fabs(m_userPressedTimePeriods[i].durationOffset);
     }
     this->m_gameScore.averageButtonBlinkPercentage = this->m_gameScore.averageButtonBlinkPercentage / m_totalButtons;
     this->m_gameScore.averageButtonBlinkDurationOffset = this->m_gameScore.averageButtonBlinkDurationOffset / m_totalButtons;
+    CCLOG("this->m_gameScore.averageButtonBlinkStartOffset: %f", this->m_gameScore.averageButtonBlinkStartOffset);
     this->m_gameScore.averageButtonBlinkStartOffset = this->m_gameScore.averageButtonBlinkStartOffset / m_totalButtons;
-    
+    CCLOG("this->m_gameScore.averageButtonBlinkStartOffset: %f", this->m_gameScore.averageButtonBlinkStartOffset);
+
     // TODO (Roman): scoring and popup
     this->m_gameScore.coinsEarned = round( this->m_gameScore.averageButtonBlinkPercentage * 10 * m_challengePointScoreDefinition.coinsEarnedMultiplier );
     this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);

@@ -79,7 +79,6 @@ void GameContext::setHighscoreHard(int totalPoints)
   this->m_highscoreHard = totalPoints;
 }
 
-
 void GameContext::setChallengeInfo(unsigned int index, int status)
 {
   char str[4];

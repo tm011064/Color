@@ -22,7 +22,7 @@ void RepeatOneOffSequenceChallengeScene::onLoadLayout()
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback )
-      , FIRE_ON_TOUCH_BEGAN);      
+      , FIRE_ON_TOUCH_BEGAN, DRUMS);      
     break;
 
   case 3:
@@ -31,7 +31,7 @@ void RepeatOneOffSequenceChallengeScene::onLoadLayout()
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback )
-      , FIRE_ON_TOUCH_BEGAN);      
+      , FIRE_ON_TOUCH_BEGAN, DRUMS);      
     break;
 
   case 4:
@@ -39,7 +39,7 @@ void RepeatOneOffSequenceChallengeScene::onLoadLayout()
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( RepeatOneOffSequenceChallengeScene::buttonBlinkCallback )
-      , FIRE_ON_TOUCH_BEGAN);      
+      , FIRE_ON_TOUCH_BEGAN, DRUMS);      
     break;
   }       
 
@@ -171,6 +171,7 @@ void RepeatOneOffSequenceChallengeScene::onSequenceBlinkCallback(GameButton* gam
 void RepeatOneOffSequenceChallengeScene::onCorrectButtonPressed()
 {
   this->m_buttonSequenceIndex++;
+  this->m_lastButtonPressed->playSound();
 
   float deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
 

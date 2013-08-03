@@ -93,7 +93,7 @@ protected:
 
 public:
     
-  BaseChallengeScene::BaseChallengeScene(GameContext* gameContext, int challengeIndex
+  BaseChallengeScene(GameContext* gameContext, int challengeIndex
     , ChallengeSceneType challengeSceneType, int totalButtons, ChallengePointScoreDefinition challengePointScoreDefinition
     , GameScorePopupType gameScorePopupType)   
     : BaseScene(gameContext)

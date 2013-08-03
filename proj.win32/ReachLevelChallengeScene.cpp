@@ -22,7 +22,7 @@ void ReachLevelChallengeScene::onLoadLayout()
       , callfuncO_selector( ReachLevelChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( ReachLevelChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( ReachLevelChallengeScene::buttonBlinkCallback )
-      , FIRE_ON_TOUCH_BEGAN);      
+      , FIRE_ON_TOUCH_BEGAN, DRUMS);      
     break;
 
   case 3:
@@ -31,7 +31,7 @@ void ReachLevelChallengeScene::onLoadLayout()
       , callfuncO_selector( ReachLevelChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( ReachLevelChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( ReachLevelChallengeScene::buttonBlinkCallback )
-      , FIRE_ON_TOUCH_BEGAN);      
+      , FIRE_ON_TOUCH_BEGAN, DRUMS);      
     break;
 
   case 4:
@@ -39,7 +39,7 @@ void ReachLevelChallengeScene::onLoadLayout()
       , callfuncO_selector( ReachLevelChallengeScene::buttonTouchEndedCallback )
       , callfuncO_selector( ReachLevelChallengeScene::buttonLoadedCallback )
       , callfuncO_selector( ReachLevelChallengeScene::buttonBlinkCallback )
-      , FIRE_ON_TOUCH_BEGAN);      
+      , FIRE_ON_TOUCH_BEGAN, DRUMS);      
     break;
   }   
 
@@ -156,6 +156,7 @@ void ReachLevelChallengeScene::onSequenceBlinkCallback(GameButton* gameButton)
 void ReachLevelChallengeScene::onCorrectButtonPressed()
 {
   this->m_buttonSequenceIndex++;
+  this->m_lastButtonPressed->playSound();
 
   float deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
 

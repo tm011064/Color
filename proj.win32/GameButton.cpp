@@ -2,7 +2,6 @@
 #include "VisibleRect.h"
 #include "BaseScene.h"
 #include "NavigationManager.h"
-#include "SimpleAudioEngine.h"
 
 GameButton* GameButton::createQuarterButton(const ccColor3B& color, CCNode *pTarget
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate
@@ -31,10 +30,44 @@ GameButton* GameButton::createQuarterButton(const ccColor3B& color, CCNode *pTar
   return gameButton;
 }
 
-void GameButton::playSound()
+unsigned int GameButton::playSound(bool doLoop)
 {
   if (m_pGameContext->getIsSoundOn())
-    CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(this->m_soundPath.c_str()); 
+  {
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->setEffectsVolume(1.0f);
+    m_lastSoundId = CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(this->m_soundPath.c_str(), doLoop);
+  }
+  else
+  {
+    m_lastSoundId = 0;
+  }
+  return m_lastSoundId;
+}
+void GameButton::fadeOutSound(float fadeTime)
+{  
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+  this->stopSound();
+#else
+  // straight forward linear fade
+  this->schedule(schedule_selector(GameButton::reduceVolumeCallback), fadeTime*.1f);
+#endif 
+}
+void GameButton::reduceVolumeCallback(float dt)
+{
+  float volume = CocosDenshion::SimpleAudioEngine::sharedEngine()->getEffectsVolume();
+  if (volume <= .0f)
+  {
+    this->stopSound();
+    this->unschedule(schedule_selector(GameButton::reduceVolumeCallback));
+  }
+  else
+  {    
+    volume -= .1f;
+    if (volume < .0f)
+      volume = .0f;
+    
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->setEffectsVolume(volume);
+  }
 }
 
 void GameButton::playAnimation(int animationIndex)
@@ -94,6 +127,8 @@ bool GameButton::ccTouchBegan(CCTouch* touch, CCEvent* event)
       case FIRE_ON_TOUCH_ENDED:
         this->playAnimation(PRESSING, true); 
         CCTime::gettimeofdayCocos2d(&this->m_touchStartedTime, NULL);
+        // TODO (Roman): not looping means we need to have a max pressed time
+        this->playSound(false);
         break;
       }
       
@@ -120,6 +155,8 @@ void GameButton::ccTouchEnded(CCTouch* touch, CCEvent* event)
 {
   if (m_gameButtonTouchMode == FIRE_ON_TOUCH_ENDED)
   {    
+    this->fadeOutSound(.16f);
+
     if (containsTouchLocation(touch))
     {      
       this->playAnimation(RELEASING, true); 
@@ -127,6 +164,14 @@ void GameButton::ccTouchEnded(CCTouch* touch, CCEvent* event)
       CCTime::gettimeofdayCocos2d(&this->m_touchEndedTime, NULL);      
       this->m_lastTouchDuration = MAX(0, (this->m_touchEndedTime.tv_sec - this->m_touchStartedTime.tv_sec) + (this->m_touchEndedTime.tv_usec - this->m_touchStartedTime.tv_usec) / 1000000.0f);
   
+      CCLOG("m_touchStartedTime.tv_sec: %i", m_touchStartedTime.tv_sec);
+      CCLOG("m_touchStartedTime.tv_usec: %i", m_touchStartedTime.tv_usec);
+      CCLOG("m_touchStartedTime.tv_usec: %f", (float)m_touchStartedTime.tv_usec);
+      CCLOG("m_touchStartedTime.tv_usec: %f", (float)m_touchStartedTime.tv_usec / 1000000.0f);
+      CCLOG("m_touchStartedTime: %f", m_touchStartedTime.tv_sec + m_touchStartedTime.tv_usec / 1000000.0f);
+      CCLOG("m_touchEndedTime: %f", m_touchEndedTime.tv_sec + m_touchEndedTime.tv_usec / 1000000.0f);
+      CCLOG("m_lastTouchDuration: %f", m_lastTouchDuration);
+
       if(m_pTarget != 0 && m_fnpTouchEndedDelegate != 0)
           (m_pTarget->*m_fnpTouchEndedDelegate)(this);
     }

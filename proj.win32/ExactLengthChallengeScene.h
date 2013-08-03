@@ -5,8 +5,8 @@
 
 typedef struct 
 {
-  float startTime;
-  float endTime;
+  cc_timeval startTime;
+  cc_timeval endTime;
   float duration;
   GameButton* button;
   bool hasEnded;
@@ -23,7 +23,7 @@ private:
   {
     bool operator() (const ButtonBlinkTimePeriod &a, const ButtonBlinkTimePeriod &b) const 
     {
-        return a.startTime<b.startTime;
+      return UtilityHelper::isLessThan(a.startTime, b.startTime);
     }
   };
 
@@ -66,10 +66,7 @@ public:
     , int totalButtons, float minButtonSignalLength, float maxButtonSignalLength
     , float minNextSignalDeltaFromLastEndTime, float maxNextSignalDeltaFromLastEndTime
     , ChallengePointScoreDefinition challengePointScoreDefinition); 
-
-  bool buttonBlinkTimePeriodCompareFunction(ButtonBlinkTimePeriod a,ButtonBlinkTimePeriod b) { return a.startTime<b.startTime; }
-
-
+  
 protected:  
   virtual int updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition);
 

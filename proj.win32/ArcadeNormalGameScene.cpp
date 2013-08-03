@@ -19,7 +19,7 @@ void ArcadeNormalGameScene::onLoadLayout()
     , callfuncO_selector( ArcadeNormalGameScene::buttonTouchEndedCallback )
     , callfuncO_selector( ArcadeNormalGameScene::buttonLoadedCallback )
     , callfuncO_selector( ArcadeNormalGameScene::buttonBlinkCallback )
-    , FIRE_ON_TOUCH_BEGAN);   
+    , FIRE_ON_TOUCH_BEGAN, DRUMS);   
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
   {

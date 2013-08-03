@@ -167,6 +167,7 @@
     <ClInclude Include="TextToggleButton.h" />
     <ClInclude Include="TopBar.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="UtilityHelper.h" />
     <ClInclude Include="VisibleRect.h" />
     <ClInclude Include="WildcardButton.h" />
     <ClInclude Include="WildcardPopup.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="TextButton.cpp" />
     <ClCompile Include="TextToggleButton.cpp" />
     <ClCompile Include="TopBar.cpp" />
+    <ClCompile Include="UtilityHelper.cpp" />
     <ClCompile Include="VisibleRect.cpp" />
     <ClCompile Include="WildcardButton.cpp" />
     <ClCompile Include="WildcardPopup.cpp" />

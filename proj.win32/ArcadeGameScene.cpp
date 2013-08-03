@@ -375,12 +375,8 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
     onGameOver();
 
     if (this->m_pGameContext->getIsSoundOn())
-    {      
-      // TODO (Roman): global path
-      std::string s = m_pGameContext->getSoundPath() + "button_wrong.wav";
-      CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(s.c_str());      
-    }
-      
+      CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(m_pGameContext->getSoundPath("buttonsound_wrong").c_str());      
+          
     float wrongDelay = 1.6f;
     float correctBlinkDelay = 2.3f;
     this->m_eogTotalWrongButtonBlinks = 3;

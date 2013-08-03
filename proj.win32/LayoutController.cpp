@@ -4,7 +4,7 @@
 CCArray* LayoutController::createGameButtons(GameContext* gameContext, DebugDraw* debugDraw, CCPoint anchor
   , CCNode *pTarget
   , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate
-  , GameButtonTouchMode gameButtonTouchMode
+  , GameButtonTouchMode gameButtonTouchMode, GameButtonSoundMode gameButtonSoundMode
   , ccColor3B buttonColor1, ccColor3B buttonColor2, ccColor3B buttonColor3, ccColor3B buttonColor4
   , int totalDisabledButtons)
 {
@@ -15,32 +15,39 @@ CCArray* LayoutController::createGameButtons(GameContext* gameContext, DebugDraw
         
   CCRect visibleRect = VisibleRect::getVisibleRect();        
 
+  std::string soundKeyPrefix;
+  switch (gameButtonSoundMode)
+  {
+  case DRUMS: soundKeyPrefix = "buttonsound_normal_"; break;
+  case OSCIL: soundKeyPrefix = "buttonsound_long_"; break;
+  }
+
   GameButton* b4 = GameButton::createQuarterButton( buttonColor1, pTarget
     , touchEndedDelegate
     , preLoadDelegate
     , blinkEndedDelegate
-    , gameContext->getSoundPath() + "button_s1.wav"
+    , gameContext->getSoundPath(soundKeyPrefix + "1")
     , gameButtonTouchMode
     , gameContext);
   GameButton* b3 = GameButton::createQuarterButton( buttonColor2, pTarget
     , touchEndedDelegate
     , preLoadDelegate
     , blinkEndedDelegate
-    , gameContext->getSoundPath() + "button_s2.wav"
+    , gameContext->getSoundPath(soundKeyPrefix + "2")
     , gameButtonTouchMode
     , gameContext);
   GameButton* b2 = GameButton::createQuarterButton( buttonColor3, pTarget
     , touchEndedDelegate
     , preLoadDelegate
     , blinkEndedDelegate
-    , gameContext->getSoundPath() + "button_s3.wav"
+    , gameContext->getSoundPath(soundKeyPrefix + "3")
     , gameButtonTouchMode
     , gameContext);
   GameButton* b1 = GameButton::createQuarterButton( buttonColor4, pTarget
     , touchEndedDelegate
     , preLoadDelegate
     , blinkEndedDelegate
-    , gameContext->getSoundPath() + "button_s4.wav"
+    , gameContext->getSoundPath(soundKeyPrefix + "4")
     , gameButtonTouchMode
     , gameContext);
       
@@ -100,53 +107,53 @@ CCArray* LayoutController::createGameButtons(GameContext* gameContext, DebugDraw
 
 CCArray* LayoutController::createOneButton(GameContext* gameContext, DebugDraw* debugDraw, CCPoint anchor, CCNode *pTarget
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate
-    , GameButtonTouchMode gameButtonTouchMode)
+    , GameButtonTouchMode gameButtonTouchMode, GameButtonSoundMode gameButtonSoundMode)
 {
   return LayoutController::createGameButtons(gameContext, debugDraw, anchor, pTarget
     , touchEndedDelegate, preLoadDelegate, blinkEndedDelegate
-    , gameButtonTouchMode
+    , gameButtonTouchMode, gameButtonSoundMode
     , BUTTON_COLOR_RED, BUTTON_COLOR_GREEN, BUTTON_COLOR_YELLOW, BUTTON_COLOR_BLUE
     , 3);
 }
 CCArray* LayoutController::createTwoButtons(GameContext* gameContext, DebugDraw* debugDraw, CCPoint anchor, CCNode *pTarget
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate
-    , GameButtonTouchMode gameButtonTouchMode)
+    , GameButtonTouchMode gameButtonTouchMode, GameButtonSoundMode gameButtonSoundMode)
 {
   return LayoutController::createGameButtons(gameContext, debugDraw, anchor, pTarget
     , touchEndedDelegate, preLoadDelegate, blinkEndedDelegate
-    , gameButtonTouchMode
+    , gameButtonTouchMode, gameButtonSoundMode
     , BUTTON_COLOR_RED, BUTTON_COLOR_GREEN, BUTTON_COLOR_YELLOW, BUTTON_COLOR_BLUE
     , 2);
 }
 CCArray* LayoutController::createThreeButtons(GameContext* gameContext, DebugDraw* debugDraw, CCPoint anchor, CCNode *pTarget
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate
-    , GameButtonTouchMode gameButtonTouchMode)
+    , GameButtonTouchMode gameButtonTouchMode, GameButtonSoundMode gameButtonSoundMode)
 {
   return LayoutController::createGameButtons(gameContext, debugDraw, anchor, pTarget
     , touchEndedDelegate, preLoadDelegate, blinkEndedDelegate
-    , gameButtonTouchMode
+    , gameButtonTouchMode, gameButtonSoundMode
     , BUTTON_COLOR_RED, BUTTON_COLOR_GREEN, BUTTON_COLOR_YELLOW, BUTTON_COLOR_BLUE
     , 1);
 }
 CCArray* LayoutController::createFourButtons(GameContext* gameContext, DebugDraw* debugDraw, CCPoint anchor, CCNode *pTarget
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate
-    , GameButtonTouchMode gameButtonTouchMode)
+    , GameButtonTouchMode gameButtonTouchMode, GameButtonSoundMode gameButtonSoundMode)
 {
   return LayoutController::createGameButtons(gameContext, debugDraw, anchor, pTarget
     , touchEndedDelegate, preLoadDelegate, blinkEndedDelegate
-    , gameButtonTouchMode
+    , gameButtonTouchMode, gameButtonSoundMode
     , BUTTON_COLOR_RED, BUTTON_COLOR_GREEN, BUTTON_COLOR_YELLOW, BUTTON_COLOR_BLUE
     , 0);
 }
 
 CCArray* LayoutController::createFourButtons(GameContext* gameContext, DebugDraw* debugDraw, CCPoint anchor, CCNode *pTarget
     , SEL_CallFuncO touchEndedDelegate, SEL_CallFuncO preLoadDelegate, SEL_CallFuncO blinkEndedDelegate
-    , GameButtonTouchMode gameButtonTouchMode
+    , GameButtonTouchMode gameButtonTouchMode, GameButtonSoundMode gameButtonSoundMode
     , ccColor3B buttonColor1, ccColor3B buttonColor2, ccColor3B buttonColor3, ccColor3B buttonColor4)
 {  
   return LayoutController::createGameButtons(gameContext, debugDraw, anchor, pTarget
     , touchEndedDelegate, preLoadDelegate, blinkEndedDelegate
-    , gameButtonTouchMode
+    , gameButtonTouchMode, gameButtonSoundMode
     , buttonColor1, buttonColor2, buttonColor3, buttonColor4
     , 0);
 }

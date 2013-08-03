@@ -3,6 +3,7 @@
 
 #include "Types.h"
 #include "GameConstants.h"
+#include "UtilityHelper.h"
 
 #include "Stopwatch.h"
 #include "DebugDraw.h"
