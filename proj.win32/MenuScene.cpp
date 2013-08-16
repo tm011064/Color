@@ -119,7 +119,22 @@ void MenuScene::onEnter()
       , "HARD", m_pGameContext, menu_selector(MenuScene::startArcadeHardGameCallback), this);
     m_arcadeHard->setPosition(center.x + visibleRect.size.width, posY);
     this->addChild(m_arcadeHard);    
- 
+     
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+    posY -= spacing;
+    m_arcadeBack = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+      , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
+      , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
+      , "back"
+      , m_pGameContext->getDefaultButtonSize()
+      , this->m_pGameContext->getDefaultBorderThickness()
+      , this->m_pGameContext
+      , callfuncO_selector(MenuScene::showBaseMenu)
+      , this);
+    m_arcadeBack->setPosition(center.x + visibleRect.size.width, posY);
+    this->addChild(m_arcadeBack);
+#endif
+
     this->m_challengeButtonPanel = ChallengeButtonPanel::create(this->m_pGameContext
       , callfunc_selector(MenuScene::onBackKeyPressed), this);
     this->m_challengeButtonPanel->setPosition(center);
@@ -158,6 +173,9 @@ void MenuScene::resetArcadeButtons(bool isVisible)
   m_arcadeEasy->setVisible(isVisible);
   m_arcadeNormal->setVisible(isVisible);
   m_arcadeHard->setVisible(isVisible);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+  m_arcadeBack->setVisible(isVisible);
+#endif
 }
 
 void MenuScene::showView(MenuViewType menuViewType)
@@ -210,6 +228,9 @@ void MenuScene::showView(MenuViewType menuViewType)
       m_arcadeEasy->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
       m_arcadeNormal->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
       m_arcadeHard->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+      m_arcadeBack->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
+#endif
       break;
     }
 
@@ -233,7 +254,9 @@ void MenuScene::showView(MenuViewType menuViewType)
     m_arcadeEasy->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
     m_arcadeNormal->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
     m_arcadeHard->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
-
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+    m_arcadeBack->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
+#endif
     break;
 
   case STORY_MODE:
@@ -280,6 +303,10 @@ void MenuScene::showOptions(CCObject* pSender)
 void MenuScene::showHighscore(CCObject* pSender)
 { 
   NavigationManager::showScene(HIGHSCORE_SCENE, m_pGameContext, NEW);
+}
+void MenuScene::showBaseMenu(CCObject* pSender)
+{
+  showView(HOME);
 }
 void MenuScene::onBackKeyPressed()
 {

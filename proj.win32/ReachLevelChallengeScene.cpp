@@ -212,13 +212,13 @@ void ReachLevelChallengeScene::onCorrectButtonPressed()
 
       float mark = bonus / this->m_challengePointScoreDefinition.maxLevelTimeBonus;    
       if (mark > .92f)
-        this->playConsoleLabelAnimation("PERFECT");
+        this->playConsoleLabelAnimation("PERFECT", 1);
       else if (mark > .88f)
-        this->playConsoleLabelAnimation("GREAT");
+        this->playConsoleLabelAnimation("GREAT", 2);
       else if (mark > .75)
-        this->playConsoleLabelAnimation("GOOD");
+        this->playConsoleLabelAnimation("GOOD", 3);
       else
-        this->playConsoleLabelAnimation("CORRECT");
+        this->playConsoleLabelAnimation("CORRECT", 4);
 
       this->scheduleOnce(schedule_selector(ReachLevelChallengeScene::runSequenceAnimationTimerCallback), .32f);
     }      

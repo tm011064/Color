@@ -27,6 +27,7 @@ private:
   MenuButton* m_arcadeEasy;
   MenuButton* m_arcadeNormal;
   MenuButton* m_arcadeHard;
+  TextButton* m_arcadeBack;
 
   CCSprite* m_header;
 
@@ -54,6 +55,7 @@ public:
     , m_arcadeEasy(NULL)
     , m_arcadeNormal(NULL)
     , m_arcadeHard(NULL)
+    , m_arcadeBack(NULL)
     , m_header(NULL)
   {
 
@@ -63,6 +65,7 @@ public:
   virtual void onEnter();
   virtual void onBackKeyPressed();
 
+  virtual void showBaseMenu(CCObject* pSender);
   virtual void showStoryModeMenu(CCObject* pSender);
   virtual void showArcadeMenu(CCObject* pSender);
   virtual void showOptions(CCObject* pSender);

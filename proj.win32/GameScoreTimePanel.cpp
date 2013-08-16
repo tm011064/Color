@@ -1,8 +1,9 @@
 #include "GameScoreTimePanel.h"
 
-GameScoreTimePanel* GameScoreTimePanel::create(GameContext* gameContext, float width, ccColor4F separatorColor) 
+GameScoreTimePanel* GameScoreTimePanel::create(GameContext* gameContext, float width
+  , bool showAverageDuration, ccColor4F separatorColor) 
 { 
-  GameScoreTimePanel* gameScorePointsPanel = new GameScoreTimePanel(gameContext, width, separatorColor);
+  GameScoreTimePanel* gameScorePointsPanel = new GameScoreTimePanel(gameContext, width, showAverageDuration, separatorColor);
   gameScorePointsPanel->autorelease();
   return gameScorePointsPanel;
 }
@@ -48,15 +49,18 @@ void GameScoreTimePanel::onEnter()
     m_timingLabel->setPosition(this->m_textIndentRight - m_timingLabel->getContentSize().width/2, posY);
     this->addChild(m_timingLabel);
     
-    posY -= verticalSpacing;
-    m_durationLabelDescription = CCLabelBMFont::create("Avg Duration", m_pGameContext->getFontNormalPath().c_str());
-    m_durationLabelDescription->setPosition(this->m_textIndentLeft + m_durationLabelDescription->getContentSize().width/2, posY);
-    this->addChild(m_durationLabelDescription);
-    sprintf(str, "%i", (int)(gameScore.totalPoints));
-    m_durationLabel = CCLabelBMFont::create(str, m_pGameContext->getFontNormalPath().c_str());
-    m_durationLabel->setPosition(this->m_textIndentRight - m_durationLabel->getContentSize().width/2, posY);
-    this->addChild(m_durationLabel);
-        
+    if (m_showAverageDuration)
+    {
+      posY -= verticalSpacing;
+      m_durationLabelDescription = CCLabelBMFont::create("Avg Duration", m_pGameContext->getFontNormalPath().c_str());
+      m_durationLabelDescription->setPosition(this->m_textIndentLeft + m_durationLabelDescription->getContentSize().width/2, posY);
+      this->addChild(m_durationLabelDescription);
+      sprintf(str, "%i", (int)(gameScore.totalPoints));
+      m_durationLabel = CCLabelBMFont::create(str, m_pGameContext->getFontNormalPath().c_str());
+      m_durationLabel->setPosition(this->m_textIndentRight - m_durationLabel->getContentSize().width/2, posY);
+      this->addChild(m_durationLabel);
+    }   
+
     posY -= verticalSpacing;
     m_scoreLabelDescription = CCLabelBMFont::create("Score", m_pGameContext->getFontNormalPath().c_str());
     m_scoreLabelDescription->setPosition(this->m_textIndentLeft + m_scoreLabelDescription->getContentSize().width/2, posY);
@@ -109,14 +113,17 @@ void GameScoreTimePanel::refresh()
   m_timingLabel->setPositionX(this->m_textIndentRight - m_timingLabel->getContentSize().width/2);
   m_timingLabel->setVisible(false);
   
-  if (gameScore.averageButtonBlinkStartOffset >= 0)
-    sprintf(str, "%.3f s", gameScore.averageButtonBlinkDurationOffset);
-  else
-    sprintf(str, "NA");
-  m_durationLabel->setString(str);
-  m_durationLabel->setPositionX(this->m_textIndentRight - m_durationLabel->getContentSize().width/2);
-  m_durationLabel->setVisible(false);
-  
+  if (m_showAverageDuration)
+  {
+    if (gameScore.averageButtonBlinkStartOffset >= 0)
+      sprintf(str, "%.3f s", gameScore.averageButtonBlinkDurationOffset);
+    else
+      sprintf(str, "NA");
+    m_durationLabel->setString(str);
+    m_durationLabel->setPositionX(this->m_textIndentRight - m_durationLabel->getContentSize().width/2);
+    m_durationLabel->setVisible(false);
+  }
+
   if (gameScore.averageButtonBlinkStartOffset >= 0)
     sprintf(str, "%i / 100", (int)round(gameScore.averageButtonBlinkPercentage*100));
   else
@@ -190,12 +197,15 @@ void GameScoreTimePanel::updatePointsDisplay(float dt)
   if (this->m_elaspeTimePoints >= this->m_targetTime * .5f)
   {
     this->m_timingLabel->setVisible(true);
-    this->m_timingLabel->setVisible(true);    
+    this->m_timingLabelDescription->setVisible(true);    
   }
   if (this->m_elaspeTimePoints >= this->m_targetTime * .75f)
   {
-    this->m_durationLabel->setVisible(true);
-    this->m_durationLabel->setVisible(true);    
+    if (m_showAverageDuration)
+    {
+      this->m_durationLabel->setVisible(true);
+      this->m_durationLabelDescription->setVisible(true);    
+    }
   }
   if (this->m_elaspeTimePoints >= this->m_targetTime)
   {
@@ -203,8 +213,11 @@ void GameScoreTimePanel::updatePointsDisplay(float dt)
     this->m_pointsLabelDescription->setVisible(true);
     this->m_timingLabel->setVisible(true);
     this->m_timingLabelDescription->setVisible(true);
-    this->m_durationLabel->setVisible(true);
-    this->m_durationLabelDescription->setVisible(true);
+    if (m_showAverageDuration)
+    {
+      this->m_durationLabel->setVisible(true);
+      this->m_durationLabelDescription->setVisible(true);
+    }
     this->m_scoreLabel->setVisible(true);
     this->m_scoreLabelDescription->setVisible(true);
         

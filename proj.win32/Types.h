@@ -20,7 +20,8 @@ enum ChallengeSceneType
 {
   REACH_LEVEL = 0,
   REPEAT_ONE_OFF = 1,
-  EXACT_LENGTH = 2
+  EXACT_LENGTH = 2,
+  RHYTHM = 3,
 };
 
 

@@ -97,12 +97,18 @@ void GameScorePopup::onEnter()
 
     case GSPTYPE_TIME_INTERVALS:
       m_gameScorePanel = GameScoreTimePanel::create(this->m_pGameContext
-        , this->m_textIndentRight - this->m_textIndentLeft, m_separatorColor);
+        , this->m_textIndentRight - this->m_textIndentLeft, true, m_separatorColor);
+      this->m_gameScorePanel->setPosition(center.x, posY - ( posY - textButton->getPositionY() - textButton->getSize().height/2 )/2);
+      this->addChild(m_gameScorePanel);
+      break;
+
+    case GSPTYPE_RHYTHM:
+      m_gameScorePanel = GameScoreTimePanel::create(this->m_pGameContext
+        , this->m_textIndentRight - this->m_textIndentLeft, false, m_separatorColor);
       this->m_gameScorePanel->setPosition(center.x, posY - ( posY - textButton->getPositionY() - textButton->getSize().height/2 )/2);
       this->addChild(m_gameScorePanel);
       break;
     }
-
 
     m_bgLight.a = .6f; 
     m_bgLight.r = 0; 

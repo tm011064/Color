@@ -188,7 +188,7 @@ bool AppDelegate::applicationDidFinishLaunching()
   label->release();  
 
   this->m_pGameContext = gameContext;
-
+    
   NavigationManager::showScene(MENU_SCENE, gameContext, FIRST_RUN);
   
   return true;

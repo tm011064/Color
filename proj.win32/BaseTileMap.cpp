@@ -1,4 +1,5 @@
 #include "BaseTileMap.h"
+#include "UtilityHelper.h"
 
 BaseTileMap::BaseTileMap()
 {
@@ -12,31 +13,6 @@ BaseTileMap::BaseTileMap(const char *pList, const char *textureFileName)
 BaseTileMap::~BaseTileMap(void)
 {
 
-}
-
-std::vector<std::string> BaseTileMap::split(std::string text, char delim, int rep) 
-{
-  std::vector<std::string> flds;
-
-  std::string buf = "";
-  int i = 0
-    , length = text.length();
-  while (i < length) 
-  {
-      if (text[i] != delim)
-          buf += text[i];
-      else if (rep == 1) {
-          flds.push_back(buf);
-          buf = "";
-      } else if (buf.length() > 0) {
-          flds.push_back(buf);
-          buf = "";
-      }
-      i++;
-    }
-    if (!buf.empty())
-        flds.push_back(buf);
-    return flds;
 }
 
 TripleTag BaseTileMap::ParseTripleTag(std::string text)
@@ -79,7 +55,7 @@ void BaseTileMap::RegisterTextureFileName(const char *pList, const char *texture
       frame = cache->spriteFrameByName( spriteFrameName.c_str() );
 
       if (!keyValuePairs.empty()) keyValuePairs.clear();
-      keyValuePairs = split(spriteFrameName, ';', 0);      
+      keyValuePairs = UtilityHelper::split(spriteFrameName, ';', 0);      
       for(it=keyValuePairs.begin();it!=keyValuePairs.end();++it)
       {
         tag = ParseTripleTag(*it);

@@ -1,0 +1,35 @@
+; button number time
+os;
+name=challenge2
+totalbuttons=4
+oe;
+
+ss;
+b 0 .0
+b 1 .3
+b 1 .7
+b 2 1.1
+se;
+
+ss;
+b 0 .0
+b 1 .3
+b 1 .7
+b 2 1.1
+b 1 1.4
+se;
+
+ss;
+b 3 .0
+b 2 .3
+b 3 .6
+b 2 .9
+se;
+
+ss;
+b 3 .0
+b 2 .5
+b 3 .501
+b 2 1.0
+b 3 1.01
+se;

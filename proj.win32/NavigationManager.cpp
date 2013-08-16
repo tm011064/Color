@@ -10,6 +10,7 @@
 #include "ExactLengthChallengeScene.h"
 #include "OptionsScene.h"
 #include "HighscoreScene.h"
+#include "RhythmChallengeScene.h"
 
 using namespace cocos2d;
 
@@ -117,13 +118,15 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
   ReachLevelChallengeScene* reachLevelChallengeScene;
   RepeatOneOffSequenceChallengeScene* repeatOneOffSequenceChallengeScene;
   ExactLengthChallengeScene* exactLengthChallengeScene;
-
+  RhythmChallengeScene* rhythmChallengeScene;
+  
   // TODO (Roman): whenever we load a new scene, the sprite frame cache must be reinitialized
   // this could be written in a better way, so the cache is at the scene level, not game context level maybe???
   gameContext->getSpriteFrameCache()->init();  
   
   float levelToReach, totalCorrectButtons;
   ChallengePointScoreDefinition challengePointScoreDefinition;
+  RhythmBlinkSequenceDefinition rhythmBlinkSequenceDefinition;
 
   switch (challengeIndex)
   {
@@ -356,6 +359,40 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     exactLengthChallengeScene->addChild(pLayer); 
 
     return exactLengthChallengeScene;
+        
+  case 7:
+    // TODO (Roman): this should come from resource plist lookup
+
+    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_TWO_BUTTONS_MULTIPLIER;
+    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_TWO_BUTTONS;
+    // TODO (Roman): points!
+    
+    challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .1f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .15f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .2f;
+
+    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_THREE_BUTTONS_MULTIPLIER;
+    rhythmBlinkSequenceDefinition = RhythmChallengeScene::loadRhythmBlinkSequenceDefinition(CCFileUtils::sharedFileUtils()->fullPathForFilename("rhythmChallenge_1.txt"));
+    rhythmChallengeScene = RhythmChallengeScene::create(gameContext, challengeIndex, rhythmBlinkSequenceDefinition, challengePointScoreDefinition);
+
+    return rhythmChallengeScene;
+    
+  case 8:
+    // TODO (Roman): this should come from resource plist lookup
+
+    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_FOUR_BUTTONS_MULTIPLIER;
+    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_FOUR_BUTTONS;
+    // TODO (Roman): points!
+    
+    challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .1f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .15;
+    challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .2f;
+
+    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_FOUR_BUTTONS_MULTIPLIER;
+    rhythmBlinkSequenceDefinition = RhythmChallengeScene::loadRhythmBlinkSequenceDefinition(CCFileUtils::sharedFileUtils()->fullPathForFilename("rhythmChallenge_2.txt"));
+    rhythmChallengeScene = RhythmChallengeScene::create(gameContext, challengeIndex, rhythmBlinkSequenceDefinition, challengePointScoreDefinition);
+
+    return rhythmChallengeScene;
   }
 
   return NULL;

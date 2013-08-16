@@ -79,6 +79,9 @@ protected:
   ChallengePointScoreDefinition m_challengePointScoreDefinition;
   virtual int updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition);
 
+  
+  void playConsoleLabelAnimation(std::string text, int colorShade);
+  void playConsoleLabelAnimation(std::string text, float d, float maxScale, float delay, int colorShade);
   void playConsoleLabelAnimation(std::string text);
   void playConsoleLabelAnimation(std::string text, float d, float maxScale, float delay);
   void playConsoleLabelAnimation(std::string text, float d, float maxScale, float delay, ccColor3B color);

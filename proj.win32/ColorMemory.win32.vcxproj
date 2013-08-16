@@ -161,6 +161,7 @@
     <ClInclude Include="RepeatingSprite.h" />
     <ClInclude Include="RepeatOneOffSequenceChallengeScene.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="RhythmChallengeScene.h" />
     <ClInclude Include="SpriteFrameCache.h" />
     <ClInclude Include="Stopwatch.h" />
     <ClInclude Include="TextButton.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="ReachLevelChallengeScene.cpp" />
     <ClCompile Include="RepeatingSprite.cpp" />
     <ClCompile Include="RepeatOneOffSequenceChallengeScene.cpp" />
+    <ClCompile Include="RhythmChallengeScene.cpp" />
     <ClCompile Include="SpriteFrameCache.cpp" />
     <ClCompile Include="Stopwatch.cpp" />
     <ClCompile Include="TextButton.cpp" />

@@ -17,7 +17,6 @@ class BaseTileMap
 {
   std::map<std::string, std::vector<CCSpriteFrame*> > m_animationGroups;
   std::map<std::string, CCSpriteFrame*> m_spriteFrameNameLookup;
-  std::vector<std::string> split(std::string text, char delim, int rep);
   TripleTag ParseTripleTag(std::string text);
 
 public:

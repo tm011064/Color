@@ -190,7 +190,8 @@ void RepeatOneOffSequenceChallengeScene::onCorrectButtonPressed()
   
   if (m_buttonSequenceIndex == m_levelToReach)
   {     
-    this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION; this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
+    this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION; 
+    this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
       
     this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);
 

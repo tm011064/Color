@@ -11,6 +11,7 @@ enum GameScorePopupType
 {
   GSPTYPE_POINTS = 0,
   GSPTYPE_TIME_INTERVALS = 1,
+  GSPTYPE_RHYTHM = 2,
 };
 
 class GameScorePopup : public ModalControl

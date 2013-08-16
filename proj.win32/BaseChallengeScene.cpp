@@ -307,6 +307,45 @@ void BaseChallengeScene::onBackKeyPressed()
   }
 }
 
+void BaseChallengeScene::playConsoleLabelAnimation(std::string text, int colorShade)
+{ 
+  this->playConsoleLabelAnimation(text, .82f, 1.1f, .0f, colorShade); 
+}
+void BaseChallengeScene::playConsoleLabelAnimation(std::string text, float d, float maxScale, float delay, int colorShade)
+{
+  ccColor3B color = { 255.0f, 60.0f, .0f};
+  
+  switch (colorShade)
+  {
+  case 1:
+    color.r = .0f;
+    color.g = 255.0f;
+    color.b = .0f;
+    break;
+  case 2:
+    color.r = 180.0f;
+    color.g = 255.0f;
+    color.b = .0f;
+    break;
+  case 3:
+    color.r = 250.0f;
+    color.g = 255.0f;
+    color.b = .0f;
+    break;
+  case 4:
+    color.r = 255.0f;
+    color.g = 160.0f;
+    color.b = .0f;
+    break;
+  case 5:
+    color.r = 255.0f;
+    color.g = 60.0f;
+    color.b = .0f;
+    break;
+  }
+  this->playConsoleLabelAnimation(text, d, maxScale, delay, color); 
+}
+
 void BaseChallengeScene::playConsoleLabelAnimation(std::string text){ this->playConsoleLabelAnimation(text, .82f, 1.1f, .0f); }
 void BaseChallengeScene::playConsoleLabelAnimation(std::string text, float d, float maxScale, float delay)
 {

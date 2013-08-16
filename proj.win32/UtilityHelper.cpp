@@ -43,3 +43,28 @@ cocos2d::cc_timeval UtilityHelper::substract(cocos2d::cc_timeval a, cocos2d::cc_
 
   return newTimeval;
 }
+
+std::vector<std::string> UtilityHelper::split(std::string text, char delim, int rep) 
+{
+  std::vector<std::string> flds;
+
+  std::string buf = "";
+  int i = 0
+    , length = text.length();
+  while (i < length) 
+  {
+      if (text[i] != delim)
+          buf += text[i];
+      else if (rep == 1) {
+          flds.push_back(buf);
+          buf = "";
+      } else if (buf.length() > 0) {
+          flds.push_back(buf);
+          buf = "";
+      }
+      i++;
+    }
+    if (!buf.empty())
+        flds.push_back(buf);
+    return flds;
+}

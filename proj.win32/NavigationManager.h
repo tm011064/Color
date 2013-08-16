@@ -5,6 +5,7 @@
 #include "GameConstants.h"
 #include "Types.h"
 #include "GameContext.h"
+//#include "RhythmChallengeScene.h"
 
 class NavigationManager
 {

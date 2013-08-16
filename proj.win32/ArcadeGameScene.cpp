@@ -355,7 +355,7 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
         , CCFadeOut::create(.5f)
         , NULL));
       m_levelDoneLabel->runAction(CCSequence::create(
-        CCScaleTo::create(1.2f, 1.1)
+        CCScaleTo::create(1.2f, 1.1f)
         , NULL));
 
       this->scheduleOnce(schedule_selector(ArcadeGameScene::runSequenceAnimationTimerCallback), .32f);

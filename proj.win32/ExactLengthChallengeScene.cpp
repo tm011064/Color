@@ -248,39 +248,14 @@ void ExactLengthChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
   //                             , fabs(m_userPressedTimePeriods[index].durationOffset));
   sprintf(str, "+%.3f s", fabs(m_userPressedTimePeriods[index].durationOffset));
  
-  ccColor3B color;
-  
-  if (durationCorrectPercentage > .95f) 
-  {
-    color.r = .0f;
-    color.g = 255.0f;
-    color.b = .0f;
-  }
-  else if (durationCorrectPercentage > .9f)
-  {
-    color.r = 180.0f;
-    color.g = 255.0f;
-    color.b = .0f;
-  }
-  else if (durationCorrectPercentage > .85f)
-  {
-    color.r = 250.0f;
-    color.g = 255.0f;
-    color.b = .0f;
-  }
-  else if (durationCorrectPercentage > .75f)
-  {
-    color.r = 255.0f;
-    color.g = 160.0f;
-    color.b = .0f;
-  }
-  else 
-  {
-    color.r = 255.0f;
-    color.g = 60.0f;
-    color.b = .0f;
-  }
-  this->playConsoleLabelAnimation(str, 1.4f, 1.1f, .0f, color);
+  int colorShade;  
+  if (durationCorrectPercentage > .95f) { colorShade = 1; }
+  else if (durationCorrectPercentage > .9f) { colorShade = 2; }
+  else if (durationCorrectPercentage > .85f) { colorShade = 3; }
+  else if (durationCorrectPercentage > .75f) { colorShade = 4; }
+  else { colorShade = 5; }
+
+  this->playConsoleLabelAnimation(str, 1.4f, 1.1f, .0f, colorShade);
 
   if (index + 1 == m_totalButtons)
   {
@@ -297,10 +272,8 @@ void ExactLengthChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
     }
     this->m_gameScore.averageButtonBlinkPercentage = this->m_gameScore.averageButtonBlinkPercentage / m_totalButtons;
     this->m_gameScore.averageButtonBlinkDurationOffset = this->m_gameScore.averageButtonBlinkDurationOffset / m_totalButtons;
-    CCLOG("this->m_gameScore.averageButtonBlinkStartOffset: %f", this->m_gameScore.averageButtonBlinkStartOffset);
     this->m_gameScore.averageButtonBlinkStartOffset = this->m_gameScore.averageButtonBlinkStartOffset / m_totalButtons;
-    CCLOG("this->m_gameScore.averageButtonBlinkStartOffset: %f", this->m_gameScore.averageButtonBlinkStartOffset);
-
+    
     // TODO (Roman): scoring and popup
     this->m_gameScore.coinsEarned = round( this->m_gameScore.averageButtonBlinkPercentage * 10 * m_challengePointScoreDefinition.coinsEarnedMultiplier );
     this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);

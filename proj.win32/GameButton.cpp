@@ -164,14 +164,6 @@ void GameButton::ccTouchEnded(CCTouch* touch, CCEvent* event)
       CCTime::gettimeofdayCocos2d(&this->m_touchEndedTime, NULL);      
       this->m_lastTouchDuration = MAX(0, (this->m_touchEndedTime.tv_sec - this->m_touchStartedTime.tv_sec) + (this->m_touchEndedTime.tv_usec - this->m_touchStartedTime.tv_usec) / 1000000.0f);
   
-      CCLOG("m_touchStartedTime.tv_sec: %i", m_touchStartedTime.tv_sec);
-      CCLOG("m_touchStartedTime.tv_usec: %i", m_touchStartedTime.tv_usec);
-      CCLOG("m_touchStartedTime.tv_usec: %f", (float)m_touchStartedTime.tv_usec);
-      CCLOG("m_touchStartedTime.tv_usec: %f", (float)m_touchStartedTime.tv_usec / 1000000.0f);
-      CCLOG("m_touchStartedTime: %f", m_touchStartedTime.tv_sec + m_touchStartedTime.tv_usec / 1000000.0f);
-      CCLOG("m_touchEndedTime: %f", m_touchEndedTime.tv_sec + m_touchEndedTime.tv_usec / 1000000.0f);
-      CCLOG("m_lastTouchDuration: %f", m_lastTouchDuration);
-
       if(m_pTarget != 0 && m_fnpTouchEndedDelegate != 0)
           (m_pTarget->*m_fnpTouchEndedDelegate)(this);
     }

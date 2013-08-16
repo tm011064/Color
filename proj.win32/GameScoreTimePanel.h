@@ -11,6 +11,7 @@ private:
 
   GameContext* m_pGameContext; 
   bool m_isLayoutInitialized;
+  bool m_showAverageDuration;
   float m_padding;
   float m_borderThickness;
 
@@ -40,7 +41,7 @@ private:
   void updateCoinsDisplay(float dt);
 
 public:
-  static GameScoreTimePanel* create(GameContext* gameContext, float width, ccColor4F separatorColor);
+  static GameScoreTimePanel* create(GameContext* gameContext, float width, bool showAverageDuration, ccColor4F separatorColor);
   ~GameScoreTimePanel() { }
   
   void refresh();
@@ -49,7 +50,7 @@ public:
   virtual void draw();
 
 protected:
-  GameScoreTimePanel(GameContext* gameContext, float width, ccColor4F separatorColor)
+  GameScoreTimePanel(GameContext* gameContext, float width, bool showAverageDuration, ccColor4F separatorColor)
     : m_pGameContext(gameContext)
     , m_pointsLabel(NULL)
     , m_pointsLabelDescription(NULL)
@@ -64,6 +65,7 @@ protected:
     , m_durationLabelDescription(NULL)
     , m_scoreLabel(NULL)
     , m_scoreLabelDescription(NULL)
+    , m_showAverageDuration(showAverageDuration)
   { 
     
   }
