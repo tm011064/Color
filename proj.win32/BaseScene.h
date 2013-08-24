@@ -11,15 +11,28 @@ protected:
 #if IS_DEBUG
   DebugDraw* m_debugDraw;
 #endif
-  
+
+  bool m_isLayoutInitialized;
+  CCSprite* m_splashScreen;
+  CCSprite* m_splashLogoScreen;
+
   SceneState m_sceneState;
   GameContext* m_pGameContext;
+  bool m_showSplashScreen;
+
+  virtual void initialize(float dt) { /* can be overridden */ }
+
+  void hideSplashScreen();
 
 public:
   
-  BaseScene(GameContext* gameContext)
+  BaseScene(GameContext* gameContext, bool showSplashScreen)
     : m_debugDraw(0)
     , m_sceneState(UNLOADED)
+    , m_isLayoutInitialized(false)
+    , m_splashScreen(NULL)
+    , m_splashLogoScreen(NULL)
+    , m_showSplashScreen(showSplashScreen)
   {
     this->m_pGameContext = gameContext;
 
@@ -37,6 +50,8 @@ public:
     this->m_pGameContext = NULL;
   }
 
+  virtual void onEnter();
+  
   virtual void onBackKeyPressed() { }
   SceneState getSceneState() { return this->m_sceneState; } 
 

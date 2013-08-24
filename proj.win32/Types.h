@@ -13,7 +13,8 @@ enum SceneType
   ARCADE_HARD_GAME_SCENE = 3,
   CHALLENGE = 4,
   OPTIONS_SCENE = 5,
-  HIGHSCORE_SCENE = 6 
+  HIGHSCORE_SCENE = 6,
+  LOAD_GAME_SCENE = 7
 };
 
 enum ChallengeSceneType
@@ -89,6 +90,8 @@ typedef struct
   int level;
   int coinsEarned;
   float totalTimeElapsed;
+
+  int starsEarned;
 
   float averageButtonBlinkPercentage;
   float averageButtonBlinkStartOffset;

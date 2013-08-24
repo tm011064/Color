@@ -29,160 +29,142 @@ void ArcadeGameScene::onExit()
   CCScene::onExit();
 }
 
-void ArcadeGameScene::onEnter()
-{
-  CCScene::onEnter();
-  if (!this->m_isLayoutInitialized)
-  {    
-    CCPoint top = VisibleRect::top();
-    CCPoint right = VisibleRect::right();
-    CCPoint center = VisibleRect::center();
-    CCPoint left = VisibleRect::left();
+void ArcadeGameScene::initialize(float dt)
+{  
+  CCPoint top = VisibleRect::top();
+  CCPoint right = VisibleRect::right();
+  CCPoint center = VisibleRect::center();
+  CCPoint left = VisibleRect::left();
         
-    CCRect visibleRect = VisibleRect::getVisibleRect();   
+  CCRect visibleRect = VisibleRect::getVisibleRect();   
     
-    float availableWidth = visibleRect.size.width / 2;         
-
-    // TODO (Roman): loading screen
-    m_loadingScreenText = CCLabelBMFont::create("LOADING", m_pGameContext->getFontLargePath().c_str());
-    m_loadingScreenText->setPosition(center);
-    this->addChild(m_loadingScreenText, 1001);
+  float availableWidth = visibleRect.size.width / 2;         
     
-    m_loadingScreen = RepeatingSprite::create(
-      m_pGameContext
-      , m_pGameContext->getImageMap()->getTile("background")
-      , HORIZONTAL
-      , NORMAL
-      , visibleRect.size);    
-    m_loadingScreen->setPosition(center);
-    this->addChild(m_loadingScreen, 1000);
-    
-    
-    RepeatingSprite* bg = RepeatingSprite::create(
-      m_pGameContext
-      , m_pGameContext->getImageMap()->getTile("background")
-      , HORIZONTAL
-      , NORMAL
-      , visibleRect.size);    
-    bg->setPosition(center);
-    this->addChild(bg, 0);
-    bg = NULL;
+  RepeatingSprite* bg = RepeatingSprite::create(
+    m_pGameContext
+    , m_pGameContext->getImageMap()->getTile("background")
+    , HORIZONTAL
+    , NORMAL
+    , visibleRect.size);    
+  bg->setPosition(center);
+  this->addChild(bg, 0);
+  bg = NULL;
         
-    /********** TOP BAR **********/
-    m_topBar = new TopBar(m_pGameContext);
-    m_topBar->autorelease();
-    this->addChild(m_topBar);
+  /********** TOP BAR **********/
+  m_topBar = new TopBar(m_pGameContext);
+  m_topBar->autorelease();
+  this->addChild(m_topBar);
 
-    m_topBar->setLevel(1);      
-    m_topBar->setScore(0);
-    /********** TOP BAR **********/
+  m_topBar->setLevel(1);      
+  m_topBar->setScore(0);
+  /********** TOP BAR **********/
     
-    /********** CONSOLE **********/    
-    m_consoleBackground = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("console"));
-    this->addChild(m_consoleBackground);    
+  /********** CONSOLE **********/    
+  m_consoleBackground = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("console"));
+  this->addChild(m_consoleBackground);    
     
-    CCSize consoleBackgroundSize = m_consoleBackground->getContentSize();
-    float consoleBackgroundScale = availableWidth / (consoleBackgroundSize.width/2);
+  CCSize consoleBackgroundSize = m_consoleBackground->getContentSize();
+  float consoleBackgroundScale = availableWidth / (consoleBackgroundSize.width/2);
 
-    m_consoleBackground->setScale(consoleBackgroundScale);
+  m_consoleBackground->setScale(consoleBackgroundScale);
             
-    CCSprite* consoleButtonBackground = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("gameConsoleButtonBackground"));
-    consoleButtonBackground->setScale(consoleBackgroundScale);
-    this->addChild(consoleButtonBackground);    
+  CCSprite* consoleButtonBackground = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("gameConsoleButtonBackground"));
+  consoleButtonBackground->setScale(consoleBackgroundScale);
+  this->addChild(consoleButtonBackground);    
     
-    int releasingFrames[] = { 0 };
-    int pressingFrames[] = { 0 };
-    m_consoleButton = ImageButton::create(this
-      , callfuncO_selector( ArcadeGameScene::consoleButtonTouchEndedCallback )
-      , NULL
-      , m_pGameContext
-      , "coin_large"
-      , 0
-      , 0
-      , pressingFrames, 1
-      , releasingFrames, 1
-      , 0
-      , 0
-      , TOUCH_PRIORITY_NORMAL);
-    m_consoleButton->setScale(consoleBackgroundScale);
-    this->addChild(m_consoleButton);
-    CCRect topBarBoundingBox = m_topBar->getBoundingBox();
-    CCSize consoleSize = m_consoleBackground->getContentSize();
+  int releasingFrames[] = { 0 };
+  int pressingFrames[] = { 0 };
+  m_consoleButton = ImageButton::create(this
+    , callfuncO_selector( ArcadeGameScene::consoleButtonTouchEndedCallback )
+    , NULL
+    , m_pGameContext
+    , "coin_large"
+    , 0
+    , 0
+    , pressingFrames, 1
+    , releasingFrames, 1
+    , 0
+    , 0
+    , TOUCH_PRIORITY_NORMAL);
+  m_consoleButton->setScale(consoleBackgroundScale);
+  this->addChild(m_consoleButton);
+  CCRect topBarBoundingBox = m_topBar->getBoundingBox();
+  CCSize consoleSize = m_consoleBackground->getContentSize();
     
-    // we have the top bar, so we can get the border...
-    this->m_anchor = ccpRounded(
-      center.x
-      , (   topBarBoundingBox.origin.y 
-          - (consoleBackgroundScale * consoleSize.height)/2 
-          - topBarBoundingBox.size.height/8.0f
-        ));
+  // we have the top bar, so we can get the border...
+  this->m_anchor = ccpRounded(
+    center.x
+    , (   topBarBoundingBox.origin.y 
+        - (consoleBackgroundScale * consoleSize.height)/2 
+        - topBarBoundingBox.size.height/8.0f
+      ));
     
-    float consoleHeight = consoleBackgroundSize.height * consoleBackgroundScale;
-    float availableHeight = topBarBoundingBox.origin.y - visibleRect.origin.y;
+  float consoleHeight = consoleBackgroundSize.height * consoleBackgroundScale;
+  float availableHeight = topBarBoundingBox.origin.y - visibleRect.origin.y;
     
-    consoleButtonBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
-    m_consoleBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
-    m_consoleButton->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
+  consoleButtonBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
+  m_consoleBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
+  m_consoleButton->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
 
-    /********** CONSOLE **********/
+  /********** CONSOLE **********/
 
-    /********** LEVEL DONE MESSAGE **********/
-    m_levelDoneLabel = CCLabelBMFont::create("WELL DONE", m_pGameContext->getFontLargePath().c_str());
-    float posY = this->m_anchor.y - consoleBackgroundSize.height*consoleBackgroundScale/2
-                                  - m_pGameContext->getFontHeightLarge()/2;
+  /********** LEVEL DONE MESSAGE **********/
+  m_levelDoneLabel = CCLabelBMFont::create("WELL DONE", m_pGameContext->getFontLargePath().c_str());
+  float posY = this->m_anchor.y - consoleBackgroundSize.height*consoleBackgroundScale/2
+                                - m_pGameContext->getFontHeightLarge()/2;
 
-    float minPosY = m_pGameContext->getFontHeightLarge()/2 * 1.1 
-                    + m_pGameContext->getDefaultPadding(); // 1.1 = scale factor in animation
-    if (posY < minPosY)
-      posY = minPosY;
+  float minPosY = m_pGameContext->getFontHeightLarge()/2 * 1.1 
+                  + m_pGameContext->getDefaultPadding(); // 1.1 = scale factor in animation
+  if (posY < minPosY)
+    posY = minPosY;
 
-    m_levelDoneLabel->setPosition(ccp(this->m_anchor.x, posY));
-    m_levelDoneLabel->setOpacity(.0f);
-    this->addChild(m_levelDoneLabel, 1000);
-    /********** LEVEL DONE MESSAGE **********/
+  m_levelDoneLabel->setPosition(ccp(this->m_anchor.x, posY));
+  m_levelDoneLabel->setOpacity(.0f);
+  this->addChild(m_levelDoneLabel, 1000);
+  /********** LEVEL DONE MESSAGE **********/
 	
 
-    /********** MODAL LAYER **********/
-    m_wildcardPopup = new WildcardPopup(
-      this->m_pGameContext
-      , callfuncO_selector(ArcadeGameScene::replaySequenceCallback) 
-      , callfuncO_selector(ArcadeGameScene::showNextSequenceItemCallback) 
-      , callfuncO_selector(ArcadeGameScene::replayFromCurrentCallback) 
-      , callfuncO_selector(ArcadeGameScene::closeCallback) 
-      , this
-      );
-    m_wildcardPopup->autorelease();
-    m_wildcardPopup->setPosition(ccp(0, 0));    
-    m_wildcardPopup->setZOrder( MODAL_ZORDER );
+  /********** MODAL LAYER **********/
+  m_wildcardPopup = new WildcardPopup(
+    this->m_pGameContext
+    , callfuncO_selector(ArcadeGameScene::replaySequenceCallback) 
+    , callfuncO_selector(ArcadeGameScene::showNextSequenceItemCallback) 
+    , callfuncO_selector(ArcadeGameScene::replayFromCurrentCallback) 
+    , callfuncO_selector(ArcadeGameScene::closeCallback) 
+    , this
+    );
+  m_wildcardPopup->autorelease();
+  m_wildcardPopup->setPosition(ccp(0, 0));    
+  m_wildcardPopup->setZOrder( MODAL_ZORDER );
     
-    this->addChild(m_wildcardPopup);
-    /********** MODAL LAYER **********/
+  this->addChild(m_wildcardPopup);
+  /********** MODAL LAYER **********/
 
-    /********** MODAL LAYER **********/
-    m_gameScorePopup = GameScorePopup::create(
-      this->m_pGameContext
-      , "GAME OVER"
-      , callfuncO_selector(ArcadeGameScene::newGameCallback) 
-      , callfuncO_selector(ArcadeGameScene::mainMenuCallback) 
-      , this
-      , GSPTYPE_POINTS
-      );
-    m_gameScorePopup->setPosition(ccp(0, 0));    
-    m_gameScorePopup->setZOrder( MODAL_ZORDER ); 
+  /********** MODAL LAYER **********/
+  m_gameScorePopup = GameScorePopup::create(
+    this->m_pGameContext
+    , "GAME OVER"
+    , callfuncO_selector(ArcadeGameScene::newGameCallback) 
+    , callfuncO_selector(ArcadeGameScene::mainMenuCallback) 
+    , NULL
+    , this
+    , GSPTYPE_POINTS
+    , GSPMODE_ARCADE);
+  m_gameScorePopup->setPosition(ccp(0, 0));    
+  m_gameScorePopup->setZOrder( MODAL_ZORDER ); 
     
-    this->addChild(m_gameScorePopup);
-    /********** MODAL LAYER **********/
+  this->addChild(m_gameScorePopup);
+  /********** MODAL LAYER **********/
     
-    this->onLoadLayout();
+  this->onLoadLayout();
     
-    this->m_lastButtonPressedTime = new struct cc_timeval();
-    this->m_lastLevelStartTime = new struct cc_timeval();
+  this->m_lastButtonPressedTime = new struct cc_timeval();
+  this->m_lastLevelStartTime = new struct cc_timeval();
 
-    this->m_isLayoutInitialized = true;
+  this->m_isLayoutInitialized = true;
 
-    this->m_sceneState = LOADING;
-    this->scheduleOnce(schedule_selector(ArcadeGameScene::preLoadCallback), 0);
-  }    
+  this->m_sceneState = LOADING;
+  this->scheduleOnce(schedule_selector(ArcadeGameScene::preLoadCallback), 0);
 }
 
 void ArcadeGameScene::preLoadCallback(float dt)
@@ -288,15 +270,18 @@ float ArcadeGameScene::updateTimeVal(cc_timeval* time)
 
 void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
 {  
+  if (m_buttonSequenceIndex >= m_buttonSequence.size())
+    return; // this could happen on rapid clicks where the last click was not fully processed yet - like a lock...
+
   m_lastButtonPressed = ((GameButton*)pSender);
   m_nextSequenceButton = m_buttonSequence.at(m_buttonSequenceIndex);
     
   if (m_nextSequenceButton == m_lastButtonPressed)
   {// correct click
-    m_lastButtonPressed->playSound();
-
     this->m_buttonSequenceIndex++;
 
+    m_lastButtonPressed->playSound();
+    
     float deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
 
     float bonus = 0;
@@ -502,8 +487,13 @@ void ArcadeGameScene::buttonLoadedCallback(CCObject* pSender)
     if (!((GameButton*)o)->getIsLoaded())
       return;
   }
+    
+  hideSplashScreen();
   
-  this->startNewGame();
+  this->runAction(CCSequence::create(
+    CCDelayTime::create(DEFAULT_NEW_GAME_START_DELAY)
+    , CCCallFunc::create(this, callfunc_selector(ArcadeGameScene::startNewGame))
+    , NULL));
 }
 
 void ArcadeGameScene::consoleButtonTouchEndedCallback(CCObject* pSender)
@@ -523,7 +513,7 @@ void ArcadeGameScene::onBackKeyPressed()
   }
   else
   {
-    NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
+    NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW, false);
   }
 }
 
@@ -572,9 +562,7 @@ void ArcadeGameScene::startNewGame()
 
   this->m_topBar->setScore(0);
   this->m_topBar->setLevel(1);
-
-  this->m_loadingScreen->setVisible(false);  
-  this->m_loadingScreenText->setVisible(false);    
+  
   runSequenceAnimation(true, 0, -1);
 }
 
@@ -586,5 +574,5 @@ void ArcadeGameScene::newGameCallback(CCObject* pSender)
 
 void ArcadeGameScene::mainMenuCallback(CCObject* pSender)
 {
-  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
+  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW, false);
 }  

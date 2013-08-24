@@ -163,11 +163,11 @@ void OptionsScene::draw()
 
 void OptionsScene::showMenuCallback(CCObject* pSender)
 { 
-  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
+  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW, false);
 }
 void OptionsScene::onBackKeyPressed()
 {
-  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW);
+  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW, false);
 }
 
 void OptionsScene::onSoundToggleOnChanged(CCObject* pSender)

@@ -7,7 +7,7 @@ class ArcadeEasyGameScene : public ArcadeGameScene
 {
 public:
 
-  ArcadeEasyGameScene(GameContext* gameContext) ;
+  ArcadeEasyGameScene(GameContext* gameContext, bool showSplashScreen);
   ~ArcadeEasyGameScene()
   {
     this->m_pGameContext = NULL;

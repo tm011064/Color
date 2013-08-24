@@ -4,10 +4,10 @@
 
 using namespace cocos2d;
 
-ReachLevelChallengeScene* ReachLevelChallengeScene::create(GameContext* gameContext, int challengeIndex
+ReachLevelChallengeScene* ReachLevelChallengeScene::create(GameContext* gameContext, bool showSplashScreen, int challengeIndex
   , int totalButtons, ChallengePointScoreDefinition challengePointScoreDefinition, int levelToReach)
 {
-  ReachLevelChallengeScene* scene = new ReachLevelChallengeScene(gameContext, challengeIndex, totalButtons, REACH_LEVEL, challengePointScoreDefinition, levelToReach);
+  ReachLevelChallengeScene* scene = new ReachLevelChallengeScene(gameContext, showSplashScreen, challengeIndex, totalButtons, REACH_LEVEL, challengePointScoreDefinition, levelToReach);
   scene->init();
 
   return scene;
@@ -55,8 +55,7 @@ void ReachLevelChallengeScene::onLoadLayout()
 
 void ReachLevelChallengeScene::onLayoutLoaded()
 {  
-  this->m_loadingScreen->setVisible(false);
-  this->m_loadingScreenText->setVisible(false);
+
 }
 
 void ReachLevelChallengeScene::startNewGame()
@@ -68,7 +67,8 @@ void ReachLevelChallengeScene::startNewGame()
     
   this->m_buttonSequence.clear();
   this->m_buttonSequenceIndex = 0;
-
+  
+  this->m_gameScore.starsEarned = 0;
   this->m_gameScore.level = 0;
   this->m_gameScore.totalButtonBonus = 0;
   this->m_gameScore.totalLevelBonus = 0;
@@ -78,8 +78,6 @@ void ReachLevelChallengeScene::startNewGame()
   this->m_topBar->setScore(0);
   this->m_topBar->setLevel(1);
   
-  this->m_loadingScreen->setVisible(false);  
-  this->m_loadingScreenText->setVisible(false);   
   runSequenceAnimation(true, 0, -1);
 }
 
@@ -184,9 +182,9 @@ void ReachLevelChallengeScene::onCorrectButtonPressed()
       this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);
 
       m_topBar->setScore((long)this->m_gameScore.totalPoints);
-      m_pGameContext->setGameScore( m_gameScore );
       
-      int levelReached = this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
+      this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
+      m_pGameContext->setGameScore( m_gameScore );
             
       this->playBlinkButtonsAnimation(2, .25f, .8f);
       this->scheduleOnce(schedule_selector(ReachLevelChallengeScene::showGameScorePopupCallback), 2.0f);

@@ -28,6 +28,22 @@ TripleTag BaseTileMap::ParseTripleTag(std::string text)
 
   return tag;
 }
+
+void BaseTileMap::RegisterImage(const char *filePath, const char *key)
+{
+  CCTexture2D *pTexture = CCTextureCache::sharedTextureCache()->addImage(filePath);
+  if (pTexture)
+  {
+      CCRect rect = CCRectZero;
+      rect.size = pTexture->getContentSize();
+        
+      CCSpriteFrameCache* cache = CCSpriteFrameCache::sharedSpriteFrameCache();
+      CCSpriteFrame* frame = CCSpriteFrame::create(filePath, rect);
+      cache->addSpriteFrame(frame, key);
+      m_spriteFrameNameLookup[key] = frame;
+  }
+}
+
 void BaseTileMap::RegisterTextureFileName(const char *pList, const char *textureFileName)
 {
   // IMPORTANT:
@@ -35,7 +51,7 @@ void BaseTileMap::RegisterTextureFileName(const char *pList, const char *texture
   //     CCSpriteFrameCache::sharedSpriteFrameCache()->removeUnusedSpriteFrames);
   CCSpriteFrameCache* cache = CCSpriteFrameCache::sharedSpriteFrameCache();
   cache->addSpriteFramesWithFile(pList, textureFileName);
-
+  
   CCDictionary *dict = CCDictionary::createWithContentsOfFile(pList);
   CCDictionary *framesDict = (CCDictionary*)dict->objectForKey(std::string("frames"));
 

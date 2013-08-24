@@ -4,10 +4,10 @@
 
 using namespace cocos2d;
 
-RepeatOneOffSequenceChallengeScene* RepeatOneOffSequenceChallengeScene::create(GameContext* gameContext, int challengeIndex
+RepeatOneOffSequenceChallengeScene* RepeatOneOffSequenceChallengeScene::create(GameContext* gameContext, bool showSplashScreen, int challengeIndex
   , int totalButtons, ChallengePointScoreDefinition challengePointScoreDefinition, int levelToReach)
 {
-  RepeatOneOffSequenceChallengeScene* scene = new RepeatOneOffSequenceChallengeScene(gameContext, challengeIndex, totalButtons, REPEAT_ONE_OFF, challengePointScoreDefinition, levelToReach);
+  RepeatOneOffSequenceChallengeScene* scene = new RepeatOneOffSequenceChallengeScene(gameContext, showSplashScreen, challengeIndex, totalButtons, REPEAT_ONE_OFF, challengePointScoreDefinition, levelToReach);
   scene->init();
 
   return scene;
@@ -55,8 +55,7 @@ void RepeatOneOffSequenceChallengeScene::onLoadLayout()
 
 void RepeatOneOffSequenceChallengeScene::onLayoutLoaded()
 {  
-  this->m_loadingScreen->setVisible(false);  
-  this->m_loadingScreenText->setVisible(false);  
+
 }
 
 void RepeatOneOffSequenceChallengeScene::startNewGame()
@@ -68,7 +67,8 @@ void RepeatOneOffSequenceChallengeScene::startNewGame()
     
   this->m_buttonSequence.clear();
   this->m_buttonSequenceIndex = 0;
-
+  
+  this->m_gameScore.starsEarned = 0;
   this->m_gameScore.level = 0;
   this->m_gameScore.totalButtonBonus = 0;
   this->m_gameScore.totalLevelBonus = 0;
@@ -77,9 +77,6 @@ void RepeatOneOffSequenceChallengeScene::startNewGame()
 
   this->m_topBar->setScore(0);
   this->m_topBar->setLevel(1);
-  
-  this->m_loadingScreen->setVisible(false);  
-  this->m_loadingScreenText->setVisible(false);   
 
   GameButton* button = NULL;
   std::srand(time(NULL));
@@ -196,9 +193,9 @@ void RepeatOneOffSequenceChallengeScene::onCorrectButtonPressed()
     this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);
 
     m_topBar->setScore((long)this->m_gameScore.totalPoints);
-    m_pGameContext->setGameScore( m_gameScore );
       
-    int levelReached = this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
+    this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
+    m_pGameContext->setGameScore( m_gameScore );
       
     this->playBlinkButtonsAnimation(2, .25f, .8f);
     this->scheduleOnce(schedule_selector(RepeatOneOffSequenceChallengeScene::showGameScorePopupCallback), 2.0f);

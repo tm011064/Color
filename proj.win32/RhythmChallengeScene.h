@@ -41,10 +41,10 @@ private:
   void sequenceBlinkCallback(CCObject* pSender);
   void setAwaitingInput();
 
-  RhythmChallengeScene(GameContext* gameContext, int challengeIndex
+  RhythmChallengeScene(GameContext* gameContext, bool showSplashScreen, int challengeIndex
     , RhythmBlinkSequenceDefinition rhythmBlinkSequenceDefinition
     , ChallengeSceneType challengeSceneType, ChallengePointScoreDefinition challengePointScoreDefinition)
-    : BaseChallengeScene(gameContext, challengeIndex, challengeSceneType, rhythmBlinkSequenceDefinition.totalButtons, challengePointScoreDefinition
+    : BaseChallengeScene(gameContext, showSplashScreen,  challengeIndex, challengeSceneType, rhythmBlinkSequenceDefinition.totalButtons, challengePointScoreDefinition
                          , GSPTYPE_RHYTHM)
     , m_rhythmBlinkSequenceDefinition(rhythmBlinkSequenceDefinition)
     , m_currentSequenceIndex(0)
@@ -54,7 +54,7 @@ private:
 public:
   ~RhythmChallengeScene() { }
   
-  static RhythmChallengeScene* create(GameContext* gameContext, int challengeIndex
+  static RhythmChallengeScene* create(GameContext* gameContext, bool showSplashScreen, int challengeIndex
     , RhythmBlinkSequenceDefinition rhythmBlinkSequenceDefinition
     , ChallengePointScoreDefinition challengePointScoreDefinition); 
   

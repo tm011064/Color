@@ -35,6 +35,20 @@ void GameContext::init(int totalChallenges)
   this->m_spriteFrameCache->init();
 }
 
+
+void GameContext::registerImageFile(const char *filePath, const char *key)
+{  
+  if (!m_imageMap)
+  {  
+    m_imageMap = new BaseTileMap();
+    m_imageMap->RegisterImage(filePath, key);
+  }
+  else
+  {
+    m_imageMap->RegisterImage(filePath, key);
+  }
+}
+
 void GameContext::registerImageMapFile(const char *pList, const char *textureFileName)
 {
   if (!m_imageMap)

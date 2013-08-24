@@ -11,6 +11,7 @@
 #include "OptionsScene.h"
 #include "HighscoreScene.h"
 #include "RhythmChallengeScene.h"
+#include "LoadGameScene.h"
 
 using namespace cocos2d;
 
@@ -23,7 +24,7 @@ std::string NavigationManager::getPath(GameContext* gameContext, std::string fil
   return s;
 }
 
-CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameContext* gameContext)
+CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameContext* gameContext, bool showSplashScreen)
 {  
   BaseLayer* pLayer;
   ArcadeNormalGameScene* normalGameScene;
@@ -32,12 +33,25 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
   MenuScene* menuScene;
   OptionsScene* optionsScene;
   HighscoreScene* highscoreScene;
+  LoadGameScene* loadGameScene;
     
   switch (sceneType)
   {
+  case LOAD_GAME_SCENE: 
+    
+    loadGameScene = new LoadGameScene(gameContext);
+        
+    pLayer = new BaseLayer(loadGameScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
+
+    loadGameScene->addChild(pLayer);
+    
+    return loadGameScene;
+
   case MENU_SCENE: 
     
-    menuScene = new MenuScene(gameContext);
+    menuScene = new MenuScene(gameContext, showSplashScreen);
         
     pLayer = new BaseLayer(menuScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
     pLayer->init(); 
@@ -49,7 +63,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
 
   case ARCADE_NORMAL_GAME_SCENE: 
     
-    normalGameScene = new ArcadeNormalGameScene(gameContext);
+    normalGameScene = new ArcadeNormalGameScene(gameContext, showSplashScreen);
     normalGameScene->init();
     
     pLayer = new BaseLayer(normalGameScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
@@ -61,7 +75,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
 
   case ARCADE_EASY_GAME_SCENE: 
 
-    arcadeEasyGameScene = new ArcadeEasyGameScene(gameContext);
+    arcadeEasyGameScene = new ArcadeEasyGameScene(gameContext, showSplashScreen);
     arcadeEasyGameScene->init();
     
     pLayer = new BaseLayer(arcadeEasyGameScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
@@ -74,7 +88,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     
   case ARCADE_HARD_GAME_SCENE: 
 
-    arcadeHardGameScene = new ArcadeHardGameScene(gameContext);
+    arcadeHardGameScene = new ArcadeHardGameScene(gameContext, showSplashScreen);
     arcadeHardGameScene->init();
     
     pLayer = new BaseLayer(arcadeHardGameScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
@@ -86,7 +100,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     
   case OPTIONS_SCENE: 
     
-    optionsScene = new OptionsScene(gameContext);
+    optionsScene = new OptionsScene(gameContext, showSplashScreen);
         
     pLayer = new BaseLayer(optionsScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
     pLayer->init(); 
@@ -98,7 +112,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
 
   case HIGHSCORE_SCENE: 
     
-    highscoreScene = new HighscoreScene(gameContext);
+    highscoreScene = new HighscoreScene(gameContext, showSplashScreen);
         
     pLayer = new BaseLayer(highscoreScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
     pLayer->init(); 
@@ -112,7 +126,7 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
   return NULL;
 }
 
-CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, GameContext* gameContext)
+CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, GameContext* gameContext, bool showSplashScreen)
 {    
   BaseLayer* pLayer;
   ReachLevelChallengeScene* reachLevelChallengeScene;
@@ -155,7 +169,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
       + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .6f
       + challengePointScoreDefinition.maxTimeBonus * totalCorrectButtons * .6f;
 
-    reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, challengeIndex, 2, challengePointScoreDefinition
+    reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 2, challengePointScoreDefinition
       , (int)levelToReach);
     //reachLevelChallengeScene->init();
     
@@ -192,7 +206,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
       + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .6f
       + challengePointScoreDefinition.maxTimeBonus * totalCorrectButtons * .6f;
 
-    reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, challengeIndex, 3, challengePointScoreDefinition
+    reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 3, challengePointScoreDefinition
       , (int)levelToReach);
     reachLevelChallengeScene->init();
     
@@ -230,7 +244,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
       + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .6f
       + challengePointScoreDefinition.maxTimeBonus * totalCorrectButtons * .6f;
 
-    repeatOneOffSequenceChallengeScene = RepeatOneOffSequenceChallengeScene::create(gameContext, challengeIndex, 3, challengePointScoreDefinition
+    repeatOneOffSequenceChallengeScene = RepeatOneOffSequenceChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 3, challengePointScoreDefinition
       , (int)levelToReach);
     repeatOneOffSequenceChallengeScene->init();
     
@@ -267,7 +281,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
       + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .6f
       + challengePointScoreDefinition.maxTimeBonus * totalCorrectButtons * .6f;
 
-    repeatOneOffSequenceChallengeScene = RepeatOneOffSequenceChallengeScene::create(gameContext, challengeIndex, 4, challengePointScoreDefinition
+    repeatOneOffSequenceChallengeScene = RepeatOneOffSequenceChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 4, challengePointScoreDefinition
       , (int)levelToReach);
     repeatOneOffSequenceChallengeScene->init();
     
@@ -292,7 +306,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
     challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
 
-    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, challengeIndex, 4
+    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 4
       , 1.2f, 1.2f
       , 1.0f, 1.0f
       , challengePointScoreDefinition);
@@ -319,7 +333,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
     challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
 
-    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, challengeIndex, 1
+    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 1
       , 6.0f, 6.0f
       , 1.0f, 1.0f
       , challengePointScoreDefinition);
@@ -346,7 +360,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
     challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
 
-    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, challengeIndex, 3
+    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 3
       , 2.0f, 2.0f
       , 1.0f, 1.0f
       , challengePointScoreDefinition);
@@ -373,7 +387,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
 
     challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_THREE_BUTTONS_MULTIPLIER;
     rhythmBlinkSequenceDefinition = RhythmChallengeScene::loadRhythmBlinkSequenceDefinition(CCFileUtils::sharedFileUtils()->fullPathForFilename("rhythmChallenge_1.txt"));
-    rhythmChallengeScene = RhythmChallengeScene::create(gameContext, challengeIndex, rhythmBlinkSequenceDefinition, challengePointScoreDefinition);
+    rhythmChallengeScene = RhythmChallengeScene::create(gameContext, showSplashScreen, challengeIndex, rhythmBlinkSequenceDefinition, challengePointScoreDefinition);
 
     return rhythmChallengeScene;
     
@@ -390,7 +404,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
 
     challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_FOUR_BUTTONS_MULTIPLIER;
     rhythmBlinkSequenceDefinition = RhythmChallengeScene::loadRhythmBlinkSequenceDefinition(CCFileUtils::sharedFileUtils()->fullPathForFilename("rhythmChallenge_2.txt"));
-    rhythmChallengeScene = RhythmChallengeScene::create(gameContext, challengeIndex, rhythmBlinkSequenceDefinition, challengePointScoreDefinition);
+    rhythmChallengeScene = RhythmChallengeScene::create(gameContext, showSplashScreen, challengeIndex, rhythmBlinkSequenceDefinition, challengePointScoreDefinition);
 
     return rhythmChallengeScene;
   }
@@ -398,7 +412,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
   return NULL;
 }
 
-void NavigationManager::showChallengeScene(GameContext* gameContext, int challengeIndex, SceneRenderMode sceneRenderMode)
+void NavigationManager::showChallengeScene(GameContext* gameContext, int challengeIndex, SceneRenderMode sceneRenderMode, bool showSplashScreen)
 {  
   CCScene* scene;
   CCDirector::sharedDirector()->purgeCachedData();
@@ -406,13 +420,13 @@ void NavigationManager::showChallengeScene(GameContext* gameContext, int challen
   switch(sceneRenderMode)
   {
   case NEW:
-    scene = resetGameContextChallengeScene(challengeIndex, gameContext);
+    scene = resetGameContextChallengeScene(challengeIndex, gameContext, showSplashScreen);
     CCDirector::sharedDirector()->replaceScene(scene);
     scene->release();
     break;   
   }
 }
-void NavigationManager::showScene(SceneType sceneType, GameContext* gameContext, SceneRenderMode sceneRenderMode)
+void NavigationManager::showScene(SceneType sceneType, GameContext* gameContext, SceneRenderMode sceneRenderMode, bool showSplashScreen)
 {    
   CCScene* scene;
   CCDirector::sharedDirector()->purgeCachedData();
@@ -420,19 +434,19 @@ void NavigationManager::showScene(SceneType sceneType, GameContext* gameContext,
   switch(sceneRenderMode)
   {
   case FIRST_RUN:  
-    scene = resetGameContextScene(sceneType, gameContext);
+    scene = resetGameContextScene(sceneType, gameContext, showSplashScreen);
     CCDirector::sharedDirector()->runWithScene(scene);
     scene->release();
     break;
 
   case NEW:      
-    scene = resetGameContextScene(sceneType, gameContext);
+    scene = resetGameContextScene(sceneType, gameContext, showSplashScreen);
     CCDirector::sharedDirector()->replaceScene(scene);
     scene->release();
     break;
       
   case PUSH:
-    scene = resetGameContextScene(sceneType, gameContext);
+    scene = resetGameContextScene(sceneType, gameContext, showSplashScreen);
     CCDirector::sharedDirector()->pushScene(scene);
     scene->release();
     break;

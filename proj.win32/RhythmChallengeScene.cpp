@@ -5,11 +5,11 @@
 
 using namespace cocos2d;
 
-RhythmChallengeScene* RhythmChallengeScene::create(GameContext* gameContext, int challengeIndex
+RhythmChallengeScene* RhythmChallengeScene::create(GameContext* gameContext, bool showSplashScreen, int challengeIndex
   , RhythmBlinkSequenceDefinition rhythmBlinkSequenceDefinition
   , ChallengePointScoreDefinition challengePointScoreDefinition)
 {
-  RhythmChallengeScene* scene = new RhythmChallengeScene(gameContext, challengeIndex
+  RhythmChallengeScene* scene = new RhythmChallengeScene(gameContext, showSplashScreen, challengeIndex
     , rhythmBlinkSequenceDefinition
     , RHYTHM, challengePointScoreDefinition);
   scene->init();
@@ -169,8 +169,7 @@ void RhythmChallengeScene::onLoadLayout()
 
 void RhythmChallengeScene::onLayoutLoaded()
 {  
-  this->m_loadingScreen->setVisible(false);  
-  this->m_loadingScreenText->setVisible(false);  
+
 }
 
 void RhythmChallengeScene::startNewGame()
@@ -182,7 +181,8 @@ void RhythmChallengeScene::startNewGame()
     
   this->m_buttonSequence.clear();
   this->m_buttonSequenceIndex = 0;
-
+  
+  this->m_gameScore.starsEarned = 0;
   this->m_gameScore.level = 0;
   this->m_gameScore.totalButtonBonus = 0;
   this->m_gameScore.totalLevelBonus = 0;
@@ -191,10 +191,7 @@ void RhythmChallengeScene::startNewGame()
 
   this->m_topBar->setScore(0);
   this->m_topBar->setLevel(1);
-  
-  this->m_loadingScreen->setVisible(false);  
-  this->m_loadingScreenText->setVisible(false);   
-  
+    
   // Scene specific
   this->m_currentSequenceIndex = 0;
 
@@ -238,30 +235,28 @@ void RhythmChallengeScene::runSequenceAnimation()
 int RhythmChallengeScene::updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition)
 {  
   int challengeInfo = m_pGameContext->getChallengeInfo(this->m_challengeIndex);
+  this->m_gameScore.starsEarned = 0;
+
   if ( this->m_gameScore.averageButtonBlinkStartOffset <= challengePointScoreDefinition->minimumTotalTimePercentageForThreeStars )
   {
-    this->m_challengeCompleted = true;
+    this->m_gameScore.starsEarned = 3;
     if (challengeInfo < 3)
       m_pGameContext->setChallengeInfo(this->m_challengeIndex, 3);
-    return 3;
   }
   else if ( this->m_gameScore.averageButtonBlinkStartOffset <= challengePointScoreDefinition->minimumTotalTimePercentageForTwoStars )
   {       
-    this->m_challengeCompleted = true;
+    this->m_gameScore.starsEarned = 2;
     if (challengeInfo < 2)
       m_pGameContext->setChallengeInfo(this->m_challengeIndex, 2);
-    return 2;
   }
   else if ( this->m_gameScore.averageButtonBlinkStartOffset <= challengePointScoreDefinition->minimumTotalTimePercentageForOneStar)
   {       
-    this->m_challengeCompleted = true;
+    this->m_gameScore.starsEarned = 1;
     if (challengeInfo < 1)
       m_pGameContext->setChallengeInfo(this->m_challengeIndex, 1);
-    return 1;
   }
 
-  this->m_challengeCompleted = false;
-  return 0;
+  return this->m_gameScore.starsEarned;
 }
 
 void RhythmChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
@@ -365,10 +360,9 @@ void RhythmChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
         this->m_gameScore.coinsEarned = round( MAX(.0f, 4.0f - this->m_gameScore.averageButtonBlinkStartOffset * 10.0f) );
       
         this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);
-
-        m_pGameContext->setGameScore( m_gameScore );
-      
+              
         this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
+        m_pGameContext->setGameScore( m_gameScore );
       
         this->playBlinkButtonsAnimation(2, .25f, .8f);
         this->scheduleOnce(schedule_selector(RhythmChallengeScene::showGameScorePopupCallback), 2.0f);

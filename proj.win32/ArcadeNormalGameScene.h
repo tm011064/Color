@@ -7,7 +7,7 @@ class ArcadeNormalGameScene : public ArcadeGameScene
 {
 public:
 
-  ArcadeNormalGameScene(GameContext* gameContext);
+  ArcadeNormalGameScene(GameContext* gameContext, bool showSplashScreen);
   ~ArcadeNormalGameScene()
   {
     this->m_pGameContext = NULL;

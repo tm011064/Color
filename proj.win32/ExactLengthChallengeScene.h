@@ -46,11 +46,11 @@ private:
 
   void onWrongButton(GameButton* lastButtonPressed, GameButton* nextSequenceButton);
 
-  ExactLengthChallengeScene(GameContext* gameContext, int challengeIndex
+  ExactLengthChallengeScene(GameContext* gameContext, bool showSplashScreen, int challengeIndex
     , int totalButtons, float minButtonSignalLength, float maxButtonSignalLength
     , float minNextSignalDeltaFromLastEndTime, float maxNextSignalDeltaFromLastEndTime
     , ChallengeSceneType challengeSceneType, ChallengePointScoreDefinition challengePointScoreDefinition)
-    : BaseChallengeScene(gameContext, challengeIndex, challengeSceneType, totalButtons, challengePointScoreDefinition
+    : BaseChallengeScene(gameContext, showSplashScreen,  challengeIndex, challengeSceneType, totalButtons, challengePointScoreDefinition
                          , GSPTYPE_TIME_INTERVALS)
     , m_minButtonSignalLength(minButtonSignalLength)
     , m_maxButtonSignalLength(maxButtonSignalLength)
@@ -62,7 +62,7 @@ private:
 public:
   ~ExactLengthChallengeScene() { }
   
-  static ExactLengthChallengeScene* create(GameContext* gameContext, int challengeIndex
+  static ExactLengthChallengeScene* create(GameContext* gameContext, bool showSplashScreen, int challengeIndex
     , int totalButtons, float minButtonSignalLength, float maxButtonSignalLength
     , float minNextSignalDeltaFromLastEndTime, float maxNextSignalDeltaFromLastEndTime
     , ChallengePointScoreDefinition challengePointScoreDefinition); 

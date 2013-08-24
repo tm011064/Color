@@ -20,7 +20,8 @@ private:
   
   void newGameCallback(CCObject* pSender);
   void mainMenuCallback(CCObject* pSender); 
-  
+  void nextChallengeCallback(CCObject* pSender); 
+
   void replaySequenceCallback(CCObject* pSender);
   void showNextSequenceItemCallback(CCObject* pSender);
   void replayFromCurrentCallback(CCObject* pSender); 
@@ -47,8 +48,6 @@ protected:
   bool m_isLayoutInitialized;
   int m_challengeIndex;
 
-  CCLabelBMFont* m_loadingScreenText;
-  RepeatingSprite* m_loadingScreen;
   CCSprite* m_consoleBackground;
 
   WildcardPopup* m_wildcardPopup; 
@@ -75,10 +74,10 @@ protected:
 
   float updateTimeVal(cc_timeval* time);
 
-  bool m_challengeCompleted;
   ChallengePointScoreDefinition m_challengePointScoreDefinition;
   virtual int updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition);
 
+  virtual void initialize(float dt);
   
   void playConsoleLabelAnimation(std::string text, int colorShade);
   void playConsoleLabelAnimation(std::string text, float d, float maxScale, float delay, int colorShade);
@@ -96,13 +95,12 @@ protected:
 
 public:
     
-  BaseChallengeScene(GameContext* gameContext, int challengeIndex
+  BaseChallengeScene(GameContext* gameContext, bool showSplashScreen, int challengeIndex
     , ChallengeSceneType challengeSceneType, int totalButtons, ChallengePointScoreDefinition challengePointScoreDefinition
     , GameScorePopupType gameScorePopupType)   
-    : BaseScene(gameContext)
+    : BaseScene(gameContext, showSplashScreen)
     , m_isLayoutInitialized(false) 
     , m_buttons(NULL)
-    , m_loadingScreen(NULL)
     , m_lastButtonPressedTime(0)
     , m_lastLevelStartTime(0)
     , m_totalButtons(totalButtons)
@@ -112,10 +110,8 @@ public:
     , m_wildcardPopup(NULL)
     , m_gameScorePopup(NULL)
     , m_challengeIndex(challengeIndex)
-    , m_loadingScreenText(NULL)
     , m_lastButtonPressed(NULL)
     , m_nextSequenceButton(NULL)
-    , m_challengeCompleted(false)
     , m_challengePointScoreDefinition(challengePointScoreDefinition)
     , m_gameScorePopupType(gameScorePopupType)
   { }
@@ -125,7 +121,6 @@ public:
   }
   
   virtual void onExit();
-  virtual void onEnter();
   virtual void onBackKeyPressed();
   virtual bool init();
 

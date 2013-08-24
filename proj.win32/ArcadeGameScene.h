@@ -64,8 +64,6 @@ protected:
   bool m_isLayoutInitialized;
   float m_buttonScale;
 
-  CCLabelBMFont* m_loadingScreenText;
-  RepeatingSprite* m_loadingScreen;
   CCSprite* m_consoleBackground;
   
   CCArray *m_buttons;
@@ -78,15 +76,15 @@ protected:
   struct cc_timeval *m_lastButtonPressedTime;
   struct cc_timeval *m_lastLevelStartTime;
 
+  virtual void initialize(float dt);
+
 public:
   
-  ArcadeGameScene(GameContext* gameContext, SceneType sceneType, int totalButtons)   
-    : BaseScene(gameContext)
+  ArcadeGameScene(GameContext* gameContext, SceneType sceneType, int totalButtons, bool showSplashScreen)   
+    : BaseScene(gameContext, showSplashScreen)
     , m_isLayoutInitialized(false) 
     , m_buttonScale(.0f)
     , m_buttons(NULL)
-    , m_loadingScreen(0)
-    , m_loadingScreenText(NULL)
     , m_lastButtonPressedTime(0)
     , m_lastLevelStartTime(0)
     , m_totalButtons(totalButtons)
@@ -101,7 +99,6 @@ public:
 
   ~ArcadeGameScene() { }
   
-  virtual void onEnter();
   virtual void onExit();
   virtual void onBackKeyPressed();
   virtual bool init();

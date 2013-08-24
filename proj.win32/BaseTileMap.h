@@ -25,6 +25,7 @@ public:
   BaseTileMap(const char *pList, const char *textureFileName);
   ~BaseTileMap();
 
+  void RegisterImage(const char *filePath, const char *key);
   void RegisterTextureFileName(const char *pList, const char *textureFileName);
   CCSpriteFrame* getTile(std::string name);
   CCSpriteFrame* getTile(std::string animationGroupName, int index);

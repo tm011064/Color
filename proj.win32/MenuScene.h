@@ -42,9 +42,12 @@ private:
   void CalculateButtonLayoutCoordinates(float topY, float buttonHeight, float targetedSpacingToButtonHeightRatio, float availableHeight
     , int totalButtons, float& startPosY, float& spacing);
 
+protected:
+  virtual void initialize(float dt);
+  
 public:
-  MenuScene(GameContext* gameContext)   
-    : BaseScene(gameContext)
+  MenuScene(GameContext* gameContext, bool showSplashScreen)   
+    : BaseScene(gameContext, showSplashScreen)
     , m_menuViewType(HOME)
     , m_isLayoutInitialized(false)
     , m_challengeButtonPanel(NULL)
@@ -62,7 +65,6 @@ public:
   }
   ~MenuScene(){}
 
-  virtual void onEnter();
   virtual void onBackKeyPressed();
 
   virtual void showBaseMenu(CCObject* pSender);

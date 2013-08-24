@@ -5,12 +5,12 @@
 
 using namespace cocos2d;
 
-ExactLengthChallengeScene* ExactLengthChallengeScene::create(GameContext* gameContext, int challengeIndex
+ExactLengthChallengeScene* ExactLengthChallengeScene::create(GameContext* gameContext, bool showSplashScreen, int challengeIndex
   , int totalButtons, float minButtonSignalLength, float maxButtonSignalLength
   , float minNextSignalDeltaFromLastEndTime, float maxNextSignalDeltaFromLastEndTime
   , ChallengePointScoreDefinition challengePointScoreDefinition)
 {
-  ExactLengthChallengeScene* scene = new ExactLengthChallengeScene(gameContext, challengeIndex
+  ExactLengthChallengeScene* scene = new ExactLengthChallengeScene(gameContext, showSplashScreen, challengeIndex
     , totalButtons, minButtonSignalLength, maxButtonSignalLength
     , minNextSignalDeltaFromLastEndTime, maxNextSignalDeltaFromLastEndTime
     , EXACT_LENGTH, challengePointScoreDefinition);
@@ -69,8 +69,7 @@ void ExactLengthChallengeScene::onLoadLayout()
 
 void ExactLengthChallengeScene::onLayoutLoaded()
 {  
-  this->m_loadingScreen->setVisible(false);  
-  this->m_loadingScreenText->setVisible(false);  
+
 }
 
 void ExactLengthChallengeScene::startNewGame()
@@ -83,6 +82,7 @@ void ExactLengthChallengeScene::startNewGame()
   this->m_buttonSequence.clear();
   this->m_buttonSequenceIndex = 0;
 
+  this->m_gameScore.starsEarned = 0;
   this->m_gameScore.level = 0;
   this->m_gameScore.totalButtonBonus = 0;
   this->m_gameScore.totalLevelBonus = 0;
@@ -90,10 +90,7 @@ void ExactLengthChallengeScene::startNewGame()
   this->m_gameScore.totalTimeElapsed = 0;
 
   this->m_topBar->setScore(0);
-  this->m_topBar->setLevel(1);
-  
-  this->m_loadingScreen->setVisible(false);  
-  this->m_loadingScreenText->setVisible(false);   
+  this->m_topBar->setLevel(1); 
   
   runSequenceAnimation();
 }
@@ -101,8 +98,6 @@ void ExactLengthChallengeScene::startNewGame()
 void ExactLengthChallengeScene::runSequenceAnimation()
 {
   this->m_sceneState = RUNNING_SEQUENCE_ANIMATION;
-
-  this->unschedule(schedule_selector(ExactLengthChallengeScene::update));
     
   m_buttonBlinkTimePeriods.clear();
   m_userPressedTimePeriods.clear();
@@ -141,7 +136,6 @@ void ExactLengthChallengeScene::runSequenceAnimation()
   if (delay < BLINK_SPEED_THRESHOLD)
     delay = BLINK_SPEED_THRESHOLD;
   
-  // TODO (Roman): create timeval values based on tv sec and tv usec
   m_buttonBlinkTimePeriods[0].startTime = UtilityHelper::getTimeValFromSeconds(.0f);
   m_buttonBlinkTimePeriods[0].endTime = UtilityHelper::getTimeValFromSeconds(m_buttonBlinkTimePeriods[0].duration);
 
@@ -278,9 +272,8 @@ void ExactLengthChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
     this->m_gameScore.coinsEarned = round( this->m_gameScore.averageButtonBlinkPercentage * 10 * m_challengePointScoreDefinition.coinsEarnedMultiplier );
     this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);
           
-    m_pGameContext->setGameScore( m_gameScore );
-
     this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
+    m_pGameContext->setGameScore( m_gameScore );
     
     this->playBlinkButtonsAnimation(2, .25f, .8f);
     this->scheduleOnce(schedule_selector(ExactLengthChallengeScene::showGameScorePopupCallback), 2.0f);
@@ -336,28 +329,26 @@ void ExactLengthChallengeScene::onWrongButton(GameButton* lastButtonPressed, Gam
 int ExactLengthChallengeScene::updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition)
 {  
   int challengeInfo = m_pGameContext->getChallengeInfo(this->m_challengeIndex);
+  this->m_gameScore.starsEarned = 0;
+
   if ( this->m_gameScore.averageButtonBlinkPercentage >= challengePointScoreDefinition->minimumTotalTimePercentageForThreeStars )
   {
-    this->m_challengeCompleted = true;
+    this->m_gameScore.starsEarned = 3;
     if (challengeInfo < 3)
       m_pGameContext->setChallengeInfo(this->m_challengeIndex, 3);
-    return 3;
   }
   else if ( this->m_gameScore.averageButtonBlinkPercentage >= challengePointScoreDefinition->minimumTotalTimePercentageForTwoStars )
   {       
-    this->m_challengeCompleted = true;
+    this->m_gameScore.starsEarned = 2;
     if (challengeInfo < 2)
       m_pGameContext->setChallengeInfo(this->m_challengeIndex, 2);
-    return 2;
   }
   else if ( this->m_gameScore.averageButtonBlinkPercentage >= challengePointScoreDefinition->minimumTotalTimePercentageForOneStar)
   {       
-    this->m_challengeCompleted = true;
+    this->m_gameScore.starsEarned = 1;
     if (challengeInfo < 1)
       m_pGameContext->setChallengeInfo(this->m_challengeIndex, 1);
-    return 1;
   }
 
-  this->m_challengeCompleted = false;
-  return 0;
+  return this->m_gameScore.starsEarned;
 }

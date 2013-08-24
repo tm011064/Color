@@ -75,7 +75,11 @@ static inline float floor_float(float f)
 #define TOUCH_PRIORITY_MODAL_PANEL   -2147483646 
 #define TOUCH_PRIORITY_MODAL_ITEM    -2147483647
 #define TOUCH_PRIORITY_NORMAL         0
-#define MODAL_ZORDER                  2147483647
+#define MODAL_ZORDER                  2147483646
+#define SPLASH_ZORDER                 2147483647
+
+#define DEFAULT_NEW_GAME_START_DELAY  1.0f
+#define DEFAULT_NEW_GAME_START_SHORT_DELAY  .2f
 
 // TODO (Roman): proper values
 #define COINS_COST_REPLAY_SEQUENCE    50

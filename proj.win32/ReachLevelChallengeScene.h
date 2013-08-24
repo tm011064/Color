@@ -17,9 +17,9 @@ private:
 
   void initialize();
 
-  ReachLevelChallengeScene(GameContext* gameContext, int challengeIndex, int totalButtons, ChallengeSceneType challengeSceneType, ChallengePointScoreDefinition challengePointScoreDefinition
+  ReachLevelChallengeScene(GameContext* gameContext, bool showSplashScreen, int challengeIndex, int totalButtons, ChallengeSceneType challengeSceneType, ChallengePointScoreDefinition challengePointScoreDefinition
     , int levelToReach)
-    : BaseChallengeScene(gameContext, challengeIndex, challengeSceneType, totalButtons, challengePointScoreDefinition
+    : BaseChallengeScene(gameContext, showSplashScreen,  challengeIndex, challengeSceneType, totalButtons, challengePointScoreDefinition
                          , GSPTYPE_POINTS)
     , m_levelToReach(levelToReach)
   {
@@ -28,7 +28,7 @@ private:
 public:
   ~ReachLevelChallengeScene() { }
   
-  static ReachLevelChallengeScene* create(GameContext* gameContext, int challengeIndex, int totalButtons, ChallengePointScoreDefinition challengePointScoreDefinition, int levelToReach); 
+  static ReachLevelChallengeScene* create(GameContext* gameContext, bool showSplashScreen, int challengeIndex, int totalButtons, ChallengePointScoreDefinition challengePointScoreDefinition, int levelToReach); 
 
 protected:  
   virtual void onLoadLayout();

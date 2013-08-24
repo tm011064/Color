@@ -44,8 +44,8 @@ private:
   ccColor4F m_separatorColor;
 
 public:
-  OptionsScene(GameContext* gameContext)   
-    : BaseScene(gameContext)
+  OptionsScene(GameContext* gameContext, bool showSplashScreen)   
+    : BaseScene(gameContext, showSplashScreen)
     , m_isLayoutInitialized(false)
   {
 

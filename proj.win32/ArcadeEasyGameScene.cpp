@@ -3,8 +3,8 @@
 
 using namespace cocos2d;
 
-ArcadeEasyGameScene::ArcadeEasyGameScene(GameContext* gameContext)   
-  : ArcadeGameScene(gameContext, ARCADE_EASY_GAME_SCENE, 4)
+ArcadeEasyGameScene::ArcadeEasyGameScene(GameContext* gameContext, bool showSplashScreen)   
+  : ArcadeGameScene(gameContext, ARCADE_EASY_GAME_SCENE, 4, showSplashScreen)
 { 
   m_challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_TWO_BUTTONS;
   m_challengePointScoreDefinition.maxTimeBonus = CORRECT_BUTTON_SCORE_TWO_BUTTONS_MAX_TIME_BONUS;

@@ -35,8 +35,8 @@ private:
   ccColor4F m_separatorColor;
 
 public:
-  HighscoreScene(GameContext* gameContext)   
-    : BaseScene(gameContext)
+  HighscoreScene(GameContext* gameContext, bool showSplashScreen)   
+    : BaseScene(gameContext, showSplashScreen)
     , m_isLayoutInitialized(false)
   {
 

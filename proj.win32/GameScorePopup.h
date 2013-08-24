@@ -14,12 +14,18 @@ enum GameScorePopupType
   GSPTYPE_RHYTHM = 2,
 };
 
+enum GameScorePopupMode
+{
+  GSPMODE_CHALLENGE = 0,
+  GSPMODE_ARCADE = 1,
+};
+
 class GameScorePopup : public ModalControl
 {  
 private:
 
   GameScorePopupType m_gameScorePopupType;
-
+  GameScorePopupMode m_gameScorePopupMode;
   GameContext* m_pGameContext; 
     
   CCLabelBMFont* m_headerTextLabel;
@@ -32,11 +38,24 @@ private:
 
   BaseNode* m_gameScorePanel;
 
+  CCSprite* m_goldStar1;
+  CCSprite* m_goldStar2;
+  CCSprite* m_goldStar3;
+  CCSprite* m_blackStar1;
+  CCSprite* m_blackStar2;
+  CCSprite* m_blackStar3;
+
+  TextButton* m_retryButton;
+  TextButton* m_replayButton;
+  TextButton* m_nextButton;
+
   void playAgainCallback(CCObject* pSender);
   void mainMenuCallback(CCObject* pSender);
+  void nextChallengeCallback(CCObject* pSender);
   
   SEL_CallFuncO m_fnpPlayAgainCallbackDelegate;
   SEL_CallFuncO m_fnpMainMenuCallbackDelegate;
+  SEL_CallFuncO m_fnpNextChallengeCallbackDelegate;
   
   CCNode *m_pTarget;
   
@@ -53,11 +72,11 @@ public:
   static GameScorePopup* create(GameContext* gameContext, std::string headerText
     , SEL_CallFuncO playAgainCallbackDelegate
     , SEL_CallFuncO mainMenuCallbackDelegate
-    , CCNode* callbackTarget, GameScorePopupType gameScorePopupType);
+    , SEL_CallFuncO nextChallengeCallbackDelegate
+    , CCNode* callbackTarget, GameScorePopupType gameScorePopupType
+    , GameScorePopupMode gameScorePopupMode);
   ~GameScorePopup() { }
   
-  void setHeaderText(std::string text);
-
   virtual void onEnter();
   virtual void draw();
   virtual bool ccTouchBegan(CCTouch* pTouch, CCEvent* pEvent) { return ModalControl::ccTouchBegan(pTouch, pEvent); }
@@ -68,15 +87,28 @@ protected:
   GameScorePopup(GameContext* gameContext, std::string headerText
     , SEL_CallFuncO playAgainCallbackDelegate
     , SEL_CallFuncO mainMenuCallbackDelegate
-    , CCNode* callbackTarget, GameScorePopupType gameScorePopupType)
+    , SEL_CallFuncO nextChallengeCallbackDelegate
+    , CCNode* callbackTarget, GameScorePopupType gameScorePopupType
+    , GameScorePopupMode gameScorePopupMode)
     : m_pGameContext(gameContext)
     , m_fnpPlayAgainCallbackDelegate(playAgainCallbackDelegate)
     , m_fnpMainMenuCallbackDelegate(mainMenuCallbackDelegate)
+    , m_fnpNextChallengeCallbackDelegate(nextChallengeCallbackDelegate)
     , m_pTarget(callbackTarget)
     , m_gameScorePanel(NULL)
     , m_headerText(headerText)
     , m_headerTextLabel(NULL)
     , m_gameScorePopupType(gameScorePopupType)
+    , m_gameScorePopupMode(gameScorePopupMode)
+    , m_retryButton(NULL)
+    , m_nextButton(NULL)
+    , m_replayButton(NULL)
+    , m_goldStar1(NULL)
+    , m_goldStar2(NULL)
+    , m_goldStar3(NULL)
+    , m_blackStar1(NULL)
+    , m_blackStar2(NULL)
+    , m_blackStar3(NULL)
   { }
 };
 #endif  // __GAMESCORE_POPUP_H__

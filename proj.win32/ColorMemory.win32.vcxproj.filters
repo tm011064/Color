@@ -180,6 +180,9 @@
     <ClInclude Include="RhythmChallengeScene.h">
       <Filter>include\Scenes\Challenges</Filter>
     </ClInclude>
+    <ClInclude Include="LoadGameScene.h">
+      <Filter>include\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseScene.cpp">
@@ -316,6 +319,9 @@
     </ClCompile>
     <ClCompile Include="RhythmChallengeScene.cpp">
       <Filter>include\Scenes\Challenges</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadGameScene.cpp">
+      <Filter>include\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

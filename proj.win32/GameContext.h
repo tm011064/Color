@@ -28,6 +28,8 @@ private:
   float m_defaultPadding;
   CCSize m_defaultButtonSize;
 
+  CCSize m_frameSize;
+
   int m_highscoreEasy;
   int m_highscoreNormal;
   int m_highscoreHard;
@@ -104,7 +106,10 @@ public:
   
   CCSize getDefaultButtonSize() { return this->m_defaultButtonSize; }
   void setDefaultButtonSize(float width, float height) { this->m_defaultButtonSize.setSize(width, height); }
-
+  
+  CCSize getFrameSize() { return this->m_frameSize; }
+  void setFrameSize(float width, float height) { this->m_frameSize.setSize(width, height); }
+  
   bool getIsSoundOn() { return this->m_isSoundOn; }
   void setIsSoundOn(bool isSoundOn);
   
@@ -120,6 +125,7 @@ public:
   int getHighscoreHard() { return this->m_highscoreHard; }
   void setHighscoreHard(int totalPoints);
 
+  void registerImageFile(const char *filePath, const char *key);
   void registerImageMapFile(const char *pList, const char *textureFileName);
   BaseTileMap* getImageMap(){ return this->m_imageMap; }
   

@@ -166,7 +166,7 @@ void ChallengeButtonPanel::startChallenge(CCObject* pSender)
     }
   }
 
-  NavigationManager::showChallengeScene(m_pGameContext, challengeIndex, NEW);
+  NavigationManager::showChallengeScene(m_pGameContext, challengeIndex, NEW, true);
 }
 
 void ChallengeButtonPanel::goBackCallback(CCObject* pSender)
