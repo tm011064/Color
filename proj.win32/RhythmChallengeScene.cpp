@@ -108,7 +108,7 @@ RhythmBlinkSequenceDefinition RhythmChallengeScene::loadRhythmBlinkSequenceDefin
 }
 void RhythmChallengeScene::onLoadLayout()
 {  
-  switch (this->m_totalButtons)
+  switch (this->m_totalEnabledButtons)
   {
   case 1:
     this->m_buttons = LayoutController::createOneButton(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
@@ -144,6 +144,9 @@ void RhythmChallengeScene::onLoadLayout()
     break;
   }     
 
+  // TODO (Roman): back key on all occasions
+  this->m_totalVisibleButtons = this->m_buttons->count();
+
   std::vector< GameButton* > enabledButtons;
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
@@ -162,9 +165,28 @@ void RhythmChallengeScene::onLoadLayout()
       it2->button = enabledButtons[it2->buttonIndex];
     }
   }
+}
 
-  // TODO (Roman): text
-  m_descriptionPopup->setText("Get the rhythm!");
+void RhythmChallengeScene::onLoadDescriptionPopup()
+{  
+  ccColor4F bgColor = { 23.0f/255.0f, 23.0f/255.0f, 23.0f/255.0f, 1.0f };
+  ccColor4F bgDialogColor = { 165.0f/255.0f, 65.0f/255.0f, 43.0f/255.0f, 1.0f };
+  ccColor4F bgDialogBorderColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+  
+  /********** DESCRIPTION POPUP **********/
+  m_descriptionPopup = DescriptionPopup::create(
+    this->m_pGameContext
+    , callfuncO_selector(RhythmChallengeScene::newGameCallback)
+    , this
+    , "Rhythm\nChallenge"
+    , "Target Score: " + UtilityHelper::convertToString(
+        MAX(.0f, 1.0f - this->m_challengePointScoreDefinition.minimumTotalTimePercentageForOneStar) * 100.0f, 0) 
+      + " / 100\n\nRepeat the button\nsequence.\nTry to get as many\nas blinks as\npossible." // TODO (Roman): text
+    , this->m_pGameContext->getImageMap()->getTile("iconNote")
+    , bgColor, bgDialogColor, bgDialogBorderColor);
+  m_descriptionPopup->setZOrder(SPLASH_ZORDER);
+  this->addChild(m_descriptionPopup);
+  /********** DESCRIPTION POPUP **********/
 }
 
 void RhythmChallengeScene::onLayoutLoaded()
@@ -286,9 +308,8 @@ void RhythmChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
     this->onIncorrectButtonPressed();
   }
   else
-  {
-
-    this->m_lastButtonPressed->playSound();
+  {    
+    this->m_lastButtonPressed->playAnimation(BLINK, false); 
     m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].rhythmBlinks[buttonSequenceIndex].areUserVariablesSet = true;
 
     cc_timeval now;

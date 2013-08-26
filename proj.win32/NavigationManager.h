@@ -19,6 +19,7 @@ public:
   NavigationManager() { }
   ~NavigationManager() { }
   
+  static void showMainMenu(GameContext* gameContext, SceneRenderMode sceneRenderMode, bool showSplashScreen, MenuViewType startScreen);
   static void showScene(SceneType sceneType, GameContext* gameContext, SceneRenderMode sceneRenderMode, bool showSplashScreen);
   static void showChallengeScene(GameContext* gameContext, int challengeIndex, SceneRenderMode sceneRenderMode, bool showSplashScreen);
 

@@ -16,9 +16,9 @@ private:
 
   void initialize();
 
-  RepeatOneOffSequenceChallengeScene(GameContext* gameContext, bool showSplashScreen, int challengeIndex, int totalButtons, ChallengeSceneType challengeSceneType, ChallengePointScoreDefinition challengePointScoreDefinition
+  RepeatOneOffSequenceChallengeScene(GameContext* gameContext, bool showSplashScreen, int challengeIndex, int totalEnabledButtons, ChallengeSceneType challengeSceneType, ChallengePointScoreDefinition challengePointScoreDefinition
     , int levelToReach)
-    : BaseChallengeScene(gameContext, showSplashScreen,  challengeIndex, challengeSceneType, totalButtons, challengePointScoreDefinition
+    : BaseChallengeScene(gameContext, showSplashScreen,  challengeIndex, challengeSceneType, totalEnabledButtons, challengePointScoreDefinition
                          , GSPTYPE_POINTS)
     , m_levelToReach(levelToReach)
   {
@@ -27,9 +27,10 @@ private:
 public:
   ~RepeatOneOffSequenceChallengeScene() { }
   
-  static RepeatOneOffSequenceChallengeScene* create(GameContext* gameContext, bool showSplashScreen, int challengeIndex, int totalButtons, ChallengePointScoreDefinition challengePointScoreDefinition, int levelToReach); 
+  static RepeatOneOffSequenceChallengeScene* create(GameContext* gameContext, bool showSplashScreen, int challengeIndex, int totalEnabledButtons, ChallengePointScoreDefinition challengePointScoreDefinition, int levelToReach); 
 
 protected:  
+  virtual void onLoadDescriptionPopup();
   virtual void onLoadLayout();
   virtual void onLayoutLoaded();
   virtual void startNewGame();

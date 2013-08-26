@@ -117,8 +117,6 @@ bool GameButton::ccTouchBegan(CCTouch* touch, CCEvent* event)
       switch (this->m_gameButtonTouchMode)
       {
       case FIRE_ON_TOUCH_BEGAN:
-        this->playAnimation(BLINK, true); // we don't play the sound here as this will be played only on a correct click
-
         // we react on the begin event...
         if(m_pTarget != 0 && m_fnpTouchEndedDelegate != 0)
             (m_pTarget->*m_fnpTouchEndedDelegate)(this);

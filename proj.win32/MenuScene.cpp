@@ -136,6 +136,8 @@ void MenuScene::initialize(float dt)
 
   this->m_challengeButtonPanel->hide();
   
+  this->showView(m_startScreen);
+
   hideSplashScreen();
 }
 
@@ -313,8 +315,6 @@ void MenuScene::onBackKeyPressed()
 
   case ARCADE:
   case STORY_MODE:
-  case OPTIONS:
-  case HIGHSCORE:
     showView(HOME);
     break;
   }

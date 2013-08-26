@@ -5,9 +5,9 @@
 using namespace cocos2d;
 
 ReachLevelChallengeScene* ReachLevelChallengeScene::create(GameContext* gameContext, bool showSplashScreen, int challengeIndex
-  , int totalButtons, ChallengePointScoreDefinition challengePointScoreDefinition, int levelToReach)
+  , int totalEnabledButtons, ChallengePointScoreDefinition challengePointScoreDefinition, int levelToReach)
 {
-  ReachLevelChallengeScene* scene = new ReachLevelChallengeScene(gameContext, showSplashScreen, challengeIndex, totalButtons, REACH_LEVEL, challengePointScoreDefinition, levelToReach);
+  ReachLevelChallengeScene* scene = new ReachLevelChallengeScene(gameContext, showSplashScreen, challengeIndex, totalEnabledButtons, REACH_LEVEL, challengePointScoreDefinition, levelToReach);
   scene->init();
 
   return scene;
@@ -15,7 +15,7 @@ ReachLevelChallengeScene* ReachLevelChallengeScene::create(GameContext* gameCont
 
 void ReachLevelChallengeScene::onLoadLayout()
 {  
-  switch (this->m_totalButtons)
+  switch (this->m_totalEnabledButtons)
   {
   case 2:
     this->m_buttons = LayoutController::createTwoButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
@@ -43,14 +43,34 @@ void ReachLevelChallengeScene::onLoadLayout()
     break;
   }   
 
+  this->m_totalVisibleButtons = this->m_buttons->count();
+
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
   {
     this->addChild((GameButton*)o);
   }  
+}
 
-  // TODO (Roman): text
-  m_descriptionPopup->setText("Get 10 buttons in a row right\nto clear this stage\n\nDo it as quickly as possible to\ncollect stars!");
+void ReachLevelChallengeScene::onLoadDescriptionPopup()
+{  
+  ccColor4F bgColor = { .0f, .0f, .0f, 1.0f };
+  ccColor4F bgDialogColor = { 136.0f/255.0f, 151.0f/255.0f, 26.0f/255.0f, 1.0f };
+  ccColor4F bgDialogBorderColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+  
+  /********** DESCRIPTION POPUP **********/
+  m_descriptionPopup = DescriptionPopup::create(
+    this->m_pGameContext
+    , callfuncO_selector(ReachLevelChallengeScene::newGameCallback)
+    , this
+    , "Memory\nChallenge"
+    , "Target Score: " + UtilityHelper::convertToString(this->m_challengePointScoreDefinition.mininimumPointsForOneStar, 0) 
+      + " pts\n\nRepeat the button\nsequence.\nTry to get as many\nas blinks as\npossible." // TODO (Roman): text
+    , this->m_pGameContext->getImageMap()->getTile("iconMemory")
+    , bgColor, bgDialogColor, bgDialogBorderColor);
+  m_descriptionPopup->setZOrder(SPLASH_ZORDER);
+  this->addChild(m_descriptionPopup);
+  /********** DESCRIPTION POPUP **********/
 }
 
 void ReachLevelChallengeScene::onLayoutLoaded()
@@ -90,11 +110,11 @@ void ReachLevelChallengeScene::runSequenceAnimation(bool doAddButton, int startI
   if (doAddButton)
   {
     std::srand(time(NULL));
-    GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % this->m_totalVisibleButtons);
     while (!button->getIsEnabled())
     {
       button = NULL;
-      button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+      button = (GameButton*)m_buttons->objectAtIndex(rand() % this->m_totalVisibleButtons);
     }
     m_buttonSequence.push_back(button);
     button = NULL;
@@ -131,6 +151,9 @@ void ReachLevelChallengeScene::update(float delta)
 
 void ReachLevelChallengeScene::onSequenceBlinkCallback(GameButton* gameButton)
 {
+  if (this->m_sceneState == RUNNING_END_OF_GAME_ANIMATION)
+    return;
+
   // this method is called when the sequence animation buttons blink
   if (m_buttonSequenceIndex >= this->m_lastEndIndex)
   {
@@ -153,8 +176,11 @@ void ReachLevelChallengeScene::onSequenceBlinkCallback(GameButton* gameButton)
 
 void ReachLevelChallengeScene::onCorrectButtonPressed()
 {
+  // TODO (Roman): clicks while loading and after last blink can break things...
+  // TODO (Roman): challenge won't start when clicks while loading...
+
   this->m_buttonSequenceIndex++;
-  this->m_lastButtonPressed->playSound();
+  this->m_lastButtonPressed->playAnimation(BLINK, false); 
 
   float deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
 

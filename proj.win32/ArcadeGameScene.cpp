@@ -195,11 +195,11 @@ void ArcadeGameScene::runSequenceAnimation(bool doAddButton, int startIndex, int
   if (doAddButton)
   {
     std::srand(time(NULL));
-    GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % this->m_totalVisibleButtons);
     while (!button->getIsEnabled())
     {
       button = NULL;
-      button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+      button = (GameButton*)m_buttons->objectAtIndex(rand() % this->m_totalVisibleButtons);
     }
     m_buttonSequence.push_back(button);
     button = NULL;
@@ -280,7 +280,7 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
   {// correct click
     this->m_buttonSequenceIndex++;
 
-    m_lastButtonPressed->playSound();
+    this->m_lastButtonPressed->playAnimation(BLINK, false); // we don't play the sound here as this will be played only on a correct click
     
     float deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
 
@@ -322,17 +322,39 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
       float mark = bonus / this->m_challengePointScoreDefinition.maxLevelTimeBonus;
       char str[256];  
     
+      ccColor3B color = { 255.0f, 60.0f, .0f};
       if (mark > .92f)
+      {
         sprintf(str, "PERFECT");
+        color.r = .0f;
+        color.g = 255.0f;
+        color.b = .0f;
+      }
       else if (mark > .88f)
+      {
         sprintf(str, "GREAT");
+        color.r = 180.0f;
+        color.g = 255.0f;
+        color.b = .0f;
+      }
       else if (mark > .75)
+      {
         sprintf(str, "GOOD");
+        color.r = 250.0f;
+        color.g = 255.0f;
+        color.b = .0f;
+      }
       else
+      {  
         sprintf(str, "CORRECT");
+        color.r = 255.0f;
+        color.g = 160.0f;
+        color.b = .0f;
+      }
       
       m_levelDoneLabel->setString(str);
 
+      m_levelDoneLabel->setColor(color);
       m_levelDoneLabel->setScale(1.0f);
       m_levelDoneLabel->runAction(CCSequence::create(
         CCFadeIn::create(.12f)
@@ -507,13 +529,16 @@ void ArcadeGameScene::consoleButtonTouchEndedCallback(CCObject* pSender)
 
 void ArcadeGameScene::onBackKeyPressed()
 {
+  if (this->m_sceneState != AWAITING_INPUT)
+    return;
+
   if (this->m_wildcardPopup->isVisible())
   {
     this->m_wildcardPopup->hide();
   }
   else
   {
-    NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW, false);
+    NavigationManager::showMainMenu(m_pGameContext, NEW, false, HOME);
   }
 }
 
@@ -574,5 +599,5 @@ void ArcadeGameScene::newGameCallback(CCObject* pSender)
 
 void ArcadeGameScene::mainMenuCallback(CCObject* pSender)
 {
-  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW, false);
+  NavigationManager::showMainMenu(m_pGameContext, NEW, false, HOME);
 }  

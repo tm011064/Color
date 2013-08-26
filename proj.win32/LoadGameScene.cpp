@@ -150,6 +150,6 @@ void LoadGameScene::loadGame(float dt)
 
   label->release();  
 
-  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW, true);
+  NavigationManager::showMainMenu(m_pGameContext, NEW, true, HOME);
 }
 

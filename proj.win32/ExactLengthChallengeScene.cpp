@@ -6,12 +6,12 @@
 using namespace cocos2d;
 
 ExactLengthChallengeScene* ExactLengthChallengeScene::create(GameContext* gameContext, bool showSplashScreen, int challengeIndex
-  , int totalButtons, float minButtonSignalLength, float maxButtonSignalLength
+  , int totalEnabledButtons, float minButtonSignalLength, float maxButtonSignalLength
   , float minNextSignalDeltaFromLastEndTime, float maxNextSignalDeltaFromLastEndTime
   , ChallengePointScoreDefinition challengePointScoreDefinition)
 {
   ExactLengthChallengeScene* scene = new ExactLengthChallengeScene(gameContext, showSplashScreen, challengeIndex
-    , totalButtons, minButtonSignalLength, maxButtonSignalLength
+    , totalEnabledButtons, minButtonSignalLength, maxButtonSignalLength
     , minNextSignalDeltaFromLastEndTime, maxNextSignalDeltaFromLastEndTime
     , EXACT_LENGTH, challengePointScoreDefinition);
   scene->init();
@@ -21,7 +21,7 @@ ExactLengthChallengeScene* ExactLengthChallengeScene::create(GameContext* gameCo
 
 void ExactLengthChallengeScene::onLoadLayout()
 {  
-  switch (this->m_totalButtons)
+  switch (this->m_totalEnabledButtons)
   {
   case 1:
     this->m_buttons = LayoutController::createOneButton(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
@@ -56,15 +56,35 @@ void ExactLengthChallengeScene::onLoadLayout()
       , FIRE_ON_TOUCH_ENDED, OSCIL);      
     break;
   }     
+  
+  this->m_totalVisibleButtons = this->m_buttons->count();
 
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
   {
     this->addChild((GameButton*)o);
   }  
+}
 
-  // TODO (Roman): text
-  m_descriptionPopup->setText("Repeat the sequence exactly\nhow you hear them!");
+void ExactLengthChallengeScene::onLoadDescriptionPopup()
+{       
+  ccColor4F bgColor = { .0f, .0f, .0f, 1.0f };
+  ccColor4F bgDialogColor = { 50.0f/255.0f, 158.0f/255.0f, 78.0f/255.0f, 1.0f };
+  ccColor4F bgDialogBorderColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+  
+  /********** DESCRIPTION POPUP **********/
+  m_descriptionPopup = DescriptionPopup::create(
+    this->m_pGameContext
+    , callfuncO_selector(ExactLengthChallengeScene::newGameCallback)
+    , this
+    , "Balance\nChallenge"
+    , "Target Score: " + UtilityHelper::convertToString(this->m_challengePointScoreDefinition.minimumTotalTimePercentageForOneStar * 100.0f, 0) 
+      + " / 100\n\nRepeat the button\nsequence.\nTry to get as many\nas blinks as\npossible." // TODO (Roman): text
+    , this->m_pGameContext->getImageMap()->getTile("iconBalance")
+    , bgColor, bgDialogColor, bgDialogBorderColor);
+  m_descriptionPopup->setZOrder(SPLASH_ZORDER);
+  this->addChild(m_descriptionPopup);
+  /********** DESCRIPTION POPUP **********/
 }
 
 void ExactLengthChallengeScene::onLayoutLoaded()
@@ -122,9 +142,9 @@ void ExactLengthChallengeScene::runSequenceAnimation()
   int index;
   for (int j = 0; j < 3; ++j)
   {// shuffle three times
-    for (int i = 0; i < m_totalButtons - 1; ++i)
+    for (int i = 0; i < m_totalEnabledButtons - 1; ++i)
     {
-      index = (int)round( getRandom(i + 1, m_totalButtons - 1) );
+      index = (int)round( getRandom(i + 1, m_totalEnabledButtons - 1) );
       buttonBlinkTimePeriod = m_buttonBlinkTimePeriods[index];
       m_buttonBlinkTimePeriods[index] = m_buttonBlinkTimePeriods[i];
       m_buttonBlinkTimePeriods[i] = buttonBlinkTimePeriod;
@@ -144,7 +164,7 @@ void ExactLengthChallengeScene::runSequenceAnimation()
   this->runAction(CCSequence::create(CCDelayTime::create(delay + m_buttonBlinkTimePeriods[0].duration)
                                    , CCCallFuncO::create(this, callfuncO_selector(ExactLengthChallengeScene::endButtonBlinkCallback), m_buttonBlinkTimePeriods[0].button), NULL));
   
-  for (int i = 1; i < m_totalButtons; ++i)
+  for (int i = 1; i < m_totalEnabledButtons; ++i)
   {
     do
     {
@@ -164,7 +184,7 @@ void ExactLengthChallengeScene::runSequenceAnimation()
 
 void ExactLengthChallengeScene::startButtonBlinkCallback(CCObject* o)
 {
-  for (int i = 0; i < m_totalButtons; ++i)
+  for (int i = 0; i < m_totalEnabledButtons; ++i)
   {
     if (m_buttonBlinkTimePeriods[i].button == o)
     {
@@ -177,9 +197,12 @@ void ExactLengthChallengeScene::startButtonBlinkCallback(CCObject* o)
   }
 }
 void ExactLengthChallengeScene::endButtonBlinkCallback(CCObject* o)
-{  
+{ 
+  if (this->m_sceneState == RUNNING_END_OF_GAME_ANIMATION)
+    return;
+
   int totalReleasingButtons = 0;
-  for (int i = 0; i < m_totalButtons; ++i)
+  for (int i = 0; i < m_totalEnabledButtons; ++i)
   {
     if (m_buttonBlinkTimePeriods[i].button == o)
     {
@@ -190,7 +213,7 @@ void ExactLengthChallengeScene::endButtonBlinkCallback(CCObject* o)
     if (m_buttonBlinkTimePeriods[i].hasEnded)
       totalReleasingButtons++;
   }
-  if (totalReleasingButtons == m_totalButtons)
+  if (totalReleasingButtons == m_totalEnabledButtons)
   {    
     this->m_sceneState = AWAITING_INPUT;
   }
@@ -251,22 +274,22 @@ void ExactLengthChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
 
   this->playConsoleLabelAnimation(str, 1.4f, 1.1f, .0f, colorShade);
 
-  if (index + 1 == m_totalButtons)
+  if (index + 1 == m_totalEnabledButtons)
   {
     this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION;
     
     this->m_gameScore.averageButtonBlinkDurationOffset = 0;
     this->m_gameScore.averageButtonBlinkStartOffset = 0;
     this->m_gameScore.averageButtonBlinkPercentage = 0;
-    for (int i = 0; i < m_totalButtons; ++i)
+    for (int i = 0; i < m_totalEnabledButtons; ++i)
     {
       this->m_gameScore.averageButtonBlinkPercentage += m_userPressedTimePeriods[i].correctPercentage;
       this->m_gameScore.averageButtonBlinkStartOffset += fabs(m_userPressedTimePeriods[i].startOffset);
       this->m_gameScore.averageButtonBlinkDurationOffset += fabs(m_userPressedTimePeriods[i].durationOffset);
     }
-    this->m_gameScore.averageButtonBlinkPercentage = this->m_gameScore.averageButtonBlinkPercentage / m_totalButtons;
-    this->m_gameScore.averageButtonBlinkDurationOffset = this->m_gameScore.averageButtonBlinkDurationOffset / m_totalButtons;
-    this->m_gameScore.averageButtonBlinkStartOffset = this->m_gameScore.averageButtonBlinkStartOffset / m_totalButtons;
+    this->m_gameScore.averageButtonBlinkPercentage = this->m_gameScore.averageButtonBlinkPercentage / m_totalEnabledButtons;
+    this->m_gameScore.averageButtonBlinkDurationOffset = this->m_gameScore.averageButtonBlinkDurationOffset / m_totalEnabledButtons;
+    this->m_gameScore.averageButtonBlinkStartOffset = this->m_gameScore.averageButtonBlinkStartOffset / m_totalEnabledButtons;
     
     // TODO (Roman): scoring and popup
     this->m_gameScore.coinsEarned = round( this->m_gameScore.averageButtonBlinkPercentage * 10 * m_challengePointScoreDefinition.coinsEarnedMultiplier );
@@ -289,7 +312,7 @@ void ExactLengthChallengeScene::onWrongButton(GameButton* lastButtonPressed, Gam
   this->m_gameScore.averageButtonBlinkPercentage = 0;
   int totalUserPressedButtons = m_userPressedTimePeriods.size();
 
-  for (int i = 0; i < m_totalButtons; ++i)
+  for (int i = 0; i < m_totalEnabledButtons; ++i)
   {
     for (int j = 0; j < totalUserPressedButtons; j++)
     {
@@ -300,7 +323,7 @@ void ExactLengthChallengeScene::onWrongButton(GameButton* lastButtonPressed, Gam
       }
     }
   }
-  this->m_gameScore.averageButtonBlinkPercentage = this->m_gameScore.averageButtonBlinkPercentage / m_totalButtons;
+  this->m_gameScore.averageButtonBlinkPercentage = this->m_gameScore.averageButtonBlinkPercentage / m_totalEnabledButtons;
     
   this->m_gameScore.coinsEarned = round( this->m_gameScore.averageButtonBlinkPercentage * 10 * m_challengePointScoreDefinition.coinsEarnedMultiplier );
   this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);

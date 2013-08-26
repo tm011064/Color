@@ -5,9 +5,9 @@
 using namespace cocos2d;
 
 RepeatOneOffSequenceChallengeScene* RepeatOneOffSequenceChallengeScene::create(GameContext* gameContext, bool showSplashScreen, int challengeIndex
-  , int totalButtons, ChallengePointScoreDefinition challengePointScoreDefinition, int levelToReach)
+  , int totalEnabledButtons, ChallengePointScoreDefinition challengePointScoreDefinition, int levelToReach)
 {
-  RepeatOneOffSequenceChallengeScene* scene = new RepeatOneOffSequenceChallengeScene(gameContext, showSplashScreen, challengeIndex, totalButtons, REPEAT_ONE_OFF, challengePointScoreDefinition, levelToReach);
+  RepeatOneOffSequenceChallengeScene* scene = new RepeatOneOffSequenceChallengeScene(gameContext, showSplashScreen, challengeIndex, totalEnabledButtons, REPEAT_ONE_OFF, challengePointScoreDefinition, levelToReach);
   scene->init();
 
   return scene;
@@ -15,7 +15,7 @@ RepeatOneOffSequenceChallengeScene* RepeatOneOffSequenceChallengeScene::create(G
 
 void RepeatOneOffSequenceChallengeScene::onLoadLayout()
 {  
-  switch (this->m_totalButtons)
+  switch (this->m_totalEnabledButtons)
   {
   case 2:
     this->m_buttons = LayoutController::createTwoButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
@@ -43,14 +43,33 @@ void RepeatOneOffSequenceChallengeScene::onLoadLayout()
     break;
   }       
 
+  this->m_totalVisibleButtons = this->m_buttons->count();
+
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
   {
     this->addChild((GameButton*)o);
   }  
+}
 
-  // TODO (Roman): text
-  m_descriptionPopup->setText("Repeat the button sequence\nas quickly as you can!");
+void RepeatOneOffSequenceChallengeScene::onLoadDescriptionPopup()
+{  
+  ccColor4F bgColor = { .0f, .0f, .0f, 1.0f };
+  ccColor4F bgDialogColor = { 28.0f/255.0f, 82.0f/255.0f, 103.0f/255.0f, 1.0f };
+  ccColor4F bgDialogBorderColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+  /********** DESCRIPTION POPUP **********/
+  m_descriptionPopup = DescriptionPopup::create(
+    this->m_pGameContext
+    , callfuncO_selector(RepeatOneOffSequenceChallengeScene::newGameCallback)
+    , this
+    , "Speed\nChallenge"
+    , "Description" // TODO (Roman): text
+    , this->m_pGameContext->getImageMap()->getTile("iconSpeed")
+    , bgColor, bgDialogColor, bgDialogBorderColor);
+  m_descriptionPopup->setZOrder(SPLASH_ZORDER);
+  this->addChild(m_descriptionPopup);
+  /********** DESCRIPTION POPUP **********/
 }
 
 void RepeatOneOffSequenceChallengeScene::onLayoutLoaded()
@@ -82,11 +101,11 @@ void RepeatOneOffSequenceChallengeScene::startNewGame()
   std::srand(time(NULL));
   for (int i = 0; i < this->m_levelToReach; ++i)
   {
-    GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % this->m_totalVisibleButtons);
     while (!button->getIsEnabled())
     {
       button = NULL;
-      button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+      button = (GameButton*)m_buttons->objectAtIndex(rand() % this->m_totalVisibleButtons);
     }
     m_buttonSequence.push_back(button);
     button = NULL;
@@ -104,11 +123,11 @@ void RepeatOneOffSequenceChallengeScene::runSequenceAnimation(bool doAddButton, 
   if (doAddButton)
   {
     std::srand(time(NULL));
-    GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+    GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % this->m_totalVisibleButtons);
     while (!button->getIsEnabled())
     {
       button = NULL;
-      button = (GameButton*)m_buttons->objectAtIndex(rand() % m_totalButtons);
+      button = (GameButton*)m_buttons->objectAtIndex(rand() % this->m_totalVisibleButtons);
     }
     m_buttonSequence.push_back(button);
     button = NULL;
@@ -145,6 +164,9 @@ void RepeatOneOffSequenceChallengeScene::update(float delta)
 
 void RepeatOneOffSequenceChallengeScene::onSequenceBlinkCallback(GameButton* gameButton)
 {
+  if (this->m_sceneState == RUNNING_END_OF_GAME_ANIMATION)
+    return;
+
   // this method is called when the sequence animation buttons blink
   if (m_buttonSequenceIndex >= this->m_lastEndIndex)
   {
@@ -168,7 +190,7 @@ void RepeatOneOffSequenceChallengeScene::onSequenceBlinkCallback(GameButton* gam
 void RepeatOneOffSequenceChallengeScene::onCorrectButtonPressed()
 {
   this->m_buttonSequenceIndex++;
-  this->m_lastButtonPressed->playSound();
+  this->m_lastButtonPressed->playAnimation(BLINK, false); 
 
   float deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
 

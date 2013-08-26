@@ -81,6 +81,9 @@ static inline float floor_float(float f)
 #define DEFAULT_NEW_GAME_START_DELAY  1.0f
 #define DEFAULT_NEW_GAME_START_SHORT_DELAY  .2f
 
+#define GOLDEN_RATIO_PERCENTAGE           0.61803398f
+#define GOLDEN_RATIO_NEGATIVE_PERCENTAGE  0.38196601f
+
 // TODO (Roman): proper values
 #define COINS_COST_REPLAY_SEQUENCE    50
 #define COINS_COST_SHOW_NEXT_ITEM     100

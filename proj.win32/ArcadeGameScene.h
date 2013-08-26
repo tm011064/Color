@@ -60,7 +60,9 @@ private:
 
 
 protected:
-  int m_totalButtons;
+  
+  unsigned int m_totalVisibleButtons;
+  int m_totalEnabledButtons;
   bool m_isLayoutInitialized;
   float m_buttonScale;
 
@@ -80,14 +82,14 @@ protected:
 
 public:
   
-  ArcadeGameScene(GameContext* gameContext, SceneType sceneType, int totalButtons, bool showSplashScreen)   
+  ArcadeGameScene(GameContext* gameContext, SceneType sceneType, int totalEnabledButtons, bool showSplashScreen)   
     : BaseScene(gameContext, showSplashScreen)
     , m_isLayoutInitialized(false) 
     , m_buttonScale(.0f)
     , m_buttons(NULL)
     , m_lastButtonPressedTime(0)
     , m_lastLevelStartTime(0)
-    , m_totalButtons(totalButtons)
+    , m_totalEnabledButtons(totalEnabledButtons)
     , m_sceneType(sceneType)
     , m_consoleBackground(NULL)
     , m_topBar(NULL)

@@ -18,7 +18,6 @@ private:
   GameScorePopupType m_gameScorePopupType;
   ImageButton* m_consoleButton;
   
-  void newGameCallback(CCObject* pSender);
   void mainMenuCallback(CCObject* pSender); 
   void nextChallengeCallback(CCObject* pSender); 
 
@@ -44,7 +43,9 @@ protected:
   void eogAnimationFinish(float dt);
   void eogResetButtons(float dt);
 
-  int m_totalButtons;
+  int m_totalEnabledButtons;
+  unsigned int m_totalVisibleButtons;
+
   bool m_isLayoutInitialized;
   int m_challengeIndex;
 
@@ -56,6 +57,8 @@ protected:
 
   std::vector<GameButton*> m_buttonSequence;
   GameScore m_gameScore;
+
+  void newGameCallback(CCObject* pSender);
 
   virtual void buttonTouchEndedCallback(CCObject* pSender);
   void buttonLoadedCallback(CCObject* pSender);
@@ -96,14 +99,14 @@ protected:
 public:
     
   BaseChallengeScene(GameContext* gameContext, bool showSplashScreen, int challengeIndex
-    , ChallengeSceneType challengeSceneType, int totalButtons, ChallengePointScoreDefinition challengePointScoreDefinition
+    , ChallengeSceneType challengeSceneType, int totalEnabledButtons, ChallengePointScoreDefinition challengePointScoreDefinition
     , GameScorePopupType gameScorePopupType)   
     : BaseScene(gameContext, showSplashScreen)
     , m_isLayoutInitialized(false) 
     , m_buttons(NULL)
     , m_lastButtonPressedTime(0)
     , m_lastLevelStartTime(0)
-    , m_totalButtons(totalButtons)
+    , m_totalEnabledButtons(totalEnabledButtons)
     , m_challengeSceneType(challengeSceneType)
     , m_consoleBackground(NULL)
     , m_topBar(NULL)
@@ -120,12 +123,14 @@ public:
     // TODO (Roman): memory management...
   }
   
+  virtual void onEnter();
   virtual void onExit();
   virtual void onBackKeyPressed();
   virtual bool init();
 
 protected:
 
+  virtual void onLoadDescriptionPopup() { /* can be overridden */ }
   virtual void startNewGame() { /* can be overridden */ }
 
   virtual void onReplaySequenceCallback() { /* can be overridden */ }

@@ -6,6 +6,7 @@ void BaseScene::onEnter()
   
   if (!this->m_isLayoutInitialized)
   {   
+    this->m_isLayoutInitialized = true;
     if (this->m_showSplashScreen)
     {
       CCRect visibleRect = VisibleRect::getVisibleRect();   

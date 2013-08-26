@@ -60,6 +60,13 @@ enum ButtonAnimation
   BLINK = 5,
 };
 
+enum MenuViewType
+{
+  HOME = 0,
+  ARCADE = 1,
+  STORY_MODE = 2
+};
+
 typedef struct
 {
   CCSize size;

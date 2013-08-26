@@ -20,6 +20,9 @@ void ArcadeNormalGameScene::onLoadLayout()
     , callfuncO_selector( ArcadeNormalGameScene::buttonLoadedCallback )
     , callfuncO_selector( ArcadeNormalGameScene::buttonBlinkCallback )
     , FIRE_ON_TOUCH_BEGAN, DRUMS);   
+  
+  this->m_totalVisibleButtons = this->m_buttons->count();
+
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
   {

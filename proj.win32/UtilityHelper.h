@@ -49,6 +49,9 @@ public:
   static std::string &trim(std::string &s) { return ltrim(rtrim(s)); }
 
   static std::vector<std::string> split(std::string text, char delim, int rep);
+
+  static std::string convertToString(float f, int decimals);
+  static std::string convertToString(int i);
 };
 
 #endif /* __UTILITYHELPER_H__ */

@@ -30,7 +30,6 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
   ArcadeNormalGameScene* normalGameScene;
   ArcadeEasyGameScene* arcadeEasyGameScene;
   ArcadeHardGameScene* arcadeHardGameScene;
-  MenuScene* menuScene;
   OptionsScene* optionsScene;
   HighscoreScene* highscoreScene;
   LoadGameScene* loadGameScene;
@@ -48,18 +47,6 @@ CCScene* NavigationManager::resetGameContextScene(SceneType sceneType, GameConte
     loadGameScene->addChild(pLayer);
     
     return loadGameScene;
-
-  case MENU_SCENE: 
-    
-    menuScene = new MenuScene(gameContext, showSplashScreen);
-        
-    pLayer = new BaseLayer(menuScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
-    pLayer->init(); 
-    pLayer->autorelease();
-
-    menuScene->addChild(pLayer);
-    
-    return menuScene;
 
   case ARCADE_NORMAL_GAME_SCENE: 
     
@@ -388,6 +375,13 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_THREE_BUTTONS_MULTIPLIER;
     rhythmBlinkSequenceDefinition = RhythmChallengeScene::loadRhythmBlinkSequenceDefinition(CCFileUtils::sharedFileUtils()->fullPathForFilename("rhythmChallenge_1.txt"));
     rhythmChallengeScene = RhythmChallengeScene::create(gameContext, showSplashScreen, challengeIndex, rhythmBlinkSequenceDefinition, challengePointScoreDefinition);
+    rhythmChallengeScene->init();
+    
+    pLayer = new BaseLayer(rhythmChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
+
+    rhythmChallengeScene->addChild(pLayer); 
 
     return rhythmChallengeScene;
     
@@ -405,6 +399,13 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_FOUR_BUTTONS_MULTIPLIER;
     rhythmBlinkSequenceDefinition = RhythmChallengeScene::loadRhythmBlinkSequenceDefinition(CCFileUtils::sharedFileUtils()->fullPathForFilename("rhythmChallenge_2.txt"));
     rhythmChallengeScene = RhythmChallengeScene::create(gameContext, showSplashScreen, challengeIndex, rhythmBlinkSequenceDefinition, challengePointScoreDefinition);
+    rhythmChallengeScene->init();
+    
+    pLayer = new BaseLayer(rhythmChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
+
+    rhythmChallengeScene->addChild(pLayer); 
 
     return rhythmChallengeScene;
   }
@@ -426,6 +427,28 @@ void NavigationManager::showChallengeScene(GameContext* gameContext, int challen
     break;   
   }
 }
+
+void NavigationManager::showMainMenu(GameContext* gameContext, SceneRenderMode sceneRenderMode, bool showSplashScreen
+  , MenuViewType startScreen)
+{
+  MenuScene* menuScene = new MenuScene(gameContext, showSplashScreen, startScreen);
+        
+  BaseLayer* pLayer = new BaseLayer(menuScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+  pLayer->init(); 
+  pLayer->autorelease();
+
+  menuScene->addChild(pLayer);
+    
+  CCDirector::sharedDirector()->purgeCachedData();  
+  switch(sceneRenderMode)
+  {
+  case FIRST_RUN: CCDirector::sharedDirector()->runWithScene(menuScene); break;
+  case NEW: CCDirector::sharedDirector()->replaceScene(menuScene); break;   
+  }
+  menuScene->release();
+}
+
+
 void NavigationManager::showScene(SceneType sceneType, GameContext* gameContext, SceneRenderMode sceneRenderMode, bool showSplashScreen)
 {    
   CCScene* scene;

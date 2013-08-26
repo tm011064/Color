@@ -1,5 +1,23 @@
 #include "UtilityHelper.h"
 
+
+std::string UtilityHelper::convertToString(float f, int decimals)
+{
+  if (decimals == 0)
+    return UtilityHelper::convertToString((int)f);
+
+  char numstr[154];
+  const char* format = std::string("%." + UtilityHelper::convertToString(decimals) + "f").c_str();
+  sprintf(numstr, format, f);
+  return std::string(numstr);
+}
+std::string UtilityHelper::convertToString(int i)
+{
+  char numstr[22];
+  sprintf(numstr, "%i", i);
+  return std::string(numstr);
+}
+
 cocos2d::cc_timeval UtilityHelper::getTimeValFromSeconds(float time)
 {  
   cocos2d::cc_timeval tv;

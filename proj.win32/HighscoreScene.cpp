@@ -147,9 +147,9 @@ void HighscoreScene::draw()
 
 void HighscoreScene::showMenuCallback(CCObject* pSender)
 { 
-  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW, false);
+  NavigationManager::showMainMenu(m_pGameContext, NEW, false, HOME);
 }
 void HighscoreScene::onBackKeyPressed()
 {
-  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW, false);
+  NavigationManager::showMainMenu(m_pGameContext, NEW, false, HOME);
 }

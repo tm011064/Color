@@ -26,6 +26,18 @@ void BaseChallengeScene::onExit()
   CCScene::onExit();
 }
 
+void BaseChallengeScene::onEnter()
+{
+  CCScene::onEnter();
+  if (!this->m_isLayoutInitialized)
+  {   
+    this->m_isLayoutInitialized = true;
+
+    this->onLoadDescriptionPopup();
+
+    this->scheduleOnce(schedule_selector(BaseChallengeScene::initialize), 0.01f);
+  }
+}
 void BaseChallengeScene::initialize(float dt)
 {  
   CCPoint top = VisibleRect::top();
@@ -153,15 +165,6 @@ void BaseChallengeScene::initialize(float dt)
     
   this->addChild(m_gameScorePopup);
   /********** MODAL LAYER **********/
-        
-  /********** DESCRIPTION POPUP **********/
-  m_descriptionPopup = new DescriptionPopup(
-    this->m_pGameContext
-    , callfuncO_selector(BaseChallengeScene::newGameCallback)
-    , this);
-  m_descriptionPopup->setZOrder(100);
-  this->addChild(m_descriptionPopup);
-  /********** DESCRIPTION POPUP **********/
 	
   this->onLoadLayout();
     
@@ -205,7 +208,7 @@ void BaseChallengeScene::buttonLoadedCallback(CCObject* pSender)
 
   this->onLayoutLoaded();
 
-  hideSplashScreen();
+  this->m_descriptionPopup->setEnablePlayButton(true);
 }
 
 void BaseChallengeScene::buttonBlinkCallback(CCObject* pSender)
@@ -254,7 +257,7 @@ void BaseChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
 {
   if (m_buttonSequenceIndex >= m_buttonSequence.size())
     return; // this could happen on rapid clicks where the last click was not fully processed yet - like a lock...
-
+  
   m_lastButtonPressed = ((GameButton*)pSender);
   m_nextSequenceButton = m_buttonSequence.at(m_buttonSequenceIndex);
     
@@ -278,18 +281,21 @@ void BaseChallengeScene::consoleButtonTouchEndedCallback(CCObject* pSender)
 }
 
 void BaseChallengeScene::onBackKeyPressed()
-{  
-  if (this->m_descriptionPopup->isVisible())
-  {
-    this->m_descriptionPopup->hide();
-  }
-  else if (this->m_wildcardPopup->isVisible())
+{
+  if (this->m_wildcardPopup->isVisible())
   {
     this->m_wildcardPopup->hide();
   }
-  else
+  else if (this->m_gameScorePopup->isVisible())
   {
-    NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW, false);
+    NavigationManager::showMainMenu(m_pGameContext, NEW, false, STORY_MODE);
+  }
+  else
+  {    
+    if (this->m_sceneState != AWAITING_INPUT)
+      return;
+
+    NavigationManager::showMainMenu(m_pGameContext, NEW, false, STORY_MODE);
   }
 }
 
@@ -555,7 +561,7 @@ void BaseChallengeScene::nextChallengeCallback(CCObject* pSender)
 
 void BaseChallengeScene::mainMenuCallback(CCObject* pSender)
 {
-  NavigationManager::showScene(MENU_SCENE, m_pGameContext, NEW, false);
+  NavigationManager::showMainMenu(m_pGameContext, NEW, false, STORY_MODE);
 }
 
 

@@ -47,10 +47,10 @@ private:
   void onWrongButton(GameButton* lastButtonPressed, GameButton* nextSequenceButton);
 
   ExactLengthChallengeScene(GameContext* gameContext, bool showSplashScreen, int challengeIndex
-    , int totalButtons, float minButtonSignalLength, float maxButtonSignalLength
+    , int totalEnabledButtons, float minButtonSignalLength, float maxButtonSignalLength
     , float minNextSignalDeltaFromLastEndTime, float maxNextSignalDeltaFromLastEndTime
     , ChallengeSceneType challengeSceneType, ChallengePointScoreDefinition challengePointScoreDefinition)
-    : BaseChallengeScene(gameContext, showSplashScreen,  challengeIndex, challengeSceneType, totalButtons, challengePointScoreDefinition
+    : BaseChallengeScene(gameContext, showSplashScreen,  challengeIndex, challengeSceneType, totalEnabledButtons, challengePointScoreDefinition
                          , GSPTYPE_TIME_INTERVALS)
     , m_minButtonSignalLength(minButtonSignalLength)
     , m_maxButtonSignalLength(maxButtonSignalLength)
@@ -63,13 +63,14 @@ public:
   ~ExactLengthChallengeScene() { }
   
   static ExactLengthChallengeScene* create(GameContext* gameContext, bool showSplashScreen, int challengeIndex
-    , int totalButtons, float minButtonSignalLength, float maxButtonSignalLength
+    , int totalEnabledButtons, float minButtonSignalLength, float maxButtonSignalLength
     , float minNextSignalDeltaFromLastEndTime, float maxNextSignalDeltaFromLastEndTime
     , ChallengePointScoreDefinition challengePointScoreDefinition); 
   
 protected:  
   virtual int updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition);
 
+  virtual void onLoadDescriptionPopup();
   virtual void onLoadLayout();
   virtual void onLayoutLoaded();
   virtual void startNewGame();

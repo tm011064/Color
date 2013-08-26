@@ -6,19 +6,11 @@
 #include "BaseScene.h"
 #include "ChallengeButtonPanel.h"
 
-enum MenuViewType
-{
-  HOME = 0,
-  ARCADE = 1,
-  STORY_MODE = 2,
-  OPTIONS = 3,
-  HIGHSCORE = 4,
-};
-
 class MenuScene : public BaseScene
 {
 private:
   MenuViewType m_menuViewType;
+  MenuViewType m_startScreen;
 
   MenuButton* m_homeStoryMode;
   MenuButton* m_homeArcade;
@@ -46,7 +38,7 @@ protected:
   virtual void initialize(float dt);
   
 public:
-  MenuScene(GameContext* gameContext, bool showSplashScreen)   
+  MenuScene(GameContext* gameContext, bool showSplashScreen, MenuViewType startScreen)   
     : BaseScene(gameContext, showSplashScreen)
     , m_menuViewType(HOME)
     , m_isLayoutInitialized(false)
@@ -60,6 +52,7 @@ public:
     , m_arcadeHard(NULL)
     , m_arcadeBack(NULL)
     , m_header(NULL)
+    , m_startScreen(startScreen)
   {
 
   }

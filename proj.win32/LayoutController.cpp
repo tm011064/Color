@@ -83,10 +83,10 @@ CCArray* LayoutController::createGameButtons(GameContext* gameContext, DebugDraw
   std::srand(time(NULL));
   int index;
   GameButton* button;
+  unsigned int count = buttons->count();
   while (totalDisabledButtons > 0)
   {
-    index = rand() % buttons->capacity();
-    button = (GameButton*)buttons->objectAtIndex(index);
+    button = (GameButton*)buttons->objectAtIndex(rand() % count);
     if (button->getIsEnabled())
     {
       button->setColor(BUTTON_COLOR_BLACK);
