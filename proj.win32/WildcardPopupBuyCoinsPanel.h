@@ -21,8 +21,9 @@ private:
   SEL_CallFuncO m_fnpGoBackDelegate;
   
   CCNode *m_pTarget;
+  
+protected:  
 
-public:
   WildcardPopupBuyCoinsPanel(GameContext* gameContext
     , CCSize size
     , SEL_CallFuncO goBackDelegate
@@ -33,6 +34,13 @@ public:
     , m_size(size)
     , m_isLayoutInitialized(false)
   { }
+
+public:
+  static WildcardPopupBuyCoinsPanel* create(GameContext* gameContext
+    , CCSize size
+    , SEL_CallFuncO goBackDelegate
+    , CCNode* callbackTarget);
+
   ~WildcardPopupBuyCoinsPanel() 
   { 
     this->m_pGameContext = NULL;

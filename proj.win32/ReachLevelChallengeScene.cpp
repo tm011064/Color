@@ -13,7 +13,7 @@ ReachLevelChallengeScene* ReachLevelChallengeScene::create(GameContext* gameCont
   return scene;
 }
 
-void ReachLevelChallengeScene::onLoadLayout()
+void ReachLevelChallengeScene::onPostInitialize()
 {  
   switch (this->m_totalEnabledButtons)
   {
@@ -52,6 +52,26 @@ void ReachLevelChallengeScene::onLoadLayout()
   }  
 }
 
+void ReachLevelChallengeScene::onPreInitialize()
+{  
+  WildcardButtonDefinition wildcardButtonDefinition1;
+  
+  wildcardButtonDefinition1.callback = callfuncO_selector(ReachLevelChallengeScene::replaySequenceCallback);
+  wildcardButtonDefinition1.callbackTarget = this;
+  wildcardButtonDefinition1.text = "REPLAY\nSEQUENCE";
+  wildcardButtonDefinition1.totalCoins = COINS_COST_REPLAY_SEQUENCE;
+  this->m_wildcardButtonDefinitions.push_back(wildcardButtonDefinition1);
+
+  WildcardButtonDefinition wildcardButtonDefinition2;
+  
+  wildcardButtonDefinition2.callback = callfuncO_selector(ReachLevelChallengeScene::replaySequenceRemainingCallback);
+  wildcardButtonDefinition2.callbackTarget = this;
+  wildcardButtonDefinition2.text = "REPLAY\nREMAINING";
+  wildcardButtonDefinition2.totalCoins = COINS_COST_SHOW_REMAINING;
+  
+  this->m_wildcardButtonDefinitions.push_back(wildcardButtonDefinition2);
+}
+
 void ReachLevelChallengeScene::onLoadDescriptionPopup()
 {  
   ccColor4F bgColor = { .0f, .0f, .0f, 1.0f };
@@ -71,11 +91,6 @@ void ReachLevelChallengeScene::onLoadDescriptionPopup()
   m_descriptionPopup->setZOrder(SPLASH_ZORDER);
   this->addChild(m_descriptionPopup);
   /********** DESCRIPTION POPUP **********/
-}
-
-void ReachLevelChallengeScene::onLayoutLoaded()
-{  
-
 }
 
 void ReachLevelChallengeScene::startNewGame()
@@ -177,7 +192,6 @@ void ReachLevelChallengeScene::onSequenceBlinkCallback(GameButton* gameButton)
 void ReachLevelChallengeScene::onCorrectButtonPressed()
 {
   // TODO (Roman): clicks while loading and after last blink can break things...
-  // TODO (Roman): challenge won't start when clicks while loading...
 
   this->m_buttonSequenceIndex++;
   this->m_lastButtonPressed->playAnimation(BLINK, false); 
@@ -278,5 +292,39 @@ void ReachLevelChallengeScene::onIncorrectButtonPressed()
   this->schedule(schedule_selector(ReachLevelChallengeScene::eogGrayOutLastButton), 0.021f, -1, wrongDelay); // framerate: 1/48
   this->schedule(schedule_selector(ReachLevelChallengeScene::eogReleaseLastButton), 0.021f, 0, wrongDelay); // framerate: 1/48
   this->schedule(schedule_selector(ReachLevelChallengeScene::eogBlinkCorrectButton), 0.2f, -1, correctBlinkDelay); // framerate: 1/48    
-  
+}
+
+void ReachLevelChallengeScene::replaySequenceCallback(CCObject* pSender)
+{   
+  int totalCoins = this->m_pGameContext->getTotalCoins();
+  if (totalCoins >= COINS_COST_REPLAY_SEQUENCE)
+  {
+    totalCoins -= COINS_COST_REPLAY_SEQUENCE;
+    this->m_pGameContext->setTotalCoins(totalCoins);
+    
+    this->m_gameScorePopup->hide();
+
+    runSequenceAnimation(false, 0, -1);
+  }
+  else
+  {
+    this->m_gameScorePopup->showMoreCoinsPanel();
+  }
+}
+void ReachLevelChallengeScene::replaySequenceRemainingCallback(CCObject* pSender)
+{
+  int totalCoins = this->m_pGameContext->getTotalCoins();
+  if (totalCoins >= COINS_COST_SHOW_REMAINING)
+  {
+    totalCoins -= COINS_COST_SHOW_REMAINING;
+    this->m_pGameContext->setTotalCoins(totalCoins);
+    
+    this->m_gameScorePopup->hide();
+    
+    runSequenceAnimation(false, m_buttonSequenceIndex, -1);
+  }
+  else
+  {
+    this->m_gameScorePopup->showMoreCoinsPanel();
+  }  
 }

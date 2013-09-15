@@ -13,7 +13,7 @@ ArcadeEasyGameScene::ArcadeEasyGameScene(GameContext* gameContext, bool showSpla
   m_challengePointScoreDefinition.maxLevelTimeBonus = CORRECT_BUTTON_SCORE_TWO_BUTTONS_MAX_LEVEL_TIME_BONUS;
   m_challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_TWO_BUTTONS_MULTIPLIER;
 }
-void ArcadeEasyGameScene::onLoadLayout()
+void ArcadeEasyGameScene::onPostInitialize()
 {  
   this->m_buttons = LayoutController::createTwoButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
     , callfuncO_selector( ArcadeEasyGameScene::buttonTouchEndedCallback )

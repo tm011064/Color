@@ -50,8 +50,8 @@ private:
   WildcardPopupPanel m_activeWildcardPopupPanel;
   void activatePanel(WildcardPopupPanel wildcardPopupPanel);
 
-public:
-  WildcardPopup(GameContext* gameContext
+protected:
+   WildcardPopup(GameContext* gameContext
     , SEL_CallFuncO replaySequenceCallbackDelegate
     , SEL_CallFuncO showNextSequenceItemCallbackDelegate
     , SEL_CallFuncO replayFromCurrentCallbackDelegate
@@ -70,6 +70,14 @@ public:
     , m_moreCoinsTextButton(NULL)
     , m_activeWildcardPopupPanel(WILDCARD_BUTTONS)
   { }
+
+public:
+  static WildcardPopup* create(GameContext* gameContext
+    , SEL_CallFuncO replaySequenceCallbackDelegate
+    , SEL_CallFuncO showNextSequenceItemCallbackDelegate
+    , SEL_CallFuncO replayFromCurrentCallbackDelegate
+    , SEL_CallFuncO closeCallbackDelegate
+    , CCNode* callbackTarget);
   ~WildcardPopup() 
   { 
     this->m_pGameContext = NULL;

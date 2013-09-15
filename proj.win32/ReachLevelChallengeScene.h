@@ -17,6 +17,9 @@ private:
 
   void initialize();
 
+  void replaySequenceCallback(CCObject* pSender);
+  void replaySequenceRemainingCallback(CCObject* pSender);
+
   ReachLevelChallengeScene(GameContext* gameContext, bool showSplashScreen, int challengeIndex, int totalEnabledButtons, ChallengeSceneType challengeSceneType, ChallengePointScoreDefinition challengePointScoreDefinition
     , int levelToReach)
     : BaseChallengeScene(gameContext, showSplashScreen,  challengeIndex, challengeSceneType, totalEnabledButtons, challengePointScoreDefinition
@@ -31,9 +34,10 @@ public:
   static ReachLevelChallengeScene* create(GameContext* gameContext, bool showSplashScreen, int challengeIndex, int totalEnabledButtons, ChallengePointScoreDefinition challengePointScoreDefinition, int levelToReach); 
 
 protected:  
+  virtual void onPreInitialize();
   virtual void onLoadDescriptionPopup();
-  virtual void onLoadLayout();
-  virtual void onLayoutLoaded();
+  virtual void onPostInitialize();
+  
   virtual void startNewGame();
   virtual void onSequenceBlinkCallback(GameButton* gameButton);
 

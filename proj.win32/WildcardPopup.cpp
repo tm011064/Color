@@ -1,4 +1,18 @@
-  #include "WildcardPopup.h"
+ #include "WildcardPopup.h"
+
+WildcardPopup* WildcardPopup::create(GameContext* gameContext
+    , SEL_CallFuncO replaySequenceCallbackDelegate
+    , SEL_CallFuncO showNextSequenceItemCallbackDelegate
+    , SEL_CallFuncO replayFromCurrentCallbackDelegate
+    , SEL_CallFuncO closeCallbackDelegate
+    , CCNode* callbackTarget)
+{
+  WildcardPopup* wildcardPopup = new WildcardPopup(gameContext, replaySequenceCallbackDelegate
+    , showNextSequenceItemCallbackDelegate, replayFromCurrentCallbackDelegate, closeCallbackDelegate
+    , callbackTarget);
+  wildcardPopup->autorelease();
+  return wildcardPopup;
+}
 
 void WildcardPopup::onEnter()
 {
@@ -19,12 +33,9 @@ void WildcardPopup::onEnter()
     float verticalSpacingLarge = m_pGameContext->getFontHeightLarge() + m_padding*3;
             
     m_dialogRectLeftTop = ccp ( 0, m_visibleRectRightTop.y * .825);
-    //m_dialogRectLeftBottom = ccp ( 0, m_visibleRectRightTop.y * .26 );
     m_dialogRectRightTop = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftTop.y);
-    //m_dialogRectRightBottom = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftBottom.y);
     
     m_separatorTopRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightTop.y + m_borderThickness);
-    //m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightBottom.y - m_borderThickness);
 
     // now we have the border thickness and padding, so we can set the boundaries 
     float indentLeft = m_visibleRectLeftBottom.x + (visibleRect.size.width * .1);
@@ -48,24 +59,43 @@ void WildcardPopup::onEnter()
     m_availableCoinsCoin->setPosition(ccpRounded(m_coinsLabel->getPositionX() - m_coinsLabel->getContentSize().width/2 - m_padding, posY));
     this->addChild(m_availableCoinsCoin);
     
-    this->m_wildcardPopupButtonPanel = new WildcardPopupButtonPanel(
+
+    std::vector<WildcardButtonDefinition> wildcardButtonDefinitions;
+
+    WildcardButtonDefinition wildcardButtonDefinition1;
+    wildcardButtonDefinition1.callback = callfuncO_selector(WildcardPopup::replaySequenceCallback);
+    wildcardButtonDefinition1.text = "REPLAY\nSEQUENCE";
+    wildcardButtonDefinition1.totalCoins = COINS_COST_REPLAY_SEQUENCE;
+    wildcardButtonDefinition1.callbackTarget = this;
+    wildcardButtonDefinitions.push_back(wildcardButtonDefinition1);
+    
+    WildcardButtonDefinition wildcardButtonDefinition2;
+    wildcardButtonDefinition2.callback = callfuncO_selector(WildcardPopup::showNextSequenceItemCallback);
+    wildcardButtonDefinition2.text = "SHOW NEXT";
+    wildcardButtonDefinition2.totalCoins = COINS_COST_SHOW_NEXT_ITEM;
+    wildcardButtonDefinition2.callbackTarget = this;
+    wildcardButtonDefinitions.push_back(wildcardButtonDefinition2);
+
+    WildcardButtonDefinition wildcardButtonDefinition3;
+    wildcardButtonDefinition3.callback = callfuncO_selector(WildcardPopup::replayFromCurrentCallback);
+    wildcardButtonDefinition3.text = "REPLAY\nREMAINING";
+    wildcardButtonDefinition3.totalCoins = COINS_COST_SHOW_REMAINING;
+    wildcardButtonDefinition3.callbackTarget = this;
+    wildcardButtonDefinitions.push_back(wildcardButtonDefinition3);
+
+    this->m_wildcardPopupButtonPanel = WildcardPopupButtonPanel::create(
       this->m_pGameContext
       , CCSizeMake( this->m_textIndentRight - this->m_textIndentLeft, 0 )
-      , callfuncO_selector(WildcardPopup::replaySequenceCallback)
-      , callfuncO_selector(WildcardPopup::showNextSequenceItemCallback)
-      , callfuncO_selector(WildcardPopup::replayFromCurrentCallback)
-      , callfuncO_selector(WildcardPopup::moreCoinsCallback)
-      , this);
-    this->m_wildcardPopupButtonPanel->autorelease();
+      , wildcardButtonDefinitions
+      , "use coins to buy cheats");
     this->addChild(this->m_wildcardPopupButtonPanel);
     this->m_wildcardPopupButtonPanel->hide();
 
-    this->m_wildcardPopupBuyCoinsPanel = new WildcardPopupBuyCoinsPanel(
+    this->m_wildcardPopupBuyCoinsPanel = WildcardPopupBuyCoinsPanel::create(
       this->m_pGameContext
       , CCSizeMake( this->m_textIndentRight - this->m_textIndentLeft, 0 )
       , callfuncO_selector(WildcardPopup::wildcardPanelCallback)
       , this);
-    this->m_wildcardPopupBuyCoinsPanel->autorelease();
     this->addChild(this->m_wildcardPopupBuyCoinsPanel);
     this->m_wildcardPopupBuyCoinsPanel->hide();
 
@@ -137,9 +167,7 @@ void WildcardPopup::show()
 
 void WildcardPopup::refresh()
 {
-  char str[10];
-  sprintf(str, "%i", m_pGameContext->getTotalCoins());
-  m_coinsLabel->setString(str);  
+  m_coinsLabel->setString(UtilityHelper::convertToString(m_pGameContext->getTotalCoins()).c_str());  
   m_coinsLabel->setPositionX(round(m_textIndentRight - m_padding*2 - m_coinsLabel->getContentSize().width/2));
   m_availableCoinsCoin->setPositionX(round(m_coinsLabel->getPositionX() - m_coinsLabel->getContentSize().width/2 
                                                                         - m_padding
@@ -176,6 +204,10 @@ void WildcardPopup::replaySequenceCallback(CCObject* pSender)
     if(m_pTarget != 0 && this->m_fnpReplaySequenceCallbackDelegate != 0)
         (m_pTarget->*this->m_fnpReplaySequenceCallbackDelegate)(this);
   }
+  else
+  {
+    activatePanel(WILDCARD_MORE_COINS);
+  }
 }
 void WildcardPopup::showNextSequenceItemCallback(CCObject* pSender)
 {
@@ -193,6 +225,10 @@ void WildcardPopup::showNextSequenceItemCallback(CCObject* pSender)
     if(m_pTarget != 0 && this->m_fnpShowNextSequenceItemCallbackDelegate != 0)
         (m_pTarget->*this->m_fnpShowNextSequenceItemCallbackDelegate)(this);
   }
+  else
+  {
+    activatePanel(WILDCARD_MORE_COINS);
+  }
 }
 void WildcardPopup::replayFromCurrentCallback(CCObject* pSender)
 {
@@ -209,6 +245,10 @@ void WildcardPopup::replayFromCurrentCallback(CCObject* pSender)
     // callback
     if(m_pTarget != 0 && this->m_fnpSaveTryCallbackDelegate != 0)
         (m_pTarget->*this->m_fnpSaveTryCallbackDelegate)(this);
+  }
+  else
+  {
+    activatePanel(WILDCARD_MORE_COINS);
   }
 }
 

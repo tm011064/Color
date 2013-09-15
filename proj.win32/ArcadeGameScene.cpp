@@ -125,7 +125,7 @@ void ArcadeGameScene::initialize(float dt)
 	
 
   /********** MODAL LAYER **********/
-  m_wildcardPopup = new WildcardPopup(
+  m_wildcardPopup = WildcardPopup::create(
     this->m_pGameContext
     , callfuncO_selector(ArcadeGameScene::replaySequenceCallback) 
     , callfuncO_selector(ArcadeGameScene::showNextSequenceItemCallback) 
@@ -133,7 +133,6 @@ void ArcadeGameScene::initialize(float dt)
     , callfuncO_selector(ArcadeGameScene::closeCallback) 
     , this
     );
-  m_wildcardPopup->autorelease();
   m_wildcardPopup->setPosition(ccp(0, 0));    
   m_wildcardPopup->setZOrder( MODAL_ZORDER );
     
@@ -141,12 +140,15 @@ void ArcadeGameScene::initialize(float dt)
   /********** MODAL LAYER **********/
 
   /********** MODAL LAYER **********/
+  std::vector<WildcardButtonDefinition> wildcardButtonDefinitions;
+
   m_gameScorePopup = GameScorePopup::create(
     this->m_pGameContext
     , "GAME OVER"
     , callfuncO_selector(ArcadeGameScene::newGameCallback) 
     , callfuncO_selector(ArcadeGameScene::mainMenuCallback) 
     , NULL
+    , wildcardButtonDefinitions
     , this
     , GSPTYPE_POINTS
     , GSPMODE_ARCADE);
@@ -156,7 +158,7 @@ void ArcadeGameScene::initialize(float dt)
   this->addChild(m_gameScorePopup);
   /********** MODAL LAYER **********/
     
-  this->onLoadLayout();
+  this->onPostInitialize();
     
   this->m_lastButtonPressedTime = new struct cc_timeval();
   this->m_lastLevelStartTime = new struct cc_timeval();
@@ -183,8 +185,6 @@ void ArcadeGameScene::preLoadCallback(float dt)
 
   this->m_wildcardPopup->hide();
   this->m_gameScorePopup->hide();
-
-  this->onPreLoad();
 }
 void ArcadeGameScene::runSequenceAnimation(bool doAddButton, int startIndex, int endIndex)
 {

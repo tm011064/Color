@@ -71,8 +71,8 @@ protected:
   virtual int updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition);
 
   virtual void onLoadDescriptionPopup();
-  virtual void onLoadLayout();
-  virtual void onLayoutLoaded();
+  virtual void onPostInitialize();
+  
   virtual void startNewGame();
   
   virtual void buttonTouchEndedCallback(CCObject* pSender);

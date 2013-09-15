@@ -13,7 +13,7 @@ RepeatOneOffSequenceChallengeScene* RepeatOneOffSequenceChallengeScene::create(G
   return scene;
 }
 
-void RepeatOneOffSequenceChallengeScene::onLoadLayout()
+void RepeatOneOffSequenceChallengeScene::onPostInitialize()
 {  
   switch (this->m_totalEnabledButtons)
   {
@@ -70,11 +70,6 @@ void RepeatOneOffSequenceChallengeScene::onLoadDescriptionPopup()
   m_descriptionPopup->setZOrder(SPLASH_ZORDER);
   this->addChild(m_descriptionPopup);
   /********** DESCRIPTION POPUP **********/
-}
-
-void RepeatOneOffSequenceChallengeScene::onLayoutLoaded()
-{  
-
 }
 
 void RepeatOneOffSequenceChallengeScene::startNewGame()

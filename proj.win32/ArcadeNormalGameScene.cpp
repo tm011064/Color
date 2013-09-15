@@ -13,7 +13,7 @@ ArcadeNormalGameScene::ArcadeNormalGameScene(GameContext* gameContext, bool show
   m_challengePointScoreDefinition.maxLevelTimeBonus = CORRECT_BUTTON_SCORE_THREE_BUTTONS_MAX_LEVEL_TIME_BONUS;
   m_challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_THREE_BUTTONS_MULTIPLIER;
 }
-void ArcadeNormalGameScene::onLoadLayout()
+void ArcadeNormalGameScene::onPostInitialize()
 {  
   this->m_buttons = LayoutController::createThreeButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
     , callfuncO_selector( ArcadeNormalGameScene::buttonTouchEndedCallback )

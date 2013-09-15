@@ -5,6 +5,14 @@
 
 using namespace cocos2d;
 
+typedef struct 
+{
+  std::string text;
+  unsigned int totalCoins;
+  SEL_CallFuncO callback;
+  CCNode* callbackTarget;
+} WildcardButtonDefinition;
+
 class WildcardPopupButtonPanel : public BaseNode
 {  
 private:
@@ -20,34 +28,31 @@ private:
   void showNextSequenceItemCallback(CCObject* pSender);
   void replayFromCurrentCallback(CCObject* pSender); 
 
-  SEL_CallFuncO m_fnpReplaySequenceCallbackDelegate;
-  SEL_CallFuncO m_fnpShowNextSequenceItemCallbackDelegate;
-  SEL_CallFuncO m_fnpSaveTryCallbackDelegate;
-  SEL_CallFuncO m_fnpMoreCoinsCallbackDelegate;
-  
-  CCNode *m_pTarget;
+  std::vector<WildcardButtonDefinition> m_wildcardButtonDefinitions;
+  std::string m_headerText;
 
-public:
+protected:
+  
   WildcardPopupButtonPanel(GameContext* gameContext
     , CCSize size
-    , SEL_CallFuncO replaySequenceCallbackDelegate
-    , SEL_CallFuncO showNextSequenceItemCallbackDelegate
-    , SEL_CallFuncO replayFromCurrentCallbackDelegate
-    , SEL_CallFuncO moreCoinsCallbackDelegate
-    , CCNode* callbackTarget)
+    , std::vector<WildcardButtonDefinition> wildcardButtonDefinitions
+    , std::string headerText)
     : m_pGameContext(gameContext)
-    , m_fnpReplaySequenceCallbackDelegate(replaySequenceCallbackDelegate)
-    , m_fnpShowNextSequenceItemCallbackDelegate(showNextSequenceItemCallbackDelegate)
-    , m_fnpSaveTryCallbackDelegate(replayFromCurrentCallbackDelegate)
-    , m_fnpMoreCoinsCallbackDelegate(moreCoinsCallbackDelegate)
-    , m_pTarget(callbackTarget)
     , m_size(size)
     , m_isLayoutInitialized(false)
+    , m_wildcardButtonDefinitions(wildcardButtonDefinitions)
+    , m_headerText(headerText)
   { }
+
+public:
+  static WildcardPopupButtonPanel* create(GameContext* gameContext
+    , CCSize size
+    , std::vector<WildcardButtonDefinition> wildcardButtonDefinitions
+    , std::string headerText);
+
   ~WildcardPopupButtonPanel() 
   { 
     this->m_pGameContext = NULL;
-    this->m_pTarget = NULL;
   }
   
   virtual void onEnter();

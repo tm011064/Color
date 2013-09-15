@@ -31,8 +31,8 @@ public:
 
 protected:  
   virtual void onLoadDescriptionPopup();
-  virtual void onLoadLayout();
-  virtual void onLayoutLoaded();
+  virtual void onPostInitialize();
+  
   virtual void startNewGame();
   virtual void onSequenceBlinkCallback(GameButton* gameButton);
 

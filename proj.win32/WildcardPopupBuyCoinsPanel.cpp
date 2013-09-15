@@ -1,5 +1,18 @@
 #include "WildcardPopupBuyCoinsPanel.h"
 
+WildcardPopupBuyCoinsPanel* WildcardPopupBuyCoinsPanel::create(GameContext* gameContext
+    , CCSize size
+    , SEL_CallFuncO goBackDelegate
+    , CCNode* callbackTarget)
+{
+  WildcardPopupBuyCoinsPanel* wildcardPopupBuyCoinsPanel = new WildcardPopupBuyCoinsPanel(gameContext
+    , size, goBackDelegate, callbackTarget);
+
+  wildcardPopupBuyCoinsPanel->autorelease();
+
+  return wildcardPopupBuyCoinsPanel;
+}
+
 void WildcardPopupBuyCoinsPanel::onEnter()
 {
   CCNode::onEnter();

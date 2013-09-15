@@ -4,6 +4,8 @@
 #include "ModalControl.h"
 #include "GameScorePointsPanel.h"
 #include "GameScoreTimePanel.h"
+#include "WildcardPopupButtonPanel.h"
+#include "WildcardPopupBuyCoinsPanel.h"
 
 using namespace cocos2d;
 
@@ -20,15 +22,28 @@ enum GameScorePopupMode
   GSPMODE_ARCADE = 1,
 };
 
+enum GameScorePopupPlayOnPanel
+{
+  GSPPO_GAMESCORE_INFO_PANEL,
+  GSPPO_MORE_COINS_PANEL,
+};
+
 class GameScorePopup : public ModalControl
 {  
 private:
 
   GameScorePopupType m_gameScorePopupType;
   GameScorePopupMode m_gameScorePopupMode;
+  GameScorePopupPlayOnPanel m_activeGameScorePopupPlayOnPanel;
   GameContext* m_pGameContext; 
     
+  std::vector<WildcardButtonDefinition> m_wildcardButtonDefinitions;
+
   CCLabelBMFont* m_headerTextLabel;
+  
+  CCLabelBMFont* m_coinsLabelDescription;
+  CCLabelBMFont* m_coinsLabel;
+  CCSprite* m_availableCoinsCoin;
 
   CCPoint m_separatorLineLeftBottom;
   CCPoint m_separatorLineRightTop;
@@ -48,11 +63,21 @@ private:
   TextButton* m_retryButton;
   TextButton* m_replayButton;
   TextButton* m_nextButton;
+  TextButton* m_moreCoinsTextButton;  
+  TextButton* m_moreCoinsBackTextButton;  
+
+  WildcardPopupButtonPanel* m_wildcardPopupButtonPanel;
+  WildcardPopupBuyCoinsPanel* m_wildcardPopupBuyCoinsPanel;
 
   void playAgainCallback(CCObject* pSender);
   void mainMenuCallback(CCObject* pSender);
   void nextChallengeCallback(CCObject* pSender);
-  
+  void wildcardPanelCallback(CCObject* pSender);
+  void moreCoinsCallback(CCObject* pSender);
+  void gameScoreInfoPanelCallback(CCObject* pSender);
+
+  void activatePanel(GameScorePopupPlayOnPanel gameScorePopupPlayOnPanel);
+
   SEL_CallFuncO m_fnpPlayAgainCallbackDelegate;
   SEL_CallFuncO m_fnpMainMenuCallbackDelegate;
   SEL_CallFuncO m_fnpNextChallengeCallbackDelegate;
@@ -73,6 +98,7 @@ public:
     , SEL_CallFuncO playAgainCallbackDelegate
     , SEL_CallFuncO mainMenuCallbackDelegate
     , SEL_CallFuncO nextChallengeCallbackDelegate
+    , std::vector<WildcardButtonDefinition> wildcardButtonDefinitions
     , CCNode* callbackTarget, GameScorePopupType gameScorePopupType
     , GameScorePopupMode gameScorePopupMode);
   ~GameScorePopup() { }
@@ -81,6 +107,7 @@ public:
   virtual void draw();
   virtual bool ccTouchBegan(CCTouch* pTouch, CCEvent* pEvent) { return ModalControl::ccTouchBegan(pTouch, pEvent); }
 
+  void showMoreCoinsPanel();
   virtual void show();
 
 protected:  
@@ -88,6 +115,7 @@ protected:
     , SEL_CallFuncO playAgainCallbackDelegate
     , SEL_CallFuncO mainMenuCallbackDelegate
     , SEL_CallFuncO nextChallengeCallbackDelegate
+    , std::vector<WildcardButtonDefinition> wildcardButtonDefinitions
     , CCNode* callbackTarget, GameScorePopupType gameScorePopupType
     , GameScorePopupMode gameScorePopupMode)
     : m_pGameContext(gameContext)
@@ -103,12 +131,21 @@ protected:
     , m_retryButton(NULL)
     , m_nextButton(NULL)
     , m_replayButton(NULL)
+    , m_moreCoinsTextButton(NULL)
+    , m_moreCoinsBackTextButton(NULL)
     , m_goldStar1(NULL)
     , m_goldStar2(NULL)
     , m_goldStar3(NULL)
     , m_blackStar1(NULL)
     , m_blackStar2(NULL)
     , m_blackStar3(NULL)
+    , m_wildcardPopupButtonPanel(NULL)
+    , m_wildcardButtonDefinitions(wildcardButtonDefinitions)
+    , m_wildcardPopupBuyCoinsPanel(NULL)
+    , m_activeGameScorePopupPlayOnPanel(GSPPO_GAMESCORE_INFO_PANEL)
+    , m_coinsLabel(NULL)
+    , m_availableCoinsCoin(NULL)
+    , m_coinsLabelDescription(NULL)
   { }
 };
 #endif  // __GAMESCORE_POPUP_H__

@@ -13,7 +13,7 @@ ArcadeHardGameScene::ArcadeHardGameScene(GameContext* gameContext, bool showSpla
   m_challengePointScoreDefinition.maxLevelTimeBonus = CORRECT_BUTTON_SCORE_FOUR_BUTTONS_MAX_LEVEL_TIME_BONUS;
   m_challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_FOUR_BUTTONS_MULTIPLIER;
 }
-void ArcadeHardGameScene::onLoadLayout()
+void ArcadeHardGameScene::onPostInitialize()
 {  
   this->m_buttons = LayoutController::createFourButtons(this->m_pGameContext, this->m_debugDraw, this->m_anchor, this
     , callfuncO_selector( ArcadeHardGameScene::buttonTouchEndedCallback )

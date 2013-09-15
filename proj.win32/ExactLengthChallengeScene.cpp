@@ -19,7 +19,7 @@ ExactLengthChallengeScene* ExactLengthChallengeScene::create(GameContext* gameCo
   return scene;
 }
 
-void ExactLengthChallengeScene::onLoadLayout()
+void ExactLengthChallengeScene::onPostInitialize()
 {  
   switch (this->m_totalEnabledButtons)
   {
@@ -85,11 +85,6 @@ void ExactLengthChallengeScene::onLoadDescriptionPopup()
   m_descriptionPopup->setZOrder(SPLASH_ZORDER);
   this->addChild(m_descriptionPopup);
   /********** DESCRIPTION POPUP **********/
-}
-
-void ExactLengthChallengeScene::onLayoutLoaded()
-{  
-
 }
 
 void ExactLengthChallengeScene::startNewGame()

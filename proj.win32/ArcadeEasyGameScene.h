@@ -14,7 +14,7 @@ public:
   }  
   
 protected:  
-  virtual void onLoadLayout(); 
+  virtual void onPostInitialize(); 
   virtual void onGameOver();
 };
 

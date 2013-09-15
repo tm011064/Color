@@ -106,7 +106,7 @@ RhythmBlinkSequenceDefinition RhythmChallengeScene::loadRhythmBlinkSequenceDefin
 
   return rhythmBlinkSequenceDefinition;
 }
-void RhythmChallengeScene::onLoadLayout()
+void RhythmChallengeScene::onPostInitialize()
 {  
   switch (this->m_totalEnabledButtons)
   {
@@ -187,11 +187,6 @@ void RhythmChallengeScene::onLoadDescriptionPopup()
   m_descriptionPopup->setZOrder(SPLASH_ZORDER);
   this->addChild(m_descriptionPopup);
   /********** DESCRIPTION POPUP **********/
-}
-
-void RhythmChallengeScene::onLayoutLoaded()
-{  
-
 }
 
 void RhythmChallengeScene::startNewGame()

@@ -21,10 +21,6 @@ private:
   void mainMenuCallback(CCObject* pSender); 
   void nextChallengeCallback(CCObject* pSender); 
 
-  void replaySequenceCallback(CCObject* pSender);
-  void showNextSequenceItemCallback(CCObject* pSender);
-  void replayFromCurrentCallback(CCObject* pSender); 
-
   void closeCallback(CCObject* pSender); 
   
 
@@ -32,6 +28,8 @@ protected:
   
   GameButton* m_lastButtonPressed;
   GameButton* m_nextSequenceButton;
+
+  std::vector<WildcardButtonDefinition> m_wildcardButtonDefinitions;
 
   float m_eogElaspedTime, m_eogElapsedTimeWrongButton;
   float m_eogTargetTime, m_eogTargetTimeLastButton;
@@ -133,17 +131,13 @@ protected:
   virtual void onLoadDescriptionPopup() { /* can be overridden */ }
   virtual void startNewGame() { /* can be overridden */ }
 
-  virtual void onReplaySequenceCallback() { /* can be overridden */ }
-  virtual void onShowNextSequenceItemCallback() { /* can be overridden */ }
-  virtual void onReplayFromCurrentCallback() { /* can be overridden */ }
   virtual void onCorrectButtonPressed() { /* can be overridden */ }
   virtual void onIncorrectButtonPressed() { /* can be overridden */ }
 
   virtual void onSequenceBlinkCallback(GameButton* gameButton) { /* can be overridden */ }
-
-  virtual void onLoadLayout() { /* can be overridden */ }
-  virtual void onLayoutLoaded() { /* can be overridden */ }
-  virtual void onPreLoad() { /* can be overridden */ }
+  
+  virtual void onPreInitialize() { /* can be overridden */ }
+  virtual void onPostInitialize() { /* can be overridden */ }
 };
 
 #endif  // __BASECHALLENGESCENE_SCENE_H__

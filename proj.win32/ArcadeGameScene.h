@@ -112,8 +112,7 @@ protected:
   virtual void consoleButtonTouchEndedCallback(CCObject* pSender);  
 
   virtual void onGameOver() { /* can be overridden */ }
-  virtual void onLoadLayout() { /* can be overridden */ }
-  virtual void onPreLoad() { /* can be overridden */ }
+  virtual void onPostInitialize() { /* can be overridden */ }
 };
 
 #endif  // __ARCADEGAME_SCENE_H__

@@ -40,6 +40,8 @@ void BaseChallengeScene::onEnter()
 }
 void BaseChallengeScene::initialize(float dt)
 {  
+  this->onPreInitialize();
+
   CCPoint top = VisibleRect::top();
   CCPoint right = VisibleRect::right();
   CCPoint center = VisibleRect::center();
@@ -134,15 +136,14 @@ void BaseChallengeScene::initialize(float dt)
 	
 
   /********** MODAL LAYER **********/
-  m_wildcardPopup = new WildcardPopup(
+  m_wildcardPopup = WildcardPopup::create(
     this->m_pGameContext
-    , callfuncO_selector(BaseChallengeScene::replaySequenceCallback) 
-    , callfuncO_selector(BaseChallengeScene::showNextSequenceItemCallback) 
-    , callfuncO_selector(BaseChallengeScene::replayFromCurrentCallback) 
+    , NULL
+    , NULL 
+    , NULL
     , callfuncO_selector(BaseChallengeScene::closeCallback) 
     , this
     );
-  m_wildcardPopup->autorelease();
   m_wildcardPopup->setPosition(ccp(0, 0));    
   m_wildcardPopup->setZOrder( MODAL_ZORDER );
     
@@ -156,6 +157,7 @@ void BaseChallengeScene::initialize(float dt)
     , callfuncO_selector(BaseChallengeScene::newGameCallback) 
     , callfuncO_selector(BaseChallengeScene::mainMenuCallback) 
     , callfuncO_selector(BaseChallengeScene::nextChallengeCallback) 
+    , m_wildcardButtonDefinitions
     , this
     , m_gameScorePopupType
     , GSPMODE_CHALLENGE
@@ -166,7 +168,7 @@ void BaseChallengeScene::initialize(float dt)
   this->addChild(m_gameScorePopup);
   /********** MODAL LAYER **********/
 	
-  this->onLoadLayout();
+  this->onPostInitialize();
     
   this->m_lastButtonPressedTime = new struct cc_timeval();
   this->m_lastLevelStartTime = new struct cc_timeval();
@@ -193,8 +195,6 @@ void BaseChallengeScene::preLoadCallback(float dt)
     
   this->m_wildcardPopup->hide();
   this->m_gameScorePopup->hide();
-
-  this->onPreLoad();
 }
 
 void BaseChallengeScene::buttonLoadedCallback(CCObject* pSender)
@@ -205,8 +205,6 @@ void BaseChallengeScene::buttonLoadedCallback(CCObject* pSender)
     if (!((GameButton*)o)->getIsLoaded())
       return;
   }
-
-  this->onLayoutLoaded();
 
   this->m_descriptionPopup->setEnablePlayButton(true);
 }
@@ -514,27 +512,6 @@ void BaseChallengeScene::eogGrayOutButtons(float dt)
 }
 
 /******** WILDCARD POPUP CALLBACKS  *********/
-void BaseChallengeScene::replaySequenceCallback(CCObject* pSender)
-{
-  this->m_wildcardPopup->hide();
-
-  // wildcard
-  this->onReplaySequenceCallback();
-}
-void BaseChallengeScene::showNextSequenceItemCallback(CCObject* pSender)
-{
-  this->m_wildcardPopup->hide();
-  
-  // wildcard
-  this->onShowNextSequenceItemCallback();
-}
-void BaseChallengeScene::replayFromCurrentCallback(CCObject* pSender)
-{
-  this->m_wildcardPopup->hide();
-  
-  // wildcard
-  this->onReplayFromCurrentCallback();
-}
 void BaseChallengeScene::closeCallback(CCObject* pSender)
 {
   this->m_wildcardPopup->hide();
