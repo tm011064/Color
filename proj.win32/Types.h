@@ -91,6 +91,12 @@ typedef struct
 
 typedef struct 
 {
+  long deltaToNextIncreaseInSeconds;
+  int totalLifes;
+} LifeInfo;
+
+typedef struct 
+{
   float totalPoints;
   float totalLevelBonus;
   float totalButtonBonus;
@@ -125,5 +131,14 @@ typedef struct
   float minimumTotalTimePercentageForThreeStars;
 
 } ChallengePointScoreDefinition;
+
+typedef struct 
+{
+  CCPoint leftBottom;
+  CCPoint rightTop;
+  ccColor4F borderColor;
+  ccColor4F fillColor;
+} ColoredRect;
+
 
 #endif  // __TYPES_H__

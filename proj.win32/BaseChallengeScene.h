@@ -6,6 +6,7 @@
 #include "WildcardPopup.h"
 #include "GameScorePopup.h"
 #include "DescriptionPopup.h"
+#include "LifeTimeTickerPopup.h"
 
 #include "stdlib.h"
 #include "time.h"
@@ -16,20 +17,27 @@ private:
 
   ChallengeSceneType m_challengeSceneType;
   GameScorePopupType m_gameScorePopupType;
+
+#if SHOWCONSOLEBUTTON
   ImageButton* m_consoleButton;
-  
+#endif
+
   void mainMenuCallback(CCObject* pSender); 
   void nextChallengeCallback(CCObject* pSender); 
 
   void closeCallback(CCObject* pSender); 
   
-
 protected:
   
   GameButton* m_lastButtonPressed;
   GameButton* m_nextSequenceButton;
 
   std::vector<WildcardButtonDefinition> m_wildcardButtonDefinitions;
+
+  std::string m_wildcardScoreInfoLeft;
+  std::string m_wildcardScoreInfoRight;
+  bool m_showWildcardScoreInfo;
+  bool m_hasUserStartedGame;
 
   float m_eogElaspedTime, m_eogElapsedTimeWrongButton;
   float m_eogTargetTime, m_eogTargetTimeLastButton;
@@ -51,6 +59,7 @@ protected:
 
   WildcardPopup* m_wildcardPopup; 
   GameScorePopup* m_gameScorePopup;
+  LifeTimeTickerPopup* m_lifeTimeTickerPopup;
   int m_buttonSequenceIndex;
 
   std::vector<GameButton*> m_buttonSequence;
@@ -71,7 +80,7 @@ protected:
   CCLabelBMFont* m_levelDoneLabel;
   
   struct cc_timeval *m_lastButtonPressedTime;
-  struct cc_timeval *m_lastLevelStartTime;
+  struct cc_timeval *m_firstUserSequencePressedTime;
 
   float updateTimeVal(cc_timeval* time);
 
@@ -103,7 +112,7 @@ public:
     , m_isLayoutInitialized(false) 
     , m_buttons(NULL)
     , m_lastButtonPressedTime(0)
-    , m_lastLevelStartTime(0)
+    , m_firstUserSequencePressedTime(0)
     , m_totalEnabledButtons(totalEnabledButtons)
     , m_challengeSceneType(challengeSceneType)
     , m_consoleBackground(NULL)
@@ -115,6 +124,11 @@ public:
     , m_nextSequenceButton(NULL)
     , m_challengePointScoreDefinition(challengePointScoreDefinition)
     , m_gameScorePopupType(gameScorePopupType)
+    , m_lifeTimeTickerPopup(NULL)
+    , m_showWildcardScoreInfo(false)
+    , m_wildcardScoreInfoLeft("")
+    , m_wildcardScoreInfoRight("")
+    , m_hasUserStartedGame(false)
   { }
   ~BaseChallengeScene()
   {

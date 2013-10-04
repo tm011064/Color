@@ -80,8 +80,10 @@ void GameButton::playAnimation(int animationIndex, bool suppressSound)
   switch (animationIndex)
   {
   case BLINK: 
-    if (!suppressSound && m_pGameContext->getIsSoundOn())
-      CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(this->m_soundPath.c_str());    
+    if (!suppressSound)
+    {
+      this->playSound(false);   
+    }
   break;
   }
   BaseSprite::playAnimation(animationIndex);

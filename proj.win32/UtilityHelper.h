@@ -52,6 +52,7 @@ public:
 
   static std::string convertToString(float f, int decimals);
   static std::string convertToString(int i);
+  static std::string convertLongToString(long l);
 };
 
 #endif /* __UTILITYHELPER_H__ */

@@ -180,7 +180,6 @@ void ReachLevelChallengeScene::onSequenceBlinkCallback(GameButton* gameButton)
       
       // reset timer
       CCTime::gettimeofdayCocos2d(this->m_lastButtonPressedTime, NULL);
-      CCTime::gettimeofdayCocos2d(this->m_lastLevelStartTime, NULL);
     }
 
     // animation has finished, now we allow input again
@@ -191,75 +190,92 @@ void ReachLevelChallengeScene::onSequenceBlinkCallback(GameButton* gameButton)
 
 void ReachLevelChallengeScene::onCorrectButtonPressed()
 {
-  // TODO (Roman): clicks while loading and after last blink can break things...
-
-  this->m_buttonSequenceIndex++;
+  this->m_hasUserStartedGame = true;
   this->m_lastButtonPressed->playAnimation(BLINK, false); 
 
-  float deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
-
+  float deltaTime = .0f;
   float bonus = 0;
-  if (deltaTime < this->m_challengePointScoreDefinition.clickTimeThreshold)
+
+  if ( this->m_buttonSequenceIndex > 0 )
   {
-    bonus = this->m_challengePointScoreDefinition.maxTimeBonus * (1 - deltaTime / this->m_challengePointScoreDefinition.clickTimeThreshold); 
-    bonus = (int)bonus - (int)bonus % 10;
-    m_gameScore.totalButtonBonus += bonus;
-    m_gameScore.totalPoints += bonus;
+    deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
+
+    if (deltaTime < this->m_challengePointScoreDefinition.clickTimeThreshold)
+    {
+      bonus = this->m_challengePointScoreDefinition.maxTimeBonus * (1 - deltaTime / this->m_challengePointScoreDefinition.clickTimeThreshold); 
+      bonus = (int)bonus - (int)bonus % 10;
+      m_gameScore.totalButtonBonus += bonus;
+      m_currentLevelPoints += bonus;
+    }
   }
-  m_gameScore.totalPoints += this->m_challengePointScoreDefinition.correctButtonScore;
-  m_gameScore.totalPoints = (int)m_gameScore.totalPoints - (int)m_gameScore.totalPoints % 10;
+  else
+  {
+    m_currentLevelPoints = 0;
+    CCTime::gettimeofdayCocos2d(this->m_firstUserSequencePressedTime, NULL);
+  }
+  this->m_buttonSequenceIndex++;
+
+  m_currentLevelPoints += bonus;
+  m_currentLevelPoints = (int)m_currentLevelPoints - (int)m_currentLevelPoints % 10;
     
   m_gameScore.level = m_buttonSequence.size();
 
   if (m_buttonSequenceIndex >= m_gameScore.level)
   {// correct, new animation
+    
+    deltaTime = updateTimeVal(this->m_firstUserSequencePressedTime);
+    float levelTimeThreshold = this->m_challengePointScoreDefinition.clickTimeThreshold * m_gameScore.level;
+    if (deltaTime < levelTimeThreshold)
+    {
+      bonus = this->m_challengePointScoreDefinition.maxLevelTimeBonus * (1 - deltaTime / levelTimeThreshold);  
+      bonus = (int)bonus - (int)bonus % 10;
+      m_gameScore.totalLevelBonus += bonus;
+      m_gameScore.totalPoints += bonus;
+      m_currentLevelPoints += bonus;
+    }
 
+    m_currentLevelPoints += this->m_challengePointScoreDefinition.levelBonus;
+    m_currentLevelPoints = (int)m_currentLevelPoints - (int)m_currentLevelPoints % 10;
+    
+    this->m_gameScore.totalPoints += m_currentLevelPoints;
+    m_currentLevelPoints = .0f;
+
+    m_topBar->setScore((long)this->m_gameScore.totalPoints);
+    
+    float mark = bonus / this->m_challengePointScoreDefinition.maxLevelTimeBonus;    
+    if (mark > .92f)
+      this->playConsoleLabelAnimation("PERFECT", 1);
+    else if (mark > .88f)
+      this->playConsoleLabelAnimation("GREAT", 2);
+    else if (mark > .75)
+      this->playConsoleLabelAnimation("GOOD", 3);
+    else
+      this->playConsoleLabelAnimation("CORRECT", 4);
+    
     if (m_buttonSequenceIndex == m_levelToReach)
     {
       this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION;
 
       this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
-      this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);
-
-      m_topBar->setScore((long)this->m_gameScore.totalPoints);
-      
+      this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);           
+            
       this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
       m_pGameContext->setGameScore( m_gameScore );
-            
+        
+      if ( m_gameScore.starsEarned > 0)
+      {
+        this->m_pGameContext->setTotalLifes(this->m_pGameContext->getTotalLifes() + 1);      
+        this->m_showWildcardScoreInfo = false;
+      }
+
       this->playBlinkButtonsAnimation(2, .25f, .8f);
       this->scheduleOnce(schedule_selector(ReachLevelChallengeScene::showGameScorePopupCallback), 2.0f);
-    }
+    }     
     else
     {
-      deltaTime = updateTimeVal(this->m_lastLevelStartTime);
-      float levelTimeThreshold = this->m_challengePointScoreDefinition.clickTimeThreshold * m_gameScore.level;
-      if (deltaTime < levelTimeThreshold)
-      {
-        bonus = this->m_challengePointScoreDefinition.maxLevelTimeBonus * (1 - deltaTime / levelTimeThreshold);  
-        bonus = (int)bonus - (int)bonus % 10;
-        m_gameScore.totalLevelBonus += bonus;
-        m_gameScore.totalPoints += bonus;
-      }
-      m_gameScore.totalPoints += this->m_challengePointScoreDefinition.levelBonus;
-      m_gameScore.totalPoints = (int)m_gameScore.totalPoints - (int)m_gameScore.totalPoints % 10;
-
-      this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + 1);           
-      
       m_topBar->setLevel(m_gameScore.level + 1);      
-      m_topBar->setScore((long)this->m_gameScore.totalPoints);
-
-      float mark = bonus / this->m_challengePointScoreDefinition.maxLevelTimeBonus;    
-      if (mark > .92f)
-        this->playConsoleLabelAnimation("PERFECT", 1);
-      else if (mark > .88f)
-        this->playConsoleLabelAnimation("GREAT", 2);
-      else if (mark > .75)
-        this->playConsoleLabelAnimation("GOOD", 3);
-      else
-        this->playConsoleLabelAnimation("CORRECT", 4);
-
       this->scheduleOnce(schedule_selector(ReachLevelChallengeScene::runSequenceAnimationTimerCallback), .32f);
-    }      
+    }
   }
 }
 
@@ -270,6 +286,7 @@ void ReachLevelChallengeScene::runSequenceAnimationTimerCallback(float dt)
 
 void ReachLevelChallengeScene::onIncorrectButtonPressed()
 {
+  this->m_hasUserStartedGame = true; // just in case the user got the first click wrong...
   this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION;
 
   this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
@@ -285,7 +302,13 @@ void ReachLevelChallengeScene::onIncorrectButtonPressed()
   this->m_eogTargetTime = .8f;
   this->m_eogTargetTimeLastButton = .55f;
   this->m_eogElapsedTimeWrongButton = -wrongDelay;
-          
+      
+  this->m_showWildcardScoreInfo = true;
+  this->m_wildcardScoreInfoLeft = "Buttons";
+  char str[64];        
+  sprintf(str, "%i / %i", m_buttonSequence.size() - 1, m_levelToReach);
+  this->m_wildcardScoreInfoRight = str;  
+
   m_lastButtonPressed->playAnimation(PRESSED);
 
   this->schedule(schedule_selector(ReachLevelChallengeScene::eogGrayOutButtons), 0.021f); // framerate: 1/48

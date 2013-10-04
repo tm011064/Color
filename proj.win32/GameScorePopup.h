@@ -36,6 +36,8 @@ private:
   GameScorePopupMode m_gameScorePopupMode;
   GameScorePopupPlayOnPanel m_activeGameScorePopupPlayOnPanel;
   GameContext* m_pGameContext; 
+
+  CCRect m_innerWildcardRectPanel;
     
   std::vector<WildcardButtonDefinition> m_wildcardButtonDefinitions;
 
@@ -109,6 +111,8 @@ public:
 
   void showMoreCoinsPanel();
   virtual void show();
+  virtual void show(bool showWildcardHeader, std::string headerText
+    , bool showWildcardScoreInfo, std::string scoreInfoLeft, std::string scoreInfoRight);
 
 protected:  
   GameScorePopup(GameContext* gameContext, std::string headerText

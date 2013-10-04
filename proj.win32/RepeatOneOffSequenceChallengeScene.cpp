@@ -52,6 +52,26 @@ void RepeatOneOffSequenceChallengeScene::onPostInitialize()
   }  
 }
 
+void RepeatOneOffSequenceChallengeScene::onPreInitialize()
+{  
+  WildcardButtonDefinition wildcardButtonDefinition1;
+  
+  wildcardButtonDefinition1.callback = callfuncO_selector(RepeatOneOffSequenceChallengeScene::replaySequenceCallback);
+  wildcardButtonDefinition1.callbackTarget = this;
+  wildcardButtonDefinition1.text = "REPLAY\nSEQUENCE";
+  wildcardButtonDefinition1.totalCoins = COINS_COST_REPLAY_SEQUENCE;
+  this->m_wildcardButtonDefinitions.push_back(wildcardButtonDefinition1);
+
+  WildcardButtonDefinition wildcardButtonDefinition2;
+  
+  wildcardButtonDefinition2.callback = callfuncO_selector(RepeatOneOffSequenceChallengeScene::replaySequenceRemainingCallback);
+  wildcardButtonDefinition2.callbackTarget = this;
+  wildcardButtonDefinition2.text = "REPLAY\nREMAINING";
+  wildcardButtonDefinition2.totalCoins = COINS_COST_SHOW_REMAINING;
+  
+  this->m_wildcardButtonDefinitions.push_back(wildcardButtonDefinition2);
+}
+
 void RepeatOneOffSequenceChallengeScene::onLoadDescriptionPopup()
 {  
   ccColor4F bgColor = { .0f, .0f, .0f, 1.0f };
@@ -93,7 +113,6 @@ void RepeatOneOffSequenceChallengeScene::startNewGame()
   this->m_topBar->setLevel(1);
 
   GameButton* button = NULL;
-  std::srand(time(NULL));
   for (int i = 0; i < this->m_levelToReach; ++i)
   {
     GameButton* button = (GameButton*)m_buttons->objectAtIndex(rand() % this->m_totalVisibleButtons);
@@ -173,7 +192,6 @@ void RepeatOneOffSequenceChallengeScene::onSequenceBlinkCallback(GameButton* gam
       
       // reset timer
       CCTime::gettimeofdayCocos2d(this->m_lastButtonPressedTime, NULL);
-      CCTime::gettimeofdayCocos2d(this->m_lastLevelStartTime, NULL);
     }
 
     // animation has finished, now we allow input again
@@ -184,19 +202,30 @@ void RepeatOneOffSequenceChallengeScene::onSequenceBlinkCallback(GameButton* gam
 
 void RepeatOneOffSequenceChallengeScene::onCorrectButtonPressed()
 {
-  this->m_buttonSequenceIndex++;
+  this->m_hasUserStartedGame = true;
   this->m_lastButtonPressed->playAnimation(BLINK, false); 
-
-  float deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
-
+  
+  float deltaTime = .0f;
   float bonus = 0;
-  if (deltaTime < this->m_challengePointScoreDefinition.clickTimeThreshold)
+
+  if ( this->m_buttonSequenceIndex > 0 )
   {
-    bonus = this->m_challengePointScoreDefinition.maxTimeBonus * (1 - deltaTime / this->m_challengePointScoreDefinition.clickTimeThreshold); 
-    bonus = (int)bonus - (int)bonus % 10;
-    m_gameScore.totalButtonBonus += bonus;
-    m_gameScore.totalPoints += bonus;
+    deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
+
+    if (deltaTime < this->m_challengePointScoreDefinition.clickTimeThreshold)
+    {
+      bonus = this->m_challengePointScoreDefinition.maxTimeBonus * (1 - deltaTime / this->m_challengePointScoreDefinition.clickTimeThreshold); 
+      bonus = (int)bonus - (int)bonus % 10;
+      m_gameScore.totalButtonBonus += bonus;
+      m_gameScore.totalPoints += bonus;
+    }
   }
+  else
+  {
+    CCTime::gettimeofdayCocos2d(this->m_firstUserSequencePressedTime, NULL);
+  }
+  this->m_buttonSequenceIndex++;
+
   m_gameScore.totalPoints += this->m_challengePointScoreDefinition.correctButtonScore;
   m_gameScore.totalPoints = (int)m_gameScore.totalPoints - (int)m_gameScore.totalPoints % 10;
     
@@ -214,6 +243,9 @@ void RepeatOneOffSequenceChallengeScene::onCorrectButtonPressed()
     this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
     m_pGameContext->setGameScore( m_gameScore );
       
+    if ( m_gameScore.starsEarned > 0)
+      this->m_pGameContext->setTotalLifes(this->m_pGameContext->getTotalLifes() + 1);
+
     this->playBlinkButtonsAnimation(2, .25f, .8f);
     this->scheduleOnce(schedule_selector(RepeatOneOffSequenceChallengeScene::showGameScorePopupCallback), 2.0f);
   } 
@@ -221,6 +253,8 @@ void RepeatOneOffSequenceChallengeScene::onCorrectButtonPressed()
 
 void RepeatOneOffSequenceChallengeScene::onIncorrectButtonPressed()
 {
+  this->m_hasUserStartedGame = true; // just in case the user got the first click wrong...
+
   this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION;
 
   this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
@@ -237,6 +271,12 @@ void RepeatOneOffSequenceChallengeScene::onIncorrectButtonPressed()
   this->m_eogTargetTimeLastButton = .55f;
   this->m_eogElapsedTimeWrongButton = -wrongDelay;
           
+  this->m_showWildcardScoreInfo = true;
+  this->m_wildcardScoreInfoLeft = "Repeats";
+  char str[64];        
+  sprintf(str, "%i / %i", this->m_buttonSequenceIndex, m_levelToReach);
+  this->m_wildcardScoreInfoRight = str;  
+
   m_lastButtonPressed->playAnimation(PRESSED);
 
   this->schedule(schedule_selector(RepeatOneOffSequenceChallengeScene::eogGrayOutButtons), 0.021f); // framerate: 1/48
@@ -244,4 +284,39 @@ void RepeatOneOffSequenceChallengeScene::onIncorrectButtonPressed()
   this->schedule(schedule_selector(RepeatOneOffSequenceChallengeScene::eogReleaseLastButton), 0.021f, 0, wrongDelay); // framerate: 1/48
   this->schedule(schedule_selector(RepeatOneOffSequenceChallengeScene::eogBlinkCorrectButton), 0.2f, -1, correctBlinkDelay); // framerate: 1/48    
   
+}
+
+void RepeatOneOffSequenceChallengeScene::replaySequenceCallback(CCObject* pSender)
+{   
+  int totalCoins = this->m_pGameContext->getTotalCoins();
+  if (totalCoins >= COINS_COST_REPLAY_SEQUENCE)
+  {
+    totalCoins -= COINS_COST_REPLAY_SEQUENCE;
+    this->m_pGameContext->setTotalCoins(totalCoins);
+    
+    this->m_gameScorePopup->hide();
+
+    runSequenceAnimation(false, 0, -1);
+  }
+  else
+  {
+    this->m_gameScorePopup->showMoreCoinsPanel();
+  }
+}
+void RepeatOneOffSequenceChallengeScene::replaySequenceRemainingCallback(CCObject* pSender)
+{
+  int totalCoins = this->m_pGameContext->getTotalCoins();
+  if (totalCoins >= COINS_COST_SHOW_REMAINING)
+  {
+    totalCoins -= COINS_COST_SHOW_REMAINING;
+    this->m_pGameContext->setTotalCoins(totalCoins);
+    
+    this->m_gameScorePopup->hide();
+    
+    runSequenceAnimation(false, m_buttonSequenceIndex, -1);
+  }
+  else
+  {
+    this->m_gameScorePopup->showMoreCoinsPanel();
+  }  
 }

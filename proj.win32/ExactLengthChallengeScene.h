@@ -38,11 +38,13 @@ private:
   void startButtonBlinkCallback(CCObject* o);
   void endButtonBlinkCallback(CCObject* o);
 
-  void runSequenceAnimation();
+  void runSequenceAnimation(bool refreshSequence);
   
   float getRandom(float min, float max) { return (max - min) * ( (float)rand() / (float)RAND_MAX ) + min; } 
 
   void initialize();
+
+  void replaySequenceCallback(CCObject* pSender);
 
   void onWrongButton(GameButton* lastButtonPressed, GameButton* nextSequenceButton);
 
@@ -72,7 +74,7 @@ protected:
 
   virtual void onLoadDescriptionPopup();
   virtual void onPostInitialize();
-  
+  virtual void onPreInitialize();
   virtual void startNewGame();
   
   virtual void buttonTouchEndedCallback(CCObject* pSender);

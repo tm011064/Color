@@ -72,6 +72,9 @@ static inline float floor_float(float f)
 #define GAME_VERSION 2
 #define IS_DEBUG 1
 
+#define MAX_LIFES 6
+#define LIFE_INCREASE_INTERVAL_SEC 120
+
 #define TOUCH_PRIORITY_MODAL_PANEL   -2147483646 
 #define TOUCH_PRIORITY_MODAL_ITEM    -2147483647
 #define TOUCH_PRIORITY_NORMAL         0

@@ -78,40 +78,12 @@ void GameScorePopup::onEnter()
         
     int headerTextBottomEdgePosY = posY;
 
-    posY -= verticalSpacing;
-    m_blackStar1 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starBlack"));
-    CCSize size = m_blackStar1->getContentSize();
-
-    m_blackStar1->setPosition(ccpRounded(center.x - size.width * 1.5f, posY));
-    this->addChild(m_blackStar1);
-    
-    m_blackStar2 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starBlack"));
-    m_blackStar2->setPosition(ccpRounded(center.x, posY));
-    this->addChild(m_blackStar2);
-    
-    m_blackStar3 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starBlack"));
-    m_blackStar3->setPosition(ccpRounded(center.x + size.width * 1.5f, posY));
-    this->addChild(m_blackStar3);
-    
-    m_goldStar1 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starGolden"));
-    m_goldStar1->setPosition(ccpRounded(center.x - size.width * 1.5f, posY));
-    this->addChild(m_goldStar1);
-    
-    m_goldStar2 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starGolden"));
-    m_goldStar2->setPosition(ccpRounded(center.x, posY));
-    this->addChild(m_goldStar2);
-    
-    m_goldStar3 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starGolden"));
-    m_goldStar3->setPosition(ccpRounded(center.x + size.width * 1.5f, posY));
-    this->addChild(m_goldStar3);
-
-    posY -= verticalSpacing;
-
+    CCSize size;
     TextButton* textButton;
     int menuButtonPosYTop, menuButtonPosYBottom, menuButtonPosYTopEdge;
     switch (m_gameScorePopupMode)
     {
-    case GSPMODE_ARCADE:
+    case GSPMODE_ARCADE:      
 
       textButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
         , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
@@ -150,6 +122,35 @@ void GameScorePopup::onEnter()
 
       
     case GSPMODE_CHALLENGE:
+
+      posY -= verticalSpacing;
+      m_blackStar1 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starBlack"));
+      size = m_blackStar1->getContentSize();
+
+      m_blackStar1->setPosition(ccpRounded(center.x - size.width * 1.5f, posY));
+      this->addChild(m_blackStar1);
+    
+      m_blackStar2 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starBlack"));
+      m_blackStar2->setPosition(ccpRounded(center.x, posY));
+      this->addChild(m_blackStar2);
+    
+      m_blackStar3 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starBlack"));
+      m_blackStar3->setPosition(ccpRounded(center.x + size.width * 1.5f, posY));
+      this->addChild(m_blackStar3);
+    
+      m_goldStar1 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starGolden"));
+      m_goldStar1->setPosition(ccpRounded(center.x - size.width * 1.5f, posY));
+      this->addChild(m_goldStar1);
+    
+      m_goldStar2 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starGolden"));
+      m_goldStar2->setPosition(ccpRounded(center.x, posY));
+      this->addChild(m_goldStar2);
+    
+      m_goldStar3 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starGolden"));
+      m_goldStar3->setPosition(ccpRounded(center.x + size.width * 1.5f, posY));
+      this->addChild(m_goldStar3);
+
+      posY -= verticalSpacing;
 
       textButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
         , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
@@ -272,13 +273,13 @@ void GameScorePopup::onEnter()
       break;
     }
 
-    float centerY = headerTextBottomEdgePosY 
-                  - ( headerTextBottomEdgePosY - menuButtonPosYTopEdge )/2;
+    m_innerWildcardRectPanel = CCRectMake( this->m_textIndentLeft, menuButtonPosYTopEdge
+      , this->m_textIndentRight - this->m_textIndentLeft, headerTextBottomEdgePosY - menuButtonPosYTopEdge );
+
     m_wildcardPopupButtonPanel = WildcardPopupButtonPanel::create(m_pGameContext
       , CCSizeMake(this->m_textIndentRight - this->m_textIndentLeft, 0)
-      , m_wildcardButtonDefinitions
-      , "play on?");
-    m_wildcardPopupButtonPanel->setPosition(center.x, centerY );
+      , m_wildcardButtonDefinitions);
+    m_wildcardPopupButtonPanel->setPosition(center.x, m_innerWildcardRectPanel.getMidY() );
     this->addChild(m_wildcardPopupButtonPanel);
     
     this->m_wildcardPopupBuyCoinsPanel = WildcardPopupBuyCoinsPanel::create(
@@ -286,7 +287,7 @@ void GameScorePopup::onEnter()
       , CCSizeMake( this->m_textIndentRight - this->m_textIndentLeft, 0 )
       , callfuncO_selector(GameScorePopup::gameScoreInfoPanelCallback)
       , this);
-    m_wildcardPopupBuyCoinsPanel->setPosition(center.x, centerY );
+    m_wildcardPopupBuyCoinsPanel->setPosition(center.x, m_innerWildcardRectPanel.getMidY() );
     this->addChild(this->m_wildcardPopupBuyCoinsPanel);
 
     m_bgLight.a = .6f; 
@@ -301,6 +302,12 @@ void GameScorePopup::onEnter()
 }
 
 void GameScorePopup::show()
+{
+  this->show(true, "play on?", false, "", ""); 
+}
+
+void GameScorePopup::show(bool showWildcardHeader, std::string headerText
+    , bool showWildcardScoreInfo, std::string scoreInfoLeft, std::string scoreInfoRight)
 {
   ModalControl::show();
  
@@ -347,26 +354,29 @@ void GameScorePopup::show()
       this->m_goldStar1->setOpacity((GLubyte)0);
       this->m_goldStar1->setVisible(true);
       this->m_goldStar1->runAction(CCSequence::create(CCDelayTime::create(startDelay), CCFadeIn::create(.4), NULL));
-      this->m_goldStar1->runAction(CCSequence::create(CCDelayTime::create(startDelay), CCScaleBy::create(.1, scaleTo), CCScaleBy::create(.3, scaleBackTo), NULL));
+      this->m_goldStar1->runAction(CCSequence::create(CCDelayTime::create(startDelay), CCScaleBy::create(.1f, scaleTo), CCScaleBy::create(.3f, scaleBackTo), NULL));
             
       if (gameScore.starsEarned > 1)
       {
         this->m_goldStar2->setOpacity((GLubyte)0);
         this->m_goldStar2->setVisible(true);
         this->m_goldStar2->runAction(CCSequence::create(CCDelayTime::create(startDelay + interval), CCFadeIn::create(.4f), NULL));
-        this->m_goldStar2->runAction(CCSequence::create(CCDelayTime::create(startDelay + interval), CCScaleBy::create(.1, scaleTo), CCScaleBy::create(.3, scaleBackTo), NULL));
+        this->m_goldStar2->runAction(CCSequence::create(CCDelayTime::create(startDelay + interval), CCScaleBy::create(.1f, scaleTo), CCScaleBy::create(.3f, scaleBackTo), NULL));
       }
       if (gameScore.starsEarned > 2)
       {
         this->m_goldStar3->setOpacity((GLubyte)0);
         this->m_goldStar3->setVisible(true);
         this->m_goldStar3->runAction(CCSequence::create(CCDelayTime::create(startDelay + interval*2), CCFadeIn::create(.4f), NULL));
-        this->m_goldStar3->runAction(CCSequence::create(CCDelayTime::create(startDelay + interval*2), CCScaleBy::create(.1, scaleTo), CCScaleBy::create(.3, scaleBackTo), NULL));
+        this->m_goldStar3->runAction(CCSequence::create(CCDelayTime::create(startDelay + interval*2), CCScaleBy::create(.1f, scaleTo), CCScaleBy::create(.3f, scaleBackTo), NULL));
       }
     }
     else
     {
       this->m_gameScorePanel->hide();
+
+      this->m_wildcardPopupButtonPanel->updateLayout(showWildcardHeader, headerText
+        , showWildcardScoreInfo, scoreInfoLeft, scoreInfoRight);
 
       this->m_wildcardPopupButtonPanel->show();
       this->m_wildcardPopupBuyCoinsPanel->hide();
@@ -389,6 +399,27 @@ void GameScorePopup::show()
   }
   else
   {
+    this->m_wildcardPopupBuyCoinsPanel->hide();
+    this->m_wildcardPopupButtonPanel->hide();
+      
+    if ( this->m_coinsLabel ) 
+      this->m_coinsLabel->setVisible(false);
+    if ( this->m_availableCoinsCoin ) 
+      this->m_availableCoinsCoin->setVisible(false);
+    if ( this->m_coinsLabelDescription ) 
+      this->m_coinsLabelDescription->setVisible(false);  
+
+    if ( this->m_moreCoinsTextButton ) 
+      this->m_moreCoinsTextButton->setVisible(false);
+    if ( this->m_moreCoinsBackTextButton ) 
+      this->m_moreCoinsBackTextButton->setVisible(false);
+    if ( this->m_retryButton ) 
+      this->m_retryButton->setVisible(false);
+    if ( this->m_nextButton ) 
+      this->m_nextButton->setVisible(false);
+    if ( this->m_replayButton ) 
+      this->m_replayButton->setVisible(false);
+
     this->m_gameScorePanel->show();
   }
 }

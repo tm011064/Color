@@ -76,7 +76,7 @@ protected:
   ChallengePointScoreDefinition m_challengePointScoreDefinition;
   
   struct cc_timeval *m_lastButtonPressedTime;
-  struct cc_timeval *m_lastLevelStartTime;
+  struct cc_timeval *m_firstUserSequencePressedTime;
 
   virtual void initialize(float dt);
 
@@ -88,7 +88,7 @@ public:
     , m_buttonScale(.0f)
     , m_buttons(NULL)
     , m_lastButtonPressedTime(0)
-    , m_lastLevelStartTime(0)
+    , m_firstUserSequencePressedTime(0)
     , m_totalEnabledButtons(totalEnabledButtons)
     , m_sceneType(sceneType)
     , m_consoleBackground(NULL)

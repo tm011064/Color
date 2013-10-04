@@ -125,7 +125,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
   // this could be written in a better way, so the cache is at the scene level, not game context level maybe???
   gameContext->getSpriteFrameCache()->init();  
   
-  float levelToReach, totalCorrectButtons;
+  float levelToReach, totalCorrectButtons, totalButtons;
   ChallengePointScoreDefinition challengePointScoreDefinition;
   RhythmBlinkSequenceDefinition rhythmBlinkSequenceDefinition;
 
@@ -133,32 +133,27 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
   {
   case 0:
 
-    levelToReach = 3;
+    levelToReach = 1;
+    totalButtons = 2;
     totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
 
-    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_TWO_BUTTONS;
-    challengePointScoreDefinition.maxTimeBonus = CORRECT_BUTTON_SCORE_TWO_BUTTONS_MAX_TIME_BONUS;
-    challengePointScoreDefinition.clickTimeThreshold = TWO_BUTTON_CLICK_TIME_THRESHOLD;
-    challengePointScoreDefinition.levelBonus = CORRECT_BUTTON_SCORE_TWO_BUTTONS_LEVEL_BONUS;
-    challengePointScoreDefinition.maxLevelTimeBonus = CORRECT_BUTTON_SCORE_TWO_BUTTONS_MAX_LEVEL_TIME_BONUS;
-    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_TWO_BUTTONS_MULTIPLIER;
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(totalButtons);
 
     challengePointScoreDefinition.mininimumPointsForOneStar = 0;
     challengePointScoreDefinition.mininimumPointsForTwoStars = 
       challengePointScoreDefinition.levelBonus * levelToReach
       + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
-      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .4f
-      + challengePointScoreDefinition.maxTimeBonus * totalCorrectButtons * .4f;
+      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .7f
+      + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - levelToReach ) * .7f; // minus level to reach cause the first click gains no bonus
 
     challengePointScoreDefinition.mininimumPointsForThreeStars = 
       challengePointScoreDefinition.levelBonus * levelToReach
       + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
-      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .6f
-      + challengePointScoreDefinition.maxTimeBonus * totalCorrectButtons * .6f;
+      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .9f
+      + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - levelToReach ) * .9f;
 
-    reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 2, challengePointScoreDefinition
+    reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, showSplashScreen, challengeIndex, totalButtons, challengePointScoreDefinition
       , (int)levelToReach);
-    //reachLevelChallengeScene->init();
     
     pLayer = new BaseLayer(reachLevelChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
     pLayer->init(); 
@@ -169,33 +164,28 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     return reachLevelChallengeScene;
 
   case 1:
-
-    levelToReach = 3;
+    
+    levelToReach = 9;
+    totalButtons = 3;
     totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
-
-    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_THREE_BUTTONS;
-    challengePointScoreDefinition.maxTimeBonus = CORRECT_BUTTON_SCORE_THREE_BUTTONS_MAX_TIME_BONUS;
-    challengePointScoreDefinition.clickTimeThreshold = THREE_BUTTON_CLICK_TIME_THRESHOLD;
-    challengePointScoreDefinition.levelBonus = CORRECT_BUTTON_SCORE_THREE_BUTTONS_LEVEL_BONUS;
-    challengePointScoreDefinition.maxLevelTimeBonus = CORRECT_BUTTON_SCORE_THREE_BUTTONS_MAX_LEVEL_TIME_BONUS;
-    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_THREE_BUTTONS_MULTIPLIER;
+    
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(totalButtons);
         
     challengePointScoreDefinition.mininimumPointsForOneStar = 0;
     challengePointScoreDefinition.mininimumPointsForTwoStars = 
       challengePointScoreDefinition.levelBonus * levelToReach
       + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
-      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .4f
-      + challengePointScoreDefinition.maxTimeBonus * totalCorrectButtons * .4f;
+      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .7f
+      + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - levelToReach ) * .7f;
 
     challengePointScoreDefinition.mininimumPointsForThreeStars = 
       challengePointScoreDefinition.levelBonus * levelToReach
       + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
-      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .6f
-      + challengePointScoreDefinition.maxTimeBonus * totalCorrectButtons * .6f;
+      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .9f
+      + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - levelToReach ) * .9f;
 
-    reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 3, challengePointScoreDefinition
+    reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, showSplashScreen, challengeIndex, totalButtons, challengePointScoreDefinition
       , (int)levelToReach);
-    reachLevelChallengeScene->init();
     
     pLayer = new BaseLayer(reachLevelChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
     pLayer->init(); 
@@ -207,34 +197,23 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
 
   case 2:
 
-    levelToReach = 3;
-    totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
-
-    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_THREE_BUTTONS;
-    challengePointScoreDefinition.maxTimeBonus = CORRECT_BUTTON_SCORE_THREE_BUTTONS_MAX_TIME_BONUS;
-    challengePointScoreDefinition.clickTimeThreshold = THREE_BUTTON_CLICK_TIME_THRESHOLD;
-    challengePointScoreDefinition.levelBonus = CORRECT_BUTTON_SCORE_THREE_BUTTONS_LEVEL_BONUS;
-    challengePointScoreDefinition.maxLevelTimeBonus = CORRECT_BUTTON_SCORE_THREE_BUTTONS_MAX_LEVEL_TIME_BONUS;
-    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_THREE_BUTTONS_MULTIPLIER;
-    // TODO (Roman): points!
+    levelToReach = 2;
+    totalButtons = 3;
+    
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(totalButtons);
     
     challengePointScoreDefinition.mininimumPointsForOneStar = 0;
     challengePointScoreDefinition.mininimumPointsForTwoStars = 
-      challengePointScoreDefinition.levelBonus * levelToReach
-      + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
-      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .4f
-      + challengePointScoreDefinition.maxTimeBonus * totalCorrectButtons * .4f;
+      challengePointScoreDefinition.correctButtonScore * levelToReach
+      + challengePointScoreDefinition.maxTimeBonus * (levelToReach - 1) * .72f;
 
     challengePointScoreDefinition.mininimumPointsForThreeStars = 
-      challengePointScoreDefinition.levelBonus * levelToReach
-      + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
-      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .6f
-      + challengePointScoreDefinition.maxTimeBonus * totalCorrectButtons * .6f;
+      challengePointScoreDefinition.correctButtonScore * levelToReach
+      + challengePointScoreDefinition.maxTimeBonus * (levelToReach - 1) * .85f;
 
-    repeatOneOffSequenceChallengeScene = RepeatOneOffSequenceChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 3, challengePointScoreDefinition
+    repeatOneOffSequenceChallengeScene = RepeatOneOffSequenceChallengeScene::create(gameContext, showSplashScreen, challengeIndex, totalButtons, challengePointScoreDefinition
       , (int)levelToReach);
-    repeatOneOffSequenceChallengeScene->init();
-    
+        
     pLayer = new BaseLayer(repeatOneOffSequenceChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
     pLayer->init(); 
     pLayer->autorelease();
@@ -244,33 +223,23 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     return repeatOneOffSequenceChallengeScene;
   case 3:
 
-    levelToReach = 2;
+    levelToReach = 12;
+    totalButtons = 4;
     totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
-
-    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_FOUR_BUTTONS;
-    challengePointScoreDefinition.maxTimeBonus = CORRECT_BUTTON_SCORE_FOUR_BUTTONS_MAX_TIME_BONUS;
-    challengePointScoreDefinition.clickTimeThreshold = FOUR_BUTTON_CLICK_TIME_THRESHOLD;
-    challengePointScoreDefinition.levelBonus = CORRECT_BUTTON_SCORE_FOUR_BUTTONS_LEVEL_BONUS;
-    challengePointScoreDefinition.maxLevelTimeBonus = CORRECT_BUTTON_SCORE_FOUR_BUTTONS_MAX_LEVEL_TIME_BONUS;
-    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_FOUR_BUTTONS_MULTIPLIER;
-    // TODO (Roman): points!
+    
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(totalButtons);
     
     challengePointScoreDefinition.mininimumPointsForOneStar = 0;
     challengePointScoreDefinition.mininimumPointsForTwoStars = 
-      challengePointScoreDefinition.levelBonus * levelToReach
-      + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
-      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .4f
-      + challengePointScoreDefinition.maxTimeBonus * totalCorrectButtons * .4f;
+      challengePointScoreDefinition.correctButtonScore * levelToReach
+      + challengePointScoreDefinition.maxTimeBonus * (levelToReach - 1) * .72f;
 
     challengePointScoreDefinition.mininimumPointsForThreeStars = 
-      challengePointScoreDefinition.levelBonus * levelToReach
-      + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
-      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .6f
-      + challengePointScoreDefinition.maxTimeBonus * totalCorrectButtons * .6f;
+      challengePointScoreDefinition.correctButtonScore * levelToReach
+      + challengePointScoreDefinition.maxTimeBonus * (levelToReach - 1) * .85f;
 
-    repeatOneOffSequenceChallengeScene = RepeatOneOffSequenceChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 4, challengePointScoreDefinition
+    repeatOneOffSequenceChallengeScene = RepeatOneOffSequenceChallengeScene::create(gameContext, showSplashScreen, challengeIndex, totalButtons, challengePointScoreDefinition
       , (int)levelToReach);
-    repeatOneOffSequenceChallengeScene->init();
     
     pLayer = new BaseLayer(repeatOneOffSequenceChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
     pLayer->init(); 
@@ -281,19 +250,16 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     return repeatOneOffSequenceChallengeScene;
     
   case 4:
-
-    levelToReach = 2;
-    totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
-
-    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_THREE_BUTTONS_MULTIPLIER;
-    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_THREE_BUTTONS;
-    // TODO (Roman): points!
+    
+    totalButtons = 1;
+    
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(totalButtons);
     
     challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .75f;
     challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
     challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
 
-    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 4
+    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, showSplashScreen, challengeIndex, totalButtons
       , 1.2f, 1.2f
       , 1.0f, 1.0f
       , challengePointScoreDefinition);
@@ -308,20 +274,17 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     return exactLengthChallengeScene;
 
   case 5:
-
-    levelToReach = 2;
-    totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
-
-    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_THREE_BUTTONS_MULTIPLIER;
-    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_THREE_BUTTONS;
-    // TODO (Roman): points!
+    
+    totalButtons = 3;
+    
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(totalButtons);
     
     challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .75f;
     challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
     challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
 
-    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 1
-      , 6.0f, 6.0f
+    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, showSplashScreen, challengeIndex, totalButtons
+      , 1.2f, 2.4f
       , 1.0f, 1.0f
       , challengePointScoreDefinition);
     exactLengthChallengeScene->init();
@@ -335,21 +298,17 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     return exactLengthChallengeScene;
 
   case 6:
-
-    levelToReach = 2;
-    totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
-
-    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_THREE_BUTTONS_MULTIPLIER;
-    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_THREE_BUTTONS;
-    // TODO (Roman): points!
+        
+    totalButtons = 4;    
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(totalButtons);
     
     challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .75f;
     challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
     challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
 
-    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, showSplashScreen, challengeIndex, 3
-      , 2.0f, 2.0f
-      , 1.0f, 1.0f
+    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, showSplashScreen, challengeIndex, totalButtons
+      , 1.0f, 2.0f
+      , .6f, 1.0f
       , challengePointScoreDefinition);
     exactLengthChallengeScene->init();
     
@@ -362,18 +321,15 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     return exactLengthChallengeScene;
         
   case 7:
-    // TODO (Roman): this should come from resource plist lookup
 
-    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_TWO_BUTTONS_MULTIPLIER;
-    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_TWO_BUTTONS;
-    // TODO (Roman): points!
-    
-    challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .1f;
-    challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .15f;
-    challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .2f;
-
-    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_THREE_BUTTONS_MULTIPLIER;
     rhythmBlinkSequenceDefinition = RhythmChallengeScene::loadRhythmBlinkSequenceDefinition(CCFileUtils::sharedFileUtils()->fullPathForFilename("rhythmChallenge_1.txt"));
+
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(rhythmBlinkSequenceDefinition.totalButtons);
+    
+    challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .75f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
+
     rhythmChallengeScene = RhythmChallengeScene::create(gameContext, showSplashScreen, challengeIndex, rhythmBlinkSequenceDefinition, challengePointScoreDefinition);
     rhythmChallengeScene->init();
     
@@ -386,18 +342,15 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     return rhythmChallengeScene;
     
   case 8:
-    // TODO (Roman): this should come from resource plist lookup
 
-    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_FOUR_BUTTONS_MULTIPLIER;
-    challengePointScoreDefinition.correctButtonScore = CORRECT_BUTTON_SCORE_FOUR_BUTTONS;
-    // TODO (Roman): points!
-    
-    challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .1f;
-    challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .15;
-    challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .2f;
-
-    challengePointScoreDefinition.coinsEarnedMultiplier = COINS_EARNED_FOUR_BUTTONS_MULTIPLIER;
     rhythmBlinkSequenceDefinition = RhythmChallengeScene::loadRhythmBlinkSequenceDefinition(CCFileUtils::sharedFileUtils()->fullPathForFilename("rhythmChallenge_2.txt"));
+
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(rhythmBlinkSequenceDefinition.totalButtons);
+    
+    challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .75f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
+        
     rhythmChallengeScene = RhythmChallengeScene::create(gameContext, showSplashScreen, challengeIndex, rhythmBlinkSequenceDefinition, challengePointScoreDefinition);
     rhythmChallengeScene->init();
     
@@ -408,6 +361,130 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
     rhythmChallengeScene->addChild(pLayer); 
 
     return rhythmChallengeScene;
+
+  case 9:
+    
+    levelToReach = 25;
+    totalButtons = 2;
+    totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
+    
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(totalButtons);
+        
+    challengePointScoreDefinition.mininimumPointsForOneStar = 0;
+    challengePointScoreDefinition.mininimumPointsForTwoStars = 
+      challengePointScoreDefinition.levelBonus * levelToReach
+      + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .7f
+      + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - levelToReach ) * .7f;
+
+    challengePointScoreDefinition.mininimumPointsForThreeStars = 
+      challengePointScoreDefinition.levelBonus * levelToReach
+      + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .9f
+      + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - levelToReach ) * .9f;
+
+    reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, showSplashScreen, challengeIndex, totalButtons, challengePointScoreDefinition
+      , (int)levelToReach);
+    
+    pLayer = new BaseLayer(reachLevelChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
+
+    reachLevelChallengeScene->addChild(pLayer); 
+
+    return reachLevelChallengeScene;
+
+  case 10:
+    
+    levelToReach = 20;
+    totalButtons = 3;
+    totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
+    
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(totalButtons);
+        
+    challengePointScoreDefinition.mininimumPointsForOneStar = 0;
+    challengePointScoreDefinition.mininimumPointsForTwoStars = 
+      challengePointScoreDefinition.levelBonus * levelToReach
+      + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .7f
+      + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - levelToReach ) * .7f;
+
+    challengePointScoreDefinition.mininimumPointsForThreeStars = 
+      challengePointScoreDefinition.levelBonus * levelToReach
+      + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .9f
+      + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - levelToReach ) * .9f;
+
+    reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, showSplashScreen, challengeIndex, totalButtons, challengePointScoreDefinition
+      , (int)levelToReach);
+    
+    pLayer = new BaseLayer(reachLevelChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
+
+    reachLevelChallengeScene->addChild(pLayer); 
+
+    return reachLevelChallengeScene;
+
+  case 11:
+    
+    levelToReach = 20;
+    totalButtons = 4;
+    totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
+    
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(totalButtons);
+        
+    challengePointScoreDefinition.mininimumPointsForOneStar = 0;
+    challengePointScoreDefinition.mininimumPointsForTwoStars = 
+      challengePointScoreDefinition.levelBonus * levelToReach
+      + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .7f
+      + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - levelToReach ) * .7f;
+
+    challengePointScoreDefinition.mininimumPointsForThreeStars = 
+      challengePointScoreDefinition.levelBonus * levelToReach
+      + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+      + challengePointScoreDefinition.maxLevelTimeBonus * levelToReach * .9f
+      + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - levelToReach ) * .9f;
+
+    reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, showSplashScreen, challengeIndex, totalButtons, challengePointScoreDefinition
+      , (int)levelToReach);
+    
+    pLayer = new BaseLayer(reachLevelChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
+
+    reachLevelChallengeScene->addChild(pLayer); 
+
+    return reachLevelChallengeScene;
+
+  case 12:
+
+    levelToReach = 15;
+    totalButtons = 2;
+    totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
+    
+    challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(totalButtons);
+    
+    challengePointScoreDefinition.mininimumPointsForOneStar = 0;
+    challengePointScoreDefinition.mininimumPointsForTwoStars = 
+      challengePointScoreDefinition.correctButtonScore * levelToReach
+      + challengePointScoreDefinition.maxTimeBonus * (levelToReach - 1) * .72f;
+
+    challengePointScoreDefinition.mininimumPointsForThreeStars = 
+      challengePointScoreDefinition.correctButtonScore * levelToReach
+      + challengePointScoreDefinition.maxTimeBonus * (levelToReach - 1) * .85f;
+
+    repeatOneOffSequenceChallengeScene = RepeatOneOffSequenceChallengeScene::create(gameContext, showSplashScreen, challengeIndex, totalButtons, challengePointScoreDefinition
+      , (int)levelToReach);
+    
+    pLayer = new BaseLayer(repeatOneOffSequenceChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
+
+    repeatOneOffSequenceChallengeScene->addChild(pLayer); 
+
+    return repeatOneOffSequenceChallengeScene;
   }
 
   return NULL;

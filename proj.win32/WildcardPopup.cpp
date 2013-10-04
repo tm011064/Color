@@ -86,9 +86,11 @@ void WildcardPopup::onEnter()
     this->m_wildcardPopupButtonPanel = WildcardPopupButtonPanel::create(
       this->m_pGameContext
       , CCSizeMake( this->m_textIndentRight - this->m_textIndentLeft, 0 )
-      , wildcardButtonDefinitions
-      , "use coins to buy cheats");
+      , wildcardButtonDefinitions );
     this->addChild(this->m_wildcardPopupButtonPanel);
+
+    CCSize wildcardPopupButtonPanelSize = this->m_wildcardPopupButtonPanel->updateLayout(true, "use coins to buy cheats"
+      , false, "", "");
     this->m_wildcardPopupButtonPanel->hide();
 
     this->m_wildcardPopupBuyCoinsPanel = WildcardPopupBuyCoinsPanel::create(
@@ -99,7 +101,6 @@ void WildcardPopup::onEnter()
     this->addChild(this->m_wildcardPopupBuyCoinsPanel);
     this->m_wildcardPopupBuyCoinsPanel->hide();
 
-    CCSize wildcardPopupButtonPanelSize = this->m_wildcardPopupButtonPanel->getContentSize();
     posY = m_dialogRectLeftTop.y - wildcardPopupButtonPanelSize.height/2 - verticalSpacing;
 
     this->m_wildcardPopupButtonPanel->setPosition(center.x, posY);

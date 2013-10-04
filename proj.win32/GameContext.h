@@ -21,11 +21,22 @@ private:
   bool m_isSoundOn;
   bool m_isVibrateOn;
   
+  float m_maxDigitWidthNormal;
+  float m_maxDigitWidthLarge;
+
   float m_fontSpaceWidthLarge;
   float m_fontHeightNormal;
   float m_fontHeightLarge;
   float m_defaultBorderThickness;
   float m_defaultPadding;
+
+  std::vector<std::string> m_digitsFontNormal;
+  std::vector<std::string> m_digitsFontLarge;
+  std::vector<int> m_digitFontNormalWidths;
+  std::vector<int> m_digitFontLargeWidths;
+  
+  std::map<int, ChallengePointScoreDefinition> m_challengePointScoreDefinitions;
+
   CCSize m_defaultButtonSize;
 
   CCSize m_frameSize;
@@ -52,6 +63,8 @@ private:
   std::string m_imageMapPngPath;
   
   unsigned int m_totalCoins;
+  int m_totalLifes;
+  long m_lastLifeIncreaseTime;
   
 public:  
   GameContext();
@@ -135,9 +148,32 @@ public:
   unsigned int getTotalCoins() { return this->m_totalCoins; }
   void setTotalCoins(unsigned int totalCoins);
   
+  unsigned int getTotalLifes() { return this->m_totalLifes; }
+  void setTotalLifes(int totalLifes);
+  
+  long getLastLifeIncreaseTime() { return this->m_lastLifeIncreaseTime; }
+  void setLastLifeIncreaseTime(long lastLifeIncreaseTime);  
+
   int getChallengeInfo(unsigned int index) { return this->m_challengeStatuses.at(index); }
   void setChallengeInfo(unsigned int index, int status);
   
+  void registerDigitFontNormal(int d, int width, std::string c);
+  void registerDigitFontLarge(int d, int width, std::string c);
+
+  int getMaxDigitFontNormalWidth() { return m_maxDigitWidthNormal; }
+  int getMaxDigitFontLargeWidth() { return m_maxDigitWidthLarge; }
+  int getDigitFontNormalWidth(int d) { return m_digitFontNormalWidths[d]; }
+  int getDigitFontLargeWidth(int d) { return m_digitFontLargeWidths[d]; }
+  std::string getDigitFontNormal(int d) { return m_digitsFontNormal[d]; }
+  std::string getDigitFontLarge(int d) { return m_digitsFontLarge[d]; }
+
+  LifeInfo refreshTotalLifesCount();
+
+  ChallengePointScoreDefinition getChallengePointScoreDefinition(int totalButtons)
+  {
+    return m_challengePointScoreDefinitions[totalButtons];
+  }
+
   void registerSoundFile(std::string key, std::string filePath) 
   { 
     m_soundLookup[key] = filePath; 

@@ -141,12 +141,27 @@ void LoadGameScene::loadGame(float dt)
   m_pGameContext->setDefaultBorderThickness(round(m_pGameContext->getDefaultPadding() * .25));
   if (m_pGameContext->getDefaultBorderThickness() < 1.0f)
     m_pGameContext->setDefaultBorderThickness(1.0f);
+  
+  std::string s;
+  for (int i = 0; i < 10; ++i)
+  {    
+    s = UtilityHelper::convertToString(i);
+    label->setString( s.c_str() );
+    m_pGameContext->registerDigitFontNormal(i, label->getContentSize().width, s );
+  }
 
   label = CCLabelBMFont::create("Replay", largePath.c_str()); 
   m_pGameContext->setFontHeightLarge(label->getContentSize().height);
 
   label = CCLabelBMFont::create(" ", largePath.c_str()); 
   m_pGameContext->setFontSpaceWidthLarge(label->getContentSize().width);
+
+  for (int i = 0; i < 10; ++i)
+  {
+    s = UtilityHelper::convertToString(i);
+    label->setString( s.c_str() );
+    m_pGameContext->registerDigitFontLarge(i, label->getContentSize().width, s );
+  }
 
   label->release();  
 

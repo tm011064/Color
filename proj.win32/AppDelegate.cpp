@@ -37,7 +37,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 
   GameContext* gameContext = new GameContext();
   gameContext->init(27);
-  
+     
   gameContext->setResolutionPolicy(kResolutionNoBorder); // kResolutionShowAll // kResolutionExactFit // kResolutionNoBorder
   gameContext->setOriginalSize(pEGLView->getDesignResolutionSize());
     
@@ -79,6 +79,8 @@ bool AppDelegate::applicationDidFinishLaunching()
   pDirector->setAnimationInterval(1.0 / 60);
     
   gameContext->setFrameSize(frameSize.width, frameSize.height);
+
+  // gameContext->setTotalCoins(5000);
 
   NavigationManager::showScene(LOAD_GAME_SCENE, gameContext, FIRST_RUN, true);
   

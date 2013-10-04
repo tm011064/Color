@@ -11,6 +11,8 @@ private:
   int m_lastStartIndex;
   int m_lastEndIndex;
     
+  float m_currentLevelPoints;
+
   void runSequenceAnimation(bool doAddButton, int startIndex, int endIndex);
   void runSequenceAnimationTimerCallback(float dt);
   void update(float delta);

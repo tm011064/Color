@@ -152,6 +152,7 @@
     <ClInclude Include="HighscoreScene.h" />
     <ClInclude Include="ImageButton.h" />
     <ClInclude Include="LayoutController.h" />
+    <ClInclude Include="LifeTimeTickerPopup.h" />
     <ClInclude Include="LoadGameScene.h" />
     <ClInclude Include="MenuButton.h" />
     <ClInclude Include="MenuScene.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="HighscoreScene.cpp" />
     <ClCompile Include="ImageButton.cpp" />
     <ClCompile Include="LayoutController.cpp" />
+    <ClCompile Include="LifeTimeTickerPopup.cpp" />
     <ClCompile Include="LoadGameScene.cpp" />
     <ClCompile Include="MenuButton.cpp" />
     <ClCompile Include="MenuScene.cpp" />

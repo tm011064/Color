@@ -41,6 +41,8 @@ private:
   void sequenceBlinkCallback(CCObject* pSender);
   void setAwaitingInput();
 
+  void replaySequenceCallback(CCObject* pSender);
+
   RhythmChallengeScene(GameContext* gameContext, bool showSplashScreen, int challengeIndex
     , RhythmBlinkSequenceDefinition rhythmBlinkSequenceDefinition
     , ChallengeSceneType challengeSceneType, ChallengePointScoreDefinition challengePointScoreDefinition)
@@ -62,7 +64,8 @@ public:
 
 protected:  
   virtual int updateChallengeInfo(const ChallengePointScoreDefinition* challengePointScoreDefinition);
-  
+
+  virtual void onPreInitialize();
   virtual void onLoadDescriptionPopup();
   virtual void onPostInitialize();
   

@@ -10,8 +10,20 @@ class ChallengeButtonPanel : public BaseNode
 private:
   
   bool m_isLayoutInitialized;
+  bool m_isLayoutReset;
   float m_padding;
   float m_borderThickness;
+
+  CCLabelBMFont* m_totalLifeLabel;
+  CCLabelBMFont* m_deltaNextLifeIncreaseLabel_M1;
+  CCLabelBMFont* m_deltaNextLifeIncreaseLabel_M2;
+  CCLabelBMFont* m_deltaNextLifeIncreaseLabel_Separator;
+  CCLabelBMFont* m_deltaNextLifeIncreaseLabel_S1;
+  CCLabelBMFont* m_deltaNextLifeIncreaseLabel_S2;
+  float m_rightPosX_M1;
+  float m_rightPosX_M2;
+  float m_rightPosX_S1;
+  float m_rightPosX_S2;
   
   TextButton* m_storyModeNextPage;
   TextButton* m_storyModePreviousPage;
@@ -23,6 +35,7 @@ private:
 
   void goBackCallback(CCObject* pSender); 
   void resetChallengeButtons(bool isVisible);
+  void updateLifeDisplay(float dt);
 
   SEL_CallFunc m_fnpGoBackDelegate;
   
@@ -48,7 +61,14 @@ protected:
     , m_fnpGoBackDelegate(goBackDelegate)
     , m_pTarget(callbackTarget)
     , m_isLayoutInitialized(false)
+    , m_isLayoutReset(false)
     , m_storyModePageIndex(0)
+    , m_totalLifeLabel(NULL)
+    , m_deltaNextLifeIncreaseLabel_M1(NULL)
+    , m_deltaNextLifeIncreaseLabel_M2(NULL)
+    , m_deltaNextLifeIncreaseLabel_Separator(NULL)
+    , m_deltaNextLifeIncreaseLabel_S1(NULL)
+    , m_deltaNextLifeIncreaseLabel_S2(NULL)
   { }
 
   virtual void startChallenge(CCObject* pSender);

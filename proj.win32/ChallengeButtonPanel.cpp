@@ -147,9 +147,48 @@ void ChallengeButtonPanel::onEnter()
     }
 
     imageButton = NULL;
+        
+    m_totalLifeLabel = CCLabelBMFont::create("NA", m_pGameContext->getFontNormalPath().c_str());
+    this->addChild(m_totalLifeLabel);
+    
+    m_deltaNextLifeIncreaseLabel_Separator = CCLabelBMFont::create(":", m_pGameContext->getFontNormalPath().c_str());
+    this->addChild(m_deltaNextLifeIncreaseLabel_Separator);
+
+    m_deltaNextLifeIncreaseLabel_M1 = CCLabelBMFont::create("0", m_pGameContext->getFontNormalPath().c_str());
+    this->addChild(m_deltaNextLifeIncreaseLabel_M1);
+    
+    m_deltaNextLifeIncreaseLabel_M2 = CCLabelBMFont::create("0", m_pGameContext->getFontNormalPath().c_str());
+    this->addChild(m_deltaNextLifeIncreaseLabel_M2);
+
+    m_deltaNextLifeIncreaseLabel_S2 = CCLabelBMFont::create("0", m_pGameContext->getFontNormalPath().c_str());
+    this->addChild(m_deltaNextLifeIncreaseLabel_S2);
+    
+    m_deltaNextLifeIncreaseLabel_S1 = CCLabelBMFont::create("0", m_pGameContext->getFontNormalPath().c_str());
+    this->addChild(m_deltaNextLifeIncreaseLabel_S1);
+
+    updateLifeDisplay(.0f);
+    this->schedule(schedule_selector(ChallengeButtonPanel::updateLifeDisplay), 1);    
   }
 }
 
+void ChallengeButtonPanel::updateLifeDisplay(float dt)
+{
+  LifeInfo lifeInfo = this->m_pGameContext->refreshTotalLifesCount();
+
+  this->m_totalLifeLabel->setString( UtilityHelper::convertToString( lifeInfo.totalLifes ).c_str() );
+    
+  int totalMinutes = (int)(lifeInfo.deltaToNextIncreaseInSeconds / 60);
+  int totalSeconds = (int)(lifeInfo.deltaToNextIncreaseInSeconds - totalMinutes * 60);
+
+  int m1 = totalMinutes / 10;
+  int s1 = totalSeconds / 10;
+
+  this->m_deltaNextLifeIncreaseLabel_M1->setString( this->m_pGameContext->getDigitFontNormal( m1 ).c_str() );
+  this->m_deltaNextLifeIncreaseLabel_M2->setString( this->m_pGameContext->getDigitFontNormal( totalMinutes - m1*10 ).c_str() );
+  
+  this->m_deltaNextLifeIncreaseLabel_S1->setString( this->m_pGameContext->getDigitFontNormal( s1 ).c_str() );
+  this->m_deltaNextLifeIncreaseLabel_S2->setString( this->m_pGameContext->getDigitFontNormal( totalSeconds - s1*10 ).c_str() );  
+}
 
 void ChallengeButtonPanel::startChallenge(CCObject* pSender)
 {
@@ -265,6 +304,19 @@ void ChallengeButtonPanel::resetChallengeButtons(bool isVisible)
   float targetedSpacingToButtonRatio = 1.38f;
 
   CCSize size = this->m_storyModeNextPage->getSize();
+
+  // TODO (Roman): positioning
+  this->m_totalLifeLabel->setPosition( rightTop.x - 50 - position.x, rightTop.y - 50 - position.y );
+
+  float separatorWidth = m_deltaNextLifeIncreaseLabel_Separator->getContentSize().width;
+
+  m_deltaNextLifeIncreaseLabel_Separator->setPosition(leftBottom.x + m_pGameContext->getMaxDigitFontNormalWidth()*3 - position.x, rightTop.y - m_pGameContext->getFontHeightNormal() - m_pGameContext->getDefaultPadding() - position.y);
+ 
+  m_deltaNextLifeIncreaseLabel_M1->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() - separatorWidth/2 - m_pGameContext->getDefaultPadding()*2 - m_pGameContext->getMaxDigitFontNormalWidth()*1.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
+  m_deltaNextLifeIncreaseLabel_M2->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() - separatorWidth/2 - m_pGameContext->getDefaultPadding() - m_pGameContext->getMaxDigitFontNormalWidth()*.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
+  m_deltaNextLifeIncreaseLabel_S2->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() + separatorWidth/2 + m_pGameContext->getDefaultPadding()*2 + m_pGameContext->getMaxDigitFontNormalWidth()*1.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
+  m_deltaNextLifeIncreaseLabel_S1->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() + separatorWidth/2 + m_pGameContext->getDefaultPadding() + m_pGameContext->getMaxDigitFontNormalWidth()*.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
+  this->updateLifeDisplay(.0f);
 
   this->m_storyModeNextPage->setPosition(
     rightTop.x - size.width/2 - size.height * .618 - position.x

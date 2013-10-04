@@ -183,6 +183,9 @@
     <ClInclude Include="LoadGameScene.h">
       <Filter>include\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="LifeTimeTickerPopup.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseScene.cpp">
@@ -322,6 +325,9 @@
     </ClCompile>
     <ClCompile Include="LoadGameScene.cpp">
       <Filter>include\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="LifeTimeTickerPopup.cpp">
+      <Filter>include\Controls</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

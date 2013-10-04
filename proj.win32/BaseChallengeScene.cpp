@@ -17,7 +17,7 @@ void BaseChallengeScene::onExit()
   if(this->m_isLayoutInitialized)
   {   
     CC_SAFE_DELETE(m_lastButtonPressedTime);
-    CC_SAFE_DELETE(m_lastLevelStartTime); 
+    CC_SAFE_DELETE(m_firstUserSequencePressedTime); 
         
     m_lastButtonPressed = NULL;    
     m_nextSequenceButton = NULL;  
@@ -83,6 +83,8 @@ void BaseChallengeScene::initialize(float dt)
   consoleButtonBackground->setScale(consoleBackgroundScale);
   this->addChild(consoleButtonBackground);    
     
+#if SHOWCONSOLEBUTTON
+
   int releasingFrames[] = { 0 };
   int pressingFrames[] = { 0 };
   m_consoleButton = ImageButton::create(this
@@ -99,6 +101,9 @@ void BaseChallengeScene::initialize(float dt)
     , TOUCH_PRIORITY_NORMAL);
   m_consoleButton->setScale(consoleBackgroundScale);
   this->addChild(m_consoleButton);
+  
+#endif
+
   CCRect topBarBoundingBox = m_topBar->getBoundingBox();
   CCSize consoleSize = m_consoleBackground->getContentSize();
     
@@ -115,8 +120,9 @@ void BaseChallengeScene::initialize(float dt)
     
   consoleButtonBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
   m_consoleBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
+#if SHOWCONSOLEBUTTON
   m_consoleButton->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
-
+#endif
   /********** CONSOLE **********/
 
   /********** LEVEL DONE MESSAGE **********/
@@ -149,6 +155,18 @@ void BaseChallengeScene::initialize(float dt)
     
   this->addChild(m_wildcardPopup);
   /********** MODAL LAYER **********/
+    
+  /********** MODAL LAYER **********/
+  m_lifeTimeTickerPopup = LifeTimeTickerPopup::create(
+    this->m_pGameContext
+    , this
+    , callfuncO_selector(BaseChallengeScene::newGameCallback) 
+    );
+  m_lifeTimeTickerPopup->setPosition(ccp(0, 0));    
+  m_lifeTimeTickerPopup->setZOrder( MODAL_ZORDER ); 
+    
+  this->addChild(m_lifeTimeTickerPopup);
+  /********** MODAL LAYER **********/  
 
   /********** MODAL LAYER **********/
   m_gameScorePopup = GameScorePopup::create(
@@ -171,7 +189,7 @@ void BaseChallengeScene::initialize(float dt)
   this->onPostInitialize();
     
   this->m_lastButtonPressedTime = new struct cc_timeval();
-  this->m_lastLevelStartTime = new struct cc_timeval();
+  this->m_firstUserSequencePressedTime = new struct cc_timeval();
 
   this->m_isLayoutInitialized = true;
 
@@ -190,9 +208,12 @@ void BaseChallengeScene::preLoadCallback(float dt)
     ((GameButton*)o)->load();
   }
 
+#if SHOWCONSOLEBUTTON
   if (!this->m_consoleButton->hasAlphaMap())
     this->m_consoleButton->refreshAlphaMap(m_pGameContext->getOriginalSize(), m_pGameContext->getResolutionPolicy());
-    
+#endif
+  
+  this->m_lifeTimeTickerPopup->hide();
   this->m_wildcardPopup->hide();
   this->m_gameScorePopup->hide();
 }
@@ -288,10 +309,20 @@ void BaseChallengeScene::onBackKeyPressed()
   {
     NavigationManager::showMainMenu(m_pGameContext, NEW, false, STORY_MODE);
   }
+  else if (this->m_lifeTimeTickerPopup->isVisible())
+  {
+    NavigationManager::showMainMenu(m_pGameContext, NEW, false, STORY_MODE);
+  }
   else
   {    
     if (this->m_sceneState != AWAITING_INPUT)
       return;
+
+    // TODO (Roman): check whether the user has started the game, if not, give him back his life...
+    if ( !m_hasUserStartedGame )
+    {
+      this->m_pGameContext->setTotalLifes(this->m_pGameContext->getTotalLifes() + 1);
+    }
 
     NavigationManager::showMainMenu(m_pGameContext, NEW, false, STORY_MODE);
   }
@@ -410,7 +441,8 @@ void BaseChallengeScene::blinkButtonCallback(float dt)
 
 void BaseChallengeScene::showGameScorePopupCallback(float dt)
 {
-  m_gameScorePopup->show();
+  m_gameScorePopup->show(!m_showWildcardScoreInfo, "play on?", m_showWildcardScoreInfo
+    , m_wildcardScoreInfoLeft, m_wildcardScoreInfoRight);
 }
 
 /******** END OF GAME ANIMATION **********/
@@ -436,7 +468,7 @@ void BaseChallengeScene::eogBlinkCorrectButton(float dt)
 }
 void BaseChallengeScene::eogAnimationFinish(float dt)
 {
-  m_gameScorePopup->show();
+  this->showGameScorePopupCallback(.0f);
 
   this->m_eogElaspedTime = 0;
   this->schedule(schedule_selector(BaseChallengeScene::eogResetButtons), 0.021f); // framerate: 1/48
@@ -524,11 +556,29 @@ void BaseChallengeScene::newGameCallback(CCObject* pSender)
   {
     this->m_descriptionPopup->hide();
   }
+  
+  if (this->m_pGameContext->getTotalLifes() > 0)
+  {
+    this->m_hasUserStartedGame = false;
+
+    this->m_pGameContext->setTotalLifes(this->m_pGameContext->getTotalLifes() - 1);
+    this->m_wildcardPopup->hide();
+    this->m_gameScorePopup->hide();
+    this->m_lifeTimeTickerPopup->hide();
     
-  this->runAction(CCSequence::create(
-    CCDelayTime::create(DEFAULT_NEW_GAME_START_SHORT_DELAY)
-    , CCCallFunc::create(this, callfunc_selector(BaseChallengeScene::startNewGame))
-    , NULL));
+    this->runAction(CCSequence::create(
+      CCDelayTime::create(DEFAULT_NEW_GAME_START_SHORT_DELAY)
+      , CCCallFunc::create(this, callfunc_selector(BaseChallengeScene::startNewGame))
+      , NULL));
+  }
+  else
+  {
+    // hide them in case they were visible...
+    this->m_wildcardPopup->hide();
+    this->m_gameScorePopup->hide();
+    
+    this->m_lifeTimeTickerPopup->show();
+  }
 }
 
 void BaseChallengeScene::nextChallengeCallback(CCObject* pSender)

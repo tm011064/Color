@@ -20,7 +20,7 @@ void ArcadeGameScene::onExit()
   if(this->m_isLayoutInitialized)
   {   
     CC_SAFE_DELETE(m_lastButtonPressedTime);
-    CC_SAFE_DELETE(m_lastLevelStartTime); 
+    CC_SAFE_DELETE(m_firstUserSequencePressedTime); 
         
     m_lastButtonPressed = NULL;    
     m_nextSequenceButton = NULL;  
@@ -161,7 +161,7 @@ void ArcadeGameScene::initialize(float dt)
   this->onPostInitialize();
     
   this->m_lastButtonPressedTime = new struct cc_timeval();
-  this->m_lastLevelStartTime = new struct cc_timeval();
+  this->m_firstUserSequencePressedTime = new struct cc_timeval();
 
   this->m_isLayoutInitialized = true;
 
@@ -248,7 +248,6 @@ void ArcadeGameScene::buttonBlinkCallback(CCObject* pSender)
       
       // reset timer
       CCTime::gettimeofdayCocos2d(this->m_lastButtonPressedTime, NULL);
-      CCTime::gettimeofdayCocos2d(this->m_lastLevelStartTime, NULL);
     }
 
     // animation has finished, now we allow input again
@@ -278,20 +277,29 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
     
   if (m_nextSequenceButton == m_lastButtonPressed)
   {// correct click
-    this->m_buttonSequenceIndex++;
 
     this->m_lastButtonPressed->playAnimation(BLINK, false); // we don't play the sound here as this will be played only on a correct click
     
-    float deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
-
+    float deltaTime = .0f;
     float bonus = 0;
-    if (deltaTime < this->m_challengePointScoreDefinition.clickTimeThreshold)
+    if ( m_buttonSequenceIndex > 0 )
     {
-      bonus = this->m_challengePointScoreDefinition.maxTimeBonus * (1 - deltaTime / this->m_challengePointScoreDefinition.clickTimeThreshold); 
-      bonus = (int)bonus - (int)bonus % 10;
-      m_gameScore.totalButtonBonus += bonus;
-      m_gameScore.totalPoints += bonus;
+      deltaTime = updateTimeVal(this->m_lastButtonPressedTime);
+
+      if (deltaTime < this->m_challengePointScoreDefinition.clickTimeThreshold)
+      {
+        bonus = this->m_challengePointScoreDefinition.maxTimeBonus * (1 - deltaTime / this->m_challengePointScoreDefinition.clickTimeThreshold); 
+        bonus = (int)bonus - (int)bonus % 10;
+        m_gameScore.totalButtonBonus += bonus;
+        m_gameScore.totalPoints += bonus;
+      }
     }
+    else
+    {
+      CCTime::gettimeofdayCocos2d(this->m_firstUserSequencePressedTime, NULL);
+    }
+    this->m_buttonSequenceIndex++;
+
     m_gameScore.totalPoints += this->m_challengePointScoreDefinition.correctButtonScore;
     m_gameScore.totalPoints = (int)m_gameScore.totalPoints - (int)m_gameScore.totalPoints % 10;
     
@@ -300,7 +308,7 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
     if (m_buttonSequenceIndex >= m_gameScore.level)
     {// correct, new animation
 
-      deltaTime = updateTimeVal(this->m_lastLevelStartTime);
+      deltaTime = updateTimeVal(this->m_firstUserSequencePressedTime);
       float levelTimeThreshold = this->m_challengePointScoreDefinition.clickTimeThreshold * m_gameScore.level;
       if (deltaTime < levelTimeThreshold)
       {

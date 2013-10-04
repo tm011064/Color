@@ -17,6 +17,12 @@ std::string UtilityHelper::convertToString(int i)
   sprintf(numstr, "%i", i);
   return std::string(numstr);
 }
+std::string UtilityHelper::convertLongToString(long l)
+{
+  char numstr[22];
+  sprintf(numstr, "%i", l);
+  return std::string(numstr);
+}
 
 cocos2d::cc_timeval UtilityHelper::getTimeValFromSeconds(float time)
 {  

@@ -106,6 +106,7 @@ RhythmBlinkSequenceDefinition RhythmChallengeScene::loadRhythmBlinkSequenceDefin
 
   return rhythmBlinkSequenceDefinition;
 }
+
 void RhythmChallengeScene::onPostInitialize()
 {  
   switch (this->m_totalEnabledButtons)
@@ -165,6 +166,17 @@ void RhythmChallengeScene::onPostInitialize()
       it2->button = enabledButtons[it2->buttonIndex];
     }
   }
+}
+
+void RhythmChallengeScene::onPreInitialize()
+{  
+  WildcardButtonDefinition wildcardButtonDefinition1;
+  
+  wildcardButtonDefinition1.callback = callfuncO_selector(RhythmChallengeScene::replaySequenceCallback);
+  wildcardButtonDefinition1.callbackTarget = this;
+  wildcardButtonDefinition1.text = "REPLAY\nSEQUENCE";
+  wildcardButtonDefinition1.totalCoins = COINS_COST_REPLAY_SEQUENCE;
+  this->m_wildcardButtonDefinitions.push_back(wildcardButtonDefinition1);
 }
 
 void RhythmChallengeScene::onLoadDescriptionPopup()
@@ -254,19 +266,19 @@ int RhythmChallengeScene::updateChallengeInfo(const ChallengePointScoreDefinitio
   int challengeInfo = m_pGameContext->getChallengeInfo(this->m_challengeIndex);
   this->m_gameScore.starsEarned = 0;
 
-  if ( this->m_gameScore.averageButtonBlinkStartOffset <= challengePointScoreDefinition->minimumTotalTimePercentageForThreeStars )
+  if ( this->m_gameScore.averageButtonBlinkPercentage >= challengePointScoreDefinition->minimumTotalTimePercentageForThreeStars )
   {
     this->m_gameScore.starsEarned = 3;
     if (challengeInfo < 3)
       m_pGameContext->setChallengeInfo(this->m_challengeIndex, 3);
   }
-  else if ( this->m_gameScore.averageButtonBlinkStartOffset <= challengePointScoreDefinition->minimumTotalTimePercentageForTwoStars )
+  else if ( this->m_gameScore.averageButtonBlinkPercentage >= challengePointScoreDefinition->minimumTotalTimePercentageForTwoStars )
   {       
     this->m_gameScore.starsEarned = 2;
     if (challengeInfo < 2)
       m_pGameContext->setChallengeInfo(this->m_challengeIndex, 2);
   }
-  else if ( this->m_gameScore.averageButtonBlinkStartOffset <= challengePointScoreDefinition->minimumTotalTimePercentageForOneStar)
+  else if ( this->m_gameScore.averageButtonBlinkPercentage >= challengePointScoreDefinition->minimumTotalTimePercentageForOneStar)
   {       
     this->m_gameScore.starsEarned = 1;
     if (challengeInfo < 1)
@@ -278,6 +290,7 @@ int RhythmChallengeScene::updateChallengeInfo(const ChallengePointScoreDefinitio
 
 void RhythmChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
 {
+  this->m_hasUserStartedGame = true;
   m_lastButtonPressed = ((GameButton*)pSender);
 
   // use the areUserVariablesSet flag to determine whether we have already used this button...
@@ -313,6 +326,7 @@ void RhythmChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
     m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].rhythmBlinks[buttonSequenceIndex].userBlinkActualTime = now;
     if (buttonSequenceIndex == 0)
     {    
+      this->m_hasUserStartedGame = true;
       m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].rhythmBlinks[buttonSequenceIndex].userBlinkRelativeTime = 0;
     }
     else
@@ -341,14 +355,21 @@ void RhythmChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
       {
         m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].averageUserOffset += it->absoluteUserBlinkOffset;
       }
-
       m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].averageUserOffset /= (float)m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].totalBlinks;
     
-      this->m_gameScore.totalPoints += MAX(.0f, 100 - m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].averageUserOffset * 10) * m_challengePointScoreDefinition.correctButtonScore;
+      this->m_gameScore.totalPoints += m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].totalBlinks * m_challengePointScoreDefinition.correctButtonScore;
+      float bonus = .0f;
+      if ( m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].averageUserOffset < this->m_challengePointScoreDefinition.clickTimeThreshold )
+      {
+        this->m_gameScore.totalPoints += this->m_challengePointScoreDefinition.maxTimeBonus 
+              * (1 - m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].averageUserOffset / this->m_challengePointScoreDefinition.clickTimeThreshold)
+              * m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].totalBlinks; 
+      }
+      this->m_gameScore.totalPoints = (int)this->m_gameScore.totalPoints - (int)this->m_gameScore.totalPoints % 10;
       m_topBar->setScore((long)this->m_gameScore.totalPoints);
       
       char str[128];
-      sprintf(str, "+%.3f s", fabs(m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].averageUserOffset));
+      sprintf(str, "+%.3f s", m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].averageUserOffset );
     
       int colorShade;  
       if (m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[m_currentSequenceIndex].averageUserOffset < .1f) { colorShade = 1; }
@@ -360,27 +381,43 @@ void RhythmChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
       this->playConsoleLabelAnimation(str, 1.4f, 1.1f, .0f, colorShade);
 
       if (m_currentSequenceIndex == m_rhythmBlinkSequenceDefinition.totalSequences - 1)
-      {
-        // TODO (Roman): end of game      
+      {     
         this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION; 
         this->m_gameScore.averageButtonBlinkStartOffset = 0;
     
         for (int i = 0; i < m_rhythmBlinkSequenceDefinition.totalSequences; ++i)
         {
-          this->m_gameScore.averageButtonBlinkStartOffset += fabs(m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[i].averageUserOffset);
+          this->m_gameScore.averageButtonBlinkStartOffset += m_rhythmBlinkSequenceDefinition.rhythmBlinkSequences[i].averageUserOffset;
         }
         this->m_gameScore.averageButtonBlinkStartOffset = this->m_gameScore.averageButtonBlinkStartOffset / m_rhythmBlinkSequenceDefinition.totalSequences;
         this->m_gameScore.averageButtonBlinkPercentage = MAX(.0f, 1.0f - this->m_gameScore.averageButtonBlinkStartOffset);
-    
-        // TODO (Roman): scoring and popup      
+      
         this->m_gameScore.coinsEarned = round( MAX(.0f, 4.0f - this->m_gameScore.averageButtonBlinkStartOffset * 10.0f) );
       
         this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);
               
         this->updateChallengeInfo(&this->m_challengePointScoreDefinition);
         m_pGameContext->setGameScore( m_gameScore );
-      
-        this->playBlinkButtonsAnimation(2, .25f, .8f);
+    
+        if ( m_gameScore.starsEarned > 0)
+        {
+          this->m_showWildcardScoreInfo = false;
+          this->m_pGameContext->setTotalLifes(this->m_pGameContext->getTotalLifes() + 1);
+        }
+        else
+        {
+          this->m_showWildcardScoreInfo = true;
+          this->m_wildcardScoreInfoLeft = "Score";
+          char str[64];        
+          if (m_gameScore.averageButtonBlinkStartOffset >= 0)
+            sprintf(str, "%i / 100", (int)round(m_gameScore.averageButtonBlinkPercentage*100));
+          else
+            sprintf(str, "NA");
+          this->m_wildcardScoreInfoRight = str;
+        }
+
+        this->playBlinkButtonsAnimation(2, .25f, .8f);       
+
         this->scheduleOnce(schedule_selector(RhythmChallengeScene::showGameScorePopupCallback), 2.0f);
       }
       else
@@ -396,6 +433,7 @@ void RhythmChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
 void RhythmChallengeScene::onIncorrectButtonPressed()
 {
   // TODO (Roman): check whether that is correct
+  this->m_hasUserStartedGame = true; // just in case the user got the first click wrong...
   this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION;
 
   this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
@@ -412,12 +450,31 @@ void RhythmChallengeScene::onIncorrectButtonPressed()
   this->m_eogTargetTimeLastButton = .55f;
   this->m_eogElapsedTimeWrongButton = -wrongDelay;
           
+  this->m_showWildcardScoreInfo = false;
   m_lastButtonPressed->playAnimation(PRESSED);
 
   this->schedule(schedule_selector(RhythmChallengeScene::eogGrayOutButtons), 0.021f); // framerate: 1/48
   this->schedule(schedule_selector(RhythmChallengeScene::eogGrayOutLastButton), 0.021f, -1, wrongDelay); // framerate: 1/48
   this->schedule(schedule_selector(RhythmChallengeScene::eogReleaseLastButton), 0.021f, 0, wrongDelay); // framerate: 1/48
   this->schedule(schedule_selector(RhythmChallengeScene::eogBlinkCorrectButton), 0.2f, -1, correctBlinkDelay); // framerate: 1/48    
-  
+}
 
+void RhythmChallengeScene::replaySequenceCallback(CCObject* pSender)
+{   
+  int totalCoins = this->m_pGameContext->getTotalCoins();
+  if (totalCoins >= COINS_COST_REPLAY_SEQUENCE)
+  {
+    totalCoins -= COINS_COST_REPLAY_SEQUENCE;
+    this->m_pGameContext->setTotalCoins(totalCoins);
+    
+    this->m_gameScorePopup->hide();
+
+    startNewGame();
+
+    // TODO (Roman): maybe have a start from last wrong sequence option??
+  }
+  else
+  {
+    this->m_gameScorePopup->showMoreCoinsPanel();
+  }
 }
