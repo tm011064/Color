@@ -65,8 +65,6 @@ protected:
   int m_totalEnabledButtons;
   bool m_isLayoutInitialized;
   float m_buttonScale;
-
-  CCSprite* m_consoleBackground;
   
   CCArray *m_buttons;
   CCPoint m_anchor;
@@ -91,7 +89,6 @@ public:
     , m_firstUserSequencePressedTime(0)
     , m_totalEnabledButtons(totalEnabledButtons)
     , m_sceneType(sceneType)
-    , m_consoleBackground(NULL)
     , m_topBar(NULL)
     , m_wildcardPopup(NULL)
     , m_gameScorePopup(NULL)

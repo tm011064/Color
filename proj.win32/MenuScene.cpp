@@ -9,16 +9,8 @@ void MenuScene::initialize(float dt)
   CCPoint leftBottom = VisibleRect::leftBottom();
   CCRect visibleRect = VisibleRect::getVisibleRect();
             
-  RepeatingSprite* bg = RepeatingSprite::create(
-    m_pGameContext
-    , m_pGameContext->getImageMap()->getTile("background")
-    , HORIZONTAL
-    , NORMAL
-    , visibleRect.size);
-  bg->setPosition(center);
-  this->addChild(bg, 0);
-  bg = NULL;
-        
+  LayoutController::AddBackground(m_pGameContext, this, -1);
+
   m_header = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("header"));
   CCSize size = m_header->getContentSize();
   m_header->setScale(visibleRect.size.width / size.height); 
@@ -42,7 +34,7 @@ void MenuScene::initialize(float dt)
     
   CCSize buttonSize = this->m_homeStoryMode->getContentSize();
   float posY, spacing;
-  float targetedSpacingToButtonHeightRatio = 1.38f;
+  float targetedSpacingToButtonHeightRatio = 1.0f;
 
   CalculateButtonLayoutCoordinates(topY, buttonSize.height, targetedSpacingToButtonHeightRatio, availableHeight, 4, posY, spacing);
     

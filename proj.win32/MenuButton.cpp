@@ -33,15 +33,15 @@ MenuButton* MenuButton::create(CCSpriteFrame* bgNormalLeft
   menuButton->m_bgDisabledRight = CCSprite::createWithSpriteFrame(bgDisabledRight);
 
   menuButton->m_bgNormalLeft->setPositionX(-(normalMiddleScaleX/2) - menuButton->m_bgNormalLeft->getContentSize().width/2);
-  menuButton->m_bgNormalMiddle->setScaleX(normalMiddleScaleX);
+  menuButton->m_bgNormalMiddle->setScaleX(normalMiddleScaleX / menuButton->m_bgNormalMiddle->getContentSize().width);
   menuButton->m_bgNormalRight->setPositionX(normalMiddleScaleX/2 + menuButton->m_bgNormalRight->getContentSize().width/2);
   
   menuButton->m_bgSelectedLeft->setPositionX(-(selectedMiddleScaleX/2) - menuButton->m_bgSelectedLeft->getContentSize().width/2);
-  menuButton->m_bgSelectedMiddle->setScaleX(selectedMiddleScaleX);
+  menuButton->m_bgSelectedMiddle->setScaleX(selectedMiddleScaleX / menuButton->m_bgSelectedMiddle->getContentSize().width);
   menuButton->m_bgSelectedRight->setPositionX(selectedMiddleScaleX/2 + menuButton->m_bgSelectedRight->getContentSize().width/2);
 
   menuButton->m_bgDisabledLeft->setPositionX(-(disabledMiddleScaleX/2) - menuButton->m_bgDisabledLeft->getContentSize().width/2);
-  menuButton->m_bgDisabledMiddle->setScaleX(disabledMiddleScaleX);
+  menuButton->m_bgDisabledMiddle->setScaleX(disabledMiddleScaleX / menuButton->m_bgDisabledMiddle->getContentSize().width);
   menuButton->m_bgDisabledRight->setPositionX(disabledMiddleScaleX/2 + menuButton->m_bgDisabledRight->getContentSize().width/2);
 
   return menuButton;

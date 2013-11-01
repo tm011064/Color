@@ -20,39 +20,7 @@ GameContext::~GameContext()
 
 void GameContext::init(int totalChallenges)
 {
-  ChallengePointScoreDefinition challengePointScoreDefinition;  
-
-  challengePointScoreDefinition.correctButtonScore = 100.0f;
-  challengePointScoreDefinition.maxTimeBonus = 40.0f;
-  challengePointScoreDefinition.clickTimeThreshold = 2.0f;
-  challengePointScoreDefinition.levelBonus = 400.0f;
-  challengePointScoreDefinition.maxLevelTimeBonus = 400.0f;
-  challengePointScoreDefinition.coinsEarnedMultiplier = .1f;
-  m_challengePointScoreDefinitions[1] = challengePointScoreDefinition;
-
-  challengePointScoreDefinition.correctButtonScore = 300.0f;
-  challengePointScoreDefinition.maxTimeBonus = 70.0f;
-  challengePointScoreDefinition.clickTimeThreshold = 2.0f;
-  challengePointScoreDefinition.levelBonus = 700.0f;
-  challengePointScoreDefinition.maxLevelTimeBonus = 700.0f;
-  challengePointScoreDefinition.coinsEarnedMultiplier = .15f;
-  m_challengePointScoreDefinitions[2] = challengePointScoreDefinition;
-
-  challengePointScoreDefinition.correctButtonScore = 500.0f;
-  challengePointScoreDefinition.maxTimeBonus = 100.0f;
-  challengePointScoreDefinition.clickTimeThreshold = 2.0f;
-  challengePointScoreDefinition.levelBonus = 1000.0f;
-  challengePointScoreDefinition.maxLevelTimeBonus = 1000.0f;
-  challengePointScoreDefinition.coinsEarnedMultiplier = .3f;
-  m_challengePointScoreDefinitions[3] = challengePointScoreDefinition;
-  
-  challengePointScoreDefinition.correctButtonScore = 700.0f;
-  challengePointScoreDefinition.maxTimeBonus = 130.0f;
-  challengePointScoreDefinition.clickTimeThreshold = 2.0f;
-  challengePointScoreDefinition.levelBonus = 1300.0f;
-  challengePointScoreDefinition.maxLevelTimeBonus = 1300.0f;
-  challengePointScoreDefinition.coinsEarnedMultiplier = .5f;
-  m_challengePointScoreDefinitions[4] = challengePointScoreDefinition;
+  createChallengePointScoreDefinitions();
 
   CCUserDefault* userDefault = CCUserDefault::sharedUserDefault();
 
@@ -92,6 +60,292 @@ void GameContext::init(int totalChallenges)
     
   this->m_spriteFrameCache = new SpriteFrameCache();
   this->m_spriteFrameCache->init();
+}
+
+void GameContext::createChallengePointScoreDefinitions()
+{
+  float totalCorrectButtons;
+  ChallengePointScoreDefinition challengePointScoreDefinition;
+
+  // CHALLENGE: 01
+  // -------------------------------------------------------------------------------------------
+
+  challengePointScoreDefinition = this->getBaseChallengePointScoreDefinition(2);
+  challengePointScoreDefinition.levelToReach = 1;
+  totalCorrectButtons = (challengePointScoreDefinition.levelToReach / 2.0f) * ( 1.0f + challengePointScoreDefinition.levelToReach );
+
+  challengePointScoreDefinition.mininimumPointsForOneStar = 0;
+  challengePointScoreDefinition.mininimumPointsForTwoStars = 
+    challengePointScoreDefinition.levelBonus * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+    + challengePointScoreDefinition.maxLevelTimeBonus * challengePointScoreDefinition.levelToReach * .7f
+    + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - challengePointScoreDefinition.levelToReach ) * .7f; // minus level to reach cause the first click gains no bonus
+
+  challengePointScoreDefinition.mininimumPointsForThreeStars = 
+    challengePointScoreDefinition.levelBonus * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+    + challengePointScoreDefinition.maxLevelTimeBonus * challengePointScoreDefinition.levelToReach * .9f
+    + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - challengePointScoreDefinition.levelToReach ) * .9f;
+
+  challengePointScoreDefinition.challengeSceneType = REACH_LEVEL;
+  m_challengePointScoreDefinitions[0] = challengePointScoreDefinition;
+
+  // CHALLENGE: 02
+  // -------------------------------------------------------------------------------------------    
+  challengePointScoreDefinition = this->getBaseChallengePointScoreDefinition(3);
+  challengePointScoreDefinition.levelToReach = 9;
+  totalCorrectButtons = (challengePointScoreDefinition.levelToReach / 2.0f) * ( 1.0f + challengePointScoreDefinition.levelToReach );
+        
+  challengePointScoreDefinition.mininimumPointsForOneStar = 0;
+  challengePointScoreDefinition.mininimumPointsForTwoStars = 
+    challengePointScoreDefinition.levelBonus * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+    + challengePointScoreDefinition.maxLevelTimeBonus * challengePointScoreDefinition.levelToReach * .7f
+    + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - challengePointScoreDefinition.levelToReach ) * .7f;
+
+  challengePointScoreDefinition.mininimumPointsForThreeStars = 
+    challengePointScoreDefinition.levelBonus * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+    + challengePointScoreDefinition.maxLevelTimeBonus * challengePointScoreDefinition.levelToReach * .9f
+    + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - challengePointScoreDefinition.levelToReach ) * .9f;
+  
+  challengePointScoreDefinition.challengeSceneType = REACH_LEVEL;
+  m_challengePointScoreDefinitions[1] = challengePointScoreDefinition;
+
+  // CHALLENGE: 03
+  // -------------------------------------------------------------------------------------------      
+  challengePointScoreDefinition = this->getBaseChallengePointScoreDefinition(3);
+  challengePointScoreDefinition.levelToReach = 2;
+    
+  challengePointScoreDefinition.mininimumPointsForOneStar = 0;
+  challengePointScoreDefinition.mininimumPointsForTwoStars = 
+    challengePointScoreDefinition.correctButtonScore * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.maxTimeBonus * (challengePointScoreDefinition.levelToReach - 1) * .72f;
+
+  challengePointScoreDefinition.mininimumPointsForThreeStars = 
+    challengePointScoreDefinition.correctButtonScore * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.maxTimeBonus * (challengePointScoreDefinition.levelToReach - 1) * .85f;
+
+  challengePointScoreDefinition.challengeSceneType = REPEAT_ONE_OFF;
+  m_challengePointScoreDefinitions[2] = challengePointScoreDefinition;
+
+  // CHALLENGE: 04
+  // -------------------------------------------------------------------------------------------
+      
+  challengePointScoreDefinition = this->getBaseChallengePointScoreDefinition(4);
+  challengePointScoreDefinition.levelToReach = 12;
+  totalCorrectButtons = (challengePointScoreDefinition.levelToReach / 2.0f) * ( 1.0f + challengePointScoreDefinition.levelToReach );
+    
+  challengePointScoreDefinition.mininimumPointsForOneStar = 0;
+  challengePointScoreDefinition.mininimumPointsForTwoStars = 
+    challengePointScoreDefinition.correctButtonScore * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.maxTimeBonus * (challengePointScoreDefinition.levelToReach - 1) * .72f;
+
+  challengePointScoreDefinition.mininimumPointsForThreeStars = 
+    challengePointScoreDefinition.correctButtonScore * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.maxTimeBonus * (challengePointScoreDefinition.levelToReach - 1) * .85f;
+
+  challengePointScoreDefinition.challengeSceneType = REPEAT_ONE_OFF;
+  m_challengePointScoreDefinitions[3] = challengePointScoreDefinition;
+
+  // CHALLENGE: 05
+  // -------------------------------------------------------------------------------------------
+  
+  challengePointScoreDefinition = this->getBaseChallengePointScoreDefinition(1);
+    
+  challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .75f;
+  challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
+  challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
+
+  challengePointScoreDefinition.challengeSceneType = EXACT_LENGTH;
+  m_challengePointScoreDefinitions[4] = challengePointScoreDefinition;
+
+  // CHALLENGE: 06
+  // -------------------------------------------------------------------------------------------
+      
+  challengePointScoreDefinition = this->getBaseChallengePointScoreDefinition(3);
+    
+  challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .75f;
+  challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
+  challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
+
+  challengePointScoreDefinition.challengeSceneType = EXACT_LENGTH;
+  m_challengePointScoreDefinitions[5] = challengePointScoreDefinition;
+
+  // CHALLENGE: 07
+  // -------------------------------------------------------------------------------------------
+  
+  challengePointScoreDefinition = this->getBaseChallengePointScoreDefinition(4);
+    
+  challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .75f;
+  challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
+  challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
+
+  challengePointScoreDefinition.challengeSceneType = EXACT_LENGTH;
+  m_challengePointScoreDefinitions[6] = challengePointScoreDefinition;
+
+  // CHALLENGE: 08
+  // -------------------------------------------------------------------------------------------
+
+  challengePointScoreDefinition.challengeSceneType = RHYTHM;
+  m_challengePointScoreDefinitions[7] = challengePointScoreDefinition;
+
+  // CHALLENGE: 09
+  // -------------------------------------------------------------------------------------------
+
+  challengePointScoreDefinition.challengeSceneType = RHYTHM;
+  m_challengePointScoreDefinitions[8] = challengePointScoreDefinition;
+
+  // CHALLENGE: 10
+  // -------------------------------------------------------------------------------------------
+      
+  challengePointScoreDefinition = this->getBaseChallengePointScoreDefinition(2);
+  challengePointScoreDefinition.levelToReach = 25;
+  totalCorrectButtons = (challengePointScoreDefinition.levelToReach / 2.0f) * ( 1.0f + challengePointScoreDefinition.levelToReach );
+        
+  challengePointScoreDefinition.mininimumPointsForOneStar = 0;
+  challengePointScoreDefinition.mininimumPointsForTwoStars = 
+    challengePointScoreDefinition.levelBonus * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+    + challengePointScoreDefinition.maxLevelTimeBonus * challengePointScoreDefinition.levelToReach * .7f
+    + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - challengePointScoreDefinition.levelToReach ) * .7f;
+
+  challengePointScoreDefinition.mininimumPointsForThreeStars = 
+    challengePointScoreDefinition.levelBonus * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+    + challengePointScoreDefinition.maxLevelTimeBonus * challengePointScoreDefinition.levelToReach * .9f
+    + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - challengePointScoreDefinition.levelToReach ) * .9f;
+
+  challengePointScoreDefinition.challengeSceneType = REACH_LEVEL;
+  m_challengePointScoreDefinitions[9] = challengePointScoreDefinition;
+
+  // CHALLENGE: 11
+  // -------------------------------------------------------------------------------------------
+      
+  challengePointScoreDefinition = this->getBaseChallengePointScoreDefinition(3);
+  challengePointScoreDefinition.levelToReach = 20;
+  totalCorrectButtons = (challengePointScoreDefinition.levelToReach / 2.0f) * ( 1.0f + challengePointScoreDefinition.levelToReach );
+        
+  challengePointScoreDefinition.mininimumPointsForOneStar = 0;
+  challengePointScoreDefinition.mininimumPointsForTwoStars = 
+    challengePointScoreDefinition.levelBonus * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+    + challengePointScoreDefinition.maxLevelTimeBonus * challengePointScoreDefinition.levelToReach * .7f
+    + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - challengePointScoreDefinition.levelToReach ) * .7f;
+
+  challengePointScoreDefinition.mininimumPointsForThreeStars = 
+    challengePointScoreDefinition.levelBonus * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+    + challengePointScoreDefinition.maxLevelTimeBonus * challengePointScoreDefinition.levelToReach * .9f
+    + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - challengePointScoreDefinition.levelToReach ) * .9f;
+
+  challengePointScoreDefinition.challengeSceneType = REACH_LEVEL;
+  m_challengePointScoreDefinitions[10] = challengePointScoreDefinition;
+
+  // CHALLENGE: 12
+  // -------------------------------------------------------------------------------------------
+      
+  challengePointScoreDefinition = this->getBaseChallengePointScoreDefinition(4);
+  challengePointScoreDefinition.levelToReach = 20;
+  totalCorrectButtons = (challengePointScoreDefinition.levelToReach / 2.0f) * ( 1.0f + challengePointScoreDefinition.levelToReach );
+        
+  challengePointScoreDefinition.mininimumPointsForOneStar = 0;
+  challengePointScoreDefinition.mininimumPointsForTwoStars = 
+    challengePointScoreDefinition.levelBonus * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+    + challengePointScoreDefinition.maxLevelTimeBonus * challengePointScoreDefinition.levelToReach * .7f
+    + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - challengePointScoreDefinition.levelToReach ) * .7f;
+
+  challengePointScoreDefinition.mininimumPointsForThreeStars = 
+    challengePointScoreDefinition.levelBonus * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.correctButtonScore * totalCorrectButtons
+    + challengePointScoreDefinition.maxLevelTimeBonus * challengePointScoreDefinition.levelToReach * .9f
+    + challengePointScoreDefinition.maxTimeBonus * ( totalCorrectButtons - challengePointScoreDefinition.levelToReach ) * .9f;
+
+  challengePointScoreDefinition.challengeSceneType = REACH_LEVEL;
+  m_challengePointScoreDefinitions[11] = challengePointScoreDefinition;
+
+  // CHALLENGE: 13
+  // -------------------------------------------------------------------------------------------
+      
+  challengePointScoreDefinition = this->getBaseChallengePointScoreDefinition(2);
+  challengePointScoreDefinition.levelToReach = 15;
+  totalCorrectButtons = (challengePointScoreDefinition.levelToReach / 2.0f) * ( 1.0f + challengePointScoreDefinition.levelToReach );
+    
+  challengePointScoreDefinition.mininimumPointsForOneStar = 0;
+  challengePointScoreDefinition.mininimumPointsForTwoStars = 
+    challengePointScoreDefinition.correctButtonScore * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.maxTimeBonus * (challengePointScoreDefinition.levelToReach - 1) * .72f;
+
+  challengePointScoreDefinition.mininimumPointsForThreeStars = 
+    challengePointScoreDefinition.correctButtonScore * challengePointScoreDefinition.levelToReach
+    + challengePointScoreDefinition.maxTimeBonus * (challengePointScoreDefinition.levelToReach - 1) * .85f;
+
+  challengePointScoreDefinition.challengeSceneType = REPEAT_ONE_OFF;
+  m_challengePointScoreDefinitions[12] = challengePointScoreDefinition;
+
+  // CHALLENGE: 14
+  // -------------------------------------------------------------------------------------------
+
+  challengePointScoreDefinition.challengeSceneType = REACH_LEVEL;
+  m_challengePointScoreDefinitions[13] = challengePointScoreDefinition;
+
+  // CHALLENGE: 15
+  // -------------------------------------------------------------------------------------------
+
+  challengePointScoreDefinition.challengeSceneType = REACH_LEVEL;
+  m_challengePointScoreDefinitions[14] = challengePointScoreDefinition;
+
+  // CHALLENGE: 16
+  // -------------------------------------------------------------------------------------------
+
+  m_challengePointScoreDefinitions[15] = challengePointScoreDefinition;
+}
+
+ChallengePointScoreDefinition GameContext::getBaseChallengePointScoreDefinition(int totalButtons)
+{
+  ChallengePointScoreDefinition challengePointScoreDefinition;  
+
+  if ( totalButtons == 1 )
+  {
+    challengePointScoreDefinition.correctButtonScore = 100.0f;
+    challengePointScoreDefinition.maxTimeBonus = 40.0f;
+    challengePointScoreDefinition.clickTimeThreshold = 2.0f;
+    challengePointScoreDefinition.levelBonus = 400.0f;
+    challengePointScoreDefinition.maxLevelTimeBonus = 400.0f;
+    challengePointScoreDefinition.coinsEarnedMultiplier = .1f;
+  }
+  else if ( totalButtons == 2 )
+  {
+    challengePointScoreDefinition.correctButtonScore = 300.0f;
+    challengePointScoreDefinition.maxTimeBonus = 70.0f;
+    challengePointScoreDefinition.clickTimeThreshold = 2.0f;
+    challengePointScoreDefinition.levelBonus = 700.0f;
+    challengePointScoreDefinition.maxLevelTimeBonus = 700.0f;
+    challengePointScoreDefinition.coinsEarnedMultiplier = .15f;  
+  }
+  else if ( totalButtons == 3 )
+  {
+    challengePointScoreDefinition.correctButtonScore = 500.0f;
+    challengePointScoreDefinition.maxTimeBonus = 100.0f;
+    challengePointScoreDefinition.clickTimeThreshold = 2.0f;
+    challengePointScoreDefinition.levelBonus = 1000.0f;
+    challengePointScoreDefinition.maxLevelTimeBonus = 1000.0f;
+    challengePointScoreDefinition.coinsEarnedMultiplier = .3f;    
+  }
+  else if ( totalButtons == 4 )
+  {
+    challengePointScoreDefinition.correctButtonScore = 700.0f;
+    challengePointScoreDefinition.maxTimeBonus = 130.0f;
+    challengePointScoreDefinition.clickTimeThreshold = 2.0f;
+    challengePointScoreDefinition.levelBonus = 1300.0f;
+    challengePointScoreDefinition.maxLevelTimeBonus = 1300.0f;
+    challengePointScoreDefinition.coinsEarnedMultiplier = .5f;
+  }
+
+  challengePointScoreDefinition.totalButtons = totalButtons;
+
+  return challengePointScoreDefinition;
 }
 
 LifeInfo GameContext::refreshTotalLifesCount()

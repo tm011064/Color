@@ -22,7 +22,7 @@ void BaseScene::onEnter()
       m_splashLogoScreen->setPosition(VisibleRect::center());
       this->addChild(m_splashLogoScreen, SPLASH_ZORDER);
       
-      this->scheduleOnce(schedule_selector(BaseScene::initialize), 0.1f);
+      this->scheduleOnce(schedule_selector(BaseScene::initialize), 0.01f);
     }
     else
     {

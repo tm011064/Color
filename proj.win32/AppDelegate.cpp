@@ -44,25 +44,30 @@ bool AppDelegate::applicationDidFinishLaunching()
   CCSize frameSize = pEGLView->getFrameSize();
   
   gameContext->setResourceDefinition( SIZE_1536x2048 );
+  gameContext->setGuaranteedVisibleSize( SIZE_960x1280.size.width, SIZE_960x1280.size.height );
   if (frameSize.width <= SIZE_960x1280.size.width
     && frameSize.height <= SIZE_960x1280.size.height)
   { 
     gameContext->setResourceDefinition( SIZE_960x1280 );
+    gameContext->setGuaranteedVisibleSize( SIZE_720x960.size.width, SIZE_720x960.size.height );
   }
   if (frameSize.width <= SIZE_720x960.size.width
     && frameSize.height <= SIZE_720x960.size.height) 
   { 
     gameContext->setResourceDefinition( SIZE_720x960 );
+    gameContext->setGuaranteedVisibleSize( SIZE_720x960.size.width, SIZE_720x960.size.height );
   }
   if (frameSize.width <= SIZE_360x480.size.width
     && frameSize.height <= SIZE_360x480.size.height)
   { 
     gameContext->setResourceDefinition( SIZE_360x480 );
+    gameContext->setGuaranteedVisibleSize( SIZE_240x320.size.width, SIZE_240x320.size.height );
   }
   if (frameSize.width <= SIZE_240x320.size.width
     && frameSize.height <= SIZE_240x320.size.height)
   { 
     gameContext->setResourceDefinition( SIZE_240x320 );
+    gameContext->setGuaranteedVisibleSize( SIZE_240x320.size.width, SIZE_240x320.size.height );
   }
 
   std::vector<std::string> searchPaths;

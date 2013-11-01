@@ -152,7 +152,8 @@ void RhythmChallengeScene::onPostInitialize()
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
   {
-    this->addChild((GameButton*)o);
+    LayoutController::AddConsoleButton(m_pGameContext, this, (GameButton*)o);
+
     if (((GameButton*)o)->getIsEnabled())
       enabledButtons.push_back((GameButton*)o);
   }  
@@ -181,21 +182,12 @@ void RhythmChallengeScene::onPreInitialize()
 
 void RhythmChallengeScene::onLoadDescriptionPopup()
 {  
-  ccColor4F bgColor = { 23.0f/255.0f, 23.0f/255.0f, 23.0f/255.0f, 1.0f };
-  ccColor4F bgDialogColor = { 165.0f/255.0f, 65.0f/255.0f, 43.0f/255.0f, 1.0f };
-  ccColor4F bgDialogBorderColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-  
   /********** DESCRIPTION POPUP **********/
   m_descriptionPopup = DescriptionPopup::create(
     this->m_pGameContext
     , callfuncO_selector(RhythmChallengeScene::newGameCallback)
     , this
-    , "Rhythm\nChallenge"
-    , "Target Score: " + UtilityHelper::convertToString(
-        MAX(.0f, 1.0f - this->m_challengePointScoreDefinition.minimumTotalTimePercentageForOneStar) * 100.0f, 0) 
-      + " / 100\n\nRepeat the button\nsequence.\nTry to get as many\nas blinks as\npossible." // TODO (Roman): text
-    , this->m_pGameContext->getImageMap()->getTile("iconNote")
-    , bgColor, bgDialogColor, bgDialogBorderColor);
+    , this->m_challengePointScoreDefinition);
   m_descriptionPopup->setZOrder(SPLASH_ZORDER);
   this->addChild(m_descriptionPopup);
   /********** DESCRIPTION POPUP **********/

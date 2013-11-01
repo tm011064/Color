@@ -24,5 +24,6 @@
 #include "TextToggleButton.h"
 #include "TextButton.h"
 #include "WildcardButton.h"
+#include "ChallengeButton.h"
 
 #endif // __GAME_ENGINE_INCLUDES_H__

@@ -46,8 +46,14 @@ void GameScorePopup::onEnter()
     m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightBottom.y - m_borderThickness);
       
     // now we have the border thickness and padding, so we can set the boundaries 
-    float indentLeft = round ( m_visibleRectLeftBottom.x + (visibleRect.size.width * .15) );
-    float indentRight = round ( m_visibleRectLeftBottom.x + (visibleRect.size.width * .85) ) ;
+    float indentLeft = round ( MIN( 
+        m_visibleRectLeftBottom.x + (m_visibleRectRightTop.x - m_visibleRectLeftBottom.x - m_pGameContext->getGuaranteedVisibleSize().width)/2
+      , m_visibleRectLeftBottom.x + (visibleRect.size.width * .15) ) );
+
+    float indentRight = round ( MAX( 
+        m_visibleRectRightTop.x - (m_visibleRectRightTop.x - m_visibleRectLeftBottom.x - m_pGameContext->getGuaranteedVisibleSize().width)/2
+      , m_visibleRectLeftBottom.x + (visibleRect.size.width * .85) ) );
+
     m_dialogRectInnerLeftBottom = ccp( indentLeft + this->m_borderThickness, m_dialogRectLeftBottom.y + this->m_borderThickness );
     m_dialogRectInnerRightTop = ccp( indentRight - this->m_borderThickness, m_dialogRectRightTop.y - this->m_borderThickness );
 
@@ -65,11 +71,13 @@ void GameScorePopup::onEnter()
     this->addChild(m_coinsLabel);
     
     m_availableCoinsCoin = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("coin_small"));
-    m_availableCoinsCoin->setScale(this->m_pGameContext->getFontHeightNormal() / m_availableCoinsCoin->getContentSize().height * 1.5);
-    m_availableCoinsCoin->setPosition(ccpRounded(m_coinsLabel->getPositionX() - m_coinsLabel->getContentSize().width/2 - m_padding, posY));
+    m_availableCoinsCoin->setScale(this->m_pGameContext->getFontHeightNormal() / m_availableCoinsCoin->getContentSize().height * 1.2);
+    m_availableCoinsCoin->setPosition(ccpRounded(m_coinsLabel->getPositionX() 
+      - m_coinsLabel->getContentSize().width/2*m_availableCoinsCoin->getScale()
+      - m_padding*3
+      , posY));
     this->addChild(m_availableCoinsCoin);
-
-
+    
     posY = m_dialogRectInnerRightTop.y - verticalSpacingLarge/2 - this->m_padding * 4;
     m_headerTextLabel = CCLabelBMFont::create(m_headerText.c_str(), m_pGameContext->getFontLargePath().c_str());
     m_headerTextLabel->setPosition(center.x, posY );
@@ -123,34 +131,43 @@ void GameScorePopup::onEnter()
       
     case GSPMODE_CHALLENGE:
 
-      posY -= verticalSpacing;
-      m_blackStar1 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starBlack"));
-      size = m_blackStar1->getContentSize();
+      m_goldStar1 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("star_golden_large"));
+      size = m_goldStar1->getContentSize();
+      float starScale = ((m_dialogRectInnerRightTop.y - m_dialogRectInnerLeftBottom.y)*.18f) / size.height;
+      size.setSize(size.width*starScale, size.height*starScale);
+      posY -= size.height/2 + this->m_padding*2;
 
-      m_blackStar1->setPosition(ccpRounded(center.x - size.width * 1.5f, posY));
-      this->addChild(m_blackStar1);
+      m_goldStar1->setScale(starScale);
+      m_goldStar1->setPosition(ccpRounded(center.x - size.width * 1.3f, posY));
+
+      m_blackStar1 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("star_black_large"));
+      m_blackStar1->setScale(starScale);
+      m_blackStar1->setPosition(ccpRounded(center.x - size.width * 1.3f, posY));
     
-      m_blackStar2 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starBlack"));
+      m_blackStar2 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("star_black_large"));
+      m_blackStar2->setScale(starScale);
       m_blackStar2->setPosition(ccpRounded(center.x, posY));
-      this->addChild(m_blackStar2);
-    
-      m_blackStar3 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starBlack"));
-      m_blackStar3->setPosition(ccpRounded(center.x + size.width * 1.5f, posY));
-      this->addChild(m_blackStar3);
-    
-      m_goldStar1 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starGolden"));
-      m_goldStar1->setPosition(ccpRounded(center.x - size.width * 1.5f, posY));
-      this->addChild(m_goldStar1);
-    
-      m_goldStar2 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starGolden"));
+        
+      m_goldStar2 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("star_golden_large"));
+      m_goldStar2->setScale(starScale);
       m_goldStar2->setPosition(ccpRounded(center.x, posY));
-      this->addChild(m_goldStar2);
     
-      m_goldStar3 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("starGolden"));
-      m_goldStar3->setPosition(ccpRounded(center.x + size.width * 1.5f, posY));
+      m_blackStar3 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("star_black_large"));
+      m_blackStar3->setScale(starScale);
+      m_blackStar3->setPosition(ccpRounded(center.x + size.width * 1.3f, posY));
+    
+      m_goldStar3 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("star_golden_large"));
+      m_goldStar3->setScale(starScale);
+      m_goldStar3->setPosition(ccpRounded(center.x + size.width * 1.3f, posY));
+
+      this->addChild(m_blackStar1);
+      this->addChild(m_blackStar2);
+      this->addChild(m_blackStar3);
+      this->addChild(m_goldStar1);
+      this->addChild(m_goldStar2);
       this->addChild(m_goldStar3);
 
-      posY -= verticalSpacing;
+      posY -= size.height/2 + this->m_padding*2;
 
       textButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
         , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
@@ -318,9 +335,8 @@ void GameScorePopup::show(bool showWildcardHeader, std::string headerText
     m_coinsLabel->setString(UtilityHelper::convertToString(m_pGameContext->getTotalCoins()).c_str());  
     m_coinsLabel->setPositionX(round(m_textIndentRight - m_padding*2 - m_coinsLabel->getContentSize().width/2));
     m_availableCoinsCoin->setPositionX(round(m_coinsLabel->getPositionX() - m_coinsLabel->getContentSize().width/2 
-                                                                          - m_padding
-                                                                          - m_availableCoinsCoin->getContentSize().width/2));
-
+                                                                          - m_padding * 2
+                                                                          - m_availableCoinsCoin->getContentSize().width/2*m_availableCoinsCoin->getScale()));
     this->m_goldStar1->setVisible(false);
     this->m_goldStar2->setVisible(false);
     this->m_goldStar3->setVisible(false);

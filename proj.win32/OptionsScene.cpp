@@ -15,18 +15,9 @@ void OptionsScene::onEnter()
     CCRect visibleRect = VisibleRect::getVisibleRect();
     m_visibleRectLeftBottom = VisibleRect::leftBottom();
     m_visibleRectRightTop = VisibleRect::rightTop();
-    
-    
-    RepeatingSprite* bg = RepeatingSprite::create(
-      m_pGameContext
-      , m_pGameContext->getImageMap()->getTile("background")
-      , HORIZONTAL
-      , NORMAL
-      , visibleRect.size);
-    bg->setPosition(center);
-    this->addChild(bg, -1);
-    bg = NULL;
-        
+      
+    LayoutController::AddBackground(m_pGameContext, this, -1);
+            
     float padding = m_pGameContext->getDefaultPadding();
     float borderThickness = m_pGameContext->getDefaultBorderThickness();
 
@@ -42,8 +33,14 @@ void OptionsScene::onEnter()
     m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_panelRectRightBottom.y - borderThickness);
 
     // now we have the border thickness and padding, so we can set the boundaries 
-    float indentLeft = m_visibleRectLeftBottom.x + (visibleRect.size.width * .05);
-    float indentRight = m_visibleRectLeftBottom.x + (visibleRect.size.width * .9);
+    float indentLeft = round ( MIN( 
+        m_visibleRectLeftBottom.x + (m_visibleRectRightTop.x - m_visibleRectLeftBottom.x - m_pGameContext->getGuaranteedVisibleSize().width)/2
+      , m_visibleRectLeftBottom.x + (visibleRect.size.width * .15) ) );
+
+    float indentRight = round ( MAX( 
+        m_visibleRectRightTop.x - (m_visibleRectRightTop.x - m_visibleRectLeftBottom.x - m_pGameContext->getGuaranteedVisibleSize().width)/2
+      , m_visibleRectLeftBottom.x + (visibleRect.size.width * .85) ) );
+
     m_panelRectInnerLeftBottom = ccp( indentLeft + borderThickness, m_panelRectLeftBottom.y + borderThickness );
     m_panelRectInnerRightTop = ccp( indentRight - borderThickness, m_panelRectRightTop.y - borderThickness );
 

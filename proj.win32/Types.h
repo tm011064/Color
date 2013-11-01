@@ -130,6 +130,10 @@ typedef struct
   float minimumTotalTimePercentageForTwoStars;
   float minimumTotalTimePercentageForThreeStars;
 
+  ChallengeSceneType challengeSceneType;
+  float levelToReach;
+  float totalButtons;
+
 } ChallengePointScoreDefinition;
 
 typedef struct 

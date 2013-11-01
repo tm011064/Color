@@ -30,7 +30,7 @@ BaseSprite::~BaseSprite()
   m_animationFrames = NULL; // only set to NULL, the underlying object will be deleted elsewhere
   if (m_alphaMap)
   {
-    for (unsigned int i = 0; i < m_alphaMapCols; i++)
+    for (unsigned int i = 0; i < m_alphaMapRows; i++)
       free((void *)m_alphaMap[i]);
 
     free((void *)m_alphaMap);
@@ -444,7 +444,7 @@ void BaseSprite::refreshAlphaMap(CCSize originalSize, ResolutionPolicy resolutio
 
   if (m_alphaMap)
   {
-    for (unsigned int i = 0; i < m_alphaMapCols; i++)
+    for (unsigned int i = 0; i < m_alphaMapRows; i++)
       free((void *)m_alphaMap[i]);
 
     free((void *)m_alphaMap);

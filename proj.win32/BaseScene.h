@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "GameEngineIncludes.h"
+#include "LayoutController.h"
 
 class BaseScene : public cocos2d::CCScene
 {

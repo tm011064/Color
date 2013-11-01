@@ -1,0 +1,10 @@
+; button number time
+os;
+name=challenge1
+totalbuttons=2
+oe;
+
+ss;
+b 0 .0
+b 0 .4
+se;

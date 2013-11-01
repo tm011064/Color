@@ -186,6 +186,9 @@
     <ClInclude Include="LifeTimeTickerPopup.h">
       <Filter>include\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="ChallengeButton.h">
+      <Filter>include\Controls\Buttons</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseScene.cpp">
@@ -328,6 +331,9 @@
     </ClCompile>
     <ClCompile Include="LifeTimeTickerPopup.cpp">
       <Filter>include\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="ChallengeButton.cpp">
+      <Filter>include\Controls\Buttons</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -48,7 +48,7 @@ void RepeatOneOffSequenceChallengeScene::onPostInitialize()
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
   {
-    this->addChild((GameButton*)o);
+    LayoutController::AddConsoleButton(m_pGameContext, this, (GameButton*)o);
   }  
 }
 
@@ -74,19 +74,12 @@ void RepeatOneOffSequenceChallengeScene::onPreInitialize()
 
 void RepeatOneOffSequenceChallengeScene::onLoadDescriptionPopup()
 {  
-  ccColor4F bgColor = { .0f, .0f, .0f, 1.0f };
-  ccColor4F bgDialogColor = { 28.0f/255.0f, 82.0f/255.0f, 103.0f/255.0f, 1.0f };
-  ccColor4F bgDialogBorderColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-
   /********** DESCRIPTION POPUP **********/
   m_descriptionPopup = DescriptionPopup::create(
     this->m_pGameContext
     , callfuncO_selector(RepeatOneOffSequenceChallengeScene::newGameCallback)
     , this
-    , "Speed\nChallenge"
-    , "Description" // TODO (Roman): text
-    , this->m_pGameContext->getImageMap()->getTile("iconSpeed")
-    , bgColor, bgDialogColor, bgDialogBorderColor);
+    , this->m_challengePointScoreDefinition);
   m_descriptionPopup->setZOrder(SPLASH_ZORDER);
   this->addChild(m_descriptionPopup);
   /********** DESCRIPTION POPUP **********/

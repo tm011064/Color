@@ -54,9 +54,7 @@ protected:
 
   bool m_isLayoutInitialized;
   int m_challengeIndex;
-
-  CCSprite* m_consoleBackground;
-
+  
   WildcardPopup* m_wildcardPopup; 
   GameScorePopup* m_gameScorePopup;
   LifeTimeTickerPopup* m_lifeTimeTickerPopup;
@@ -115,7 +113,6 @@ public:
     , m_firstUserSequencePressedTime(0)
     , m_totalEnabledButtons(totalEnabledButtons)
     , m_challengeSceneType(challengeSceneType)
-    , m_consoleBackground(NULL)
     , m_topBar(NULL)
     , m_wildcardPopup(NULL)
     , m_gameScorePopup(NULL)

@@ -15,41 +15,50 @@ private:
   SEL_CallFuncO m_fnpCloseCallbackDelegate;  
   CCNode *m_pTarget;
     
+  CCPoint m_descriptionBoxLeftBottom;
+  CCPoint m_descriptionBoxRightTop;
+  CCPoint m_scoreBoxLeftBottom;
+  CCPoint m_scoreBoxRightTop;
+  CCPoint m_headerBoxLeftBottom;
+  CCPoint m_headerBoxRightTop;
+
+  CCPoint m_borderLeftRightTop;
+  CCPoint m_borderBottomRightTop;
+  CCPoint m_borderRightLeftBottom;
+  CCPoint m_borderTopLeftBottom;
+
+  CCPoint m_lowerSeparatorRightTop;
+  CCPoint m_upperSeparatorRightTop;
+
   TextButton* m_playButton;
-  std::string m_header;
-  std::string m_text;
-  CCSpriteFrame* m_icon;
+
+  ChallengePointScoreDefinition m_challengePointScoreDefinition;
 
   void playCallback(CCObject* pSender);
 
   float m_padding;
 
+  ccColor4F m_targetBackgroundColor;
+  ccColor4F m_descriptionBackgroundColor;
+
 protected:
   DescriptionPopup(GameContext* gameContext
     , SEL_CallFuncO closeCallbackDelegate
-    , CCNode* callbackTarget
-    , std::string header, std::string text, CCSpriteFrame* icon
-    , ccColor4F backgroundColor, ccColor4F dialogColor, ccColor4F dialogBorderColor)
+    , CCNode* callbackTarget, ChallengePointScoreDefinition challengePointScoreDefinition)
     : m_pGameContext(gameContext)
     , m_isLayoutInitialized(false)
     , m_fnpCloseCallbackDelegate(closeCallbackDelegate)
     , m_pTarget(callbackTarget)
-    , m_header(header)
-    , m_text(text)
-    , m_icon(icon)
     , m_playButton(NULL)
+    , m_challengePointScoreDefinition(challengePointScoreDefinition)
   { 
-    m_backgroundColor = backgroundColor;
-    m_dialogColor = dialogColor;
-    m_dialogBorderColor = dialogBorderColor;
+
   }
 
 public:
   static DescriptionPopup* create(GameContext* gameContext
     , SEL_CallFuncO closeCallbackDelegate
-    , CCNode* callbackTarget
-    , std::string header, std::string text, CCSpriteFrame* icon
-    , ccColor4F backgroundColor, ccColor4F dialogColor, ccColor4F dialogBorderColor);
+    , CCNode* callbackTarget, ChallengePointScoreDefinition challengePointScoreDefinition);
   ~DescriptionPopup() { }
 
   void setEnablePlayButton(bool isEnabled);

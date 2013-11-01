@@ -15,8 +15,34 @@ void ChallengeButtonPanel::onEnter()
   if (!this->m_isLayoutInitialized)
   {    
     this->m_isLayoutInitialized = true;
-        
-    /*************** STORY MODE ***************/        
+            
+    /*************** STORY MODE ***************/    
+    CCPoint rightTop = VisibleRect::rightTop();
+    CCPoint leftTop = VisibleRect::leftTop();
+    CCPoint position = this->getPosition();
+    
+    m_rectOrigin = ccpRounded (leftTop.x - position.x
+      , leftTop.y - m_pGameContext->getFontHeightNormal() - m_pGameContext->getDefaultPadding() * 3 - position.y);
+    m_rectDestination = ccpRounded (rightTop.x - position.x, rightTop.y - position.y);
+    
+    m_borderOrigin = ccp (m_rectOrigin.x, m_rectOrigin.y - m_pGameContext->getDefaultBorderThickness());
+    m_borderDestination = ccp (m_rectDestination.x, m_rectOrigin.y);
+    
+    m_heart = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("heart_small"));
+    m_heart->setPosition(ccp(m_rectDestination.x - m_pGameContext->getDefaultPadding() * 3 - m_heart->getContentSize().width/2
+      , m_rectDestination.y - m_pGameContext->getDefaultPadding() * 2 - m_pGameContext->getFontHeightNormal()/2));
+    this->addChild(m_heart);
+
+    m_rectColor.r = 0;
+    m_rectColor.g = 0;
+    m_rectColor.b = 0;
+    m_rectColor.a = 1;
+    m_borderColor.r = .5;
+    m_borderColor.g = .5;
+    m_borderColor.b = .5;
+    m_borderColor.a = 1;
+
+
     m_storyModeNextPage = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
       , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
@@ -46,8 +72,11 @@ void ChallengeButtonPanel::onEnter()
     int newChallengeStatus = 0;
    
     int index = 0;
-    ImageButton* imageButton;
+    ChallengeButton* challengeButton;
     
+    std::string challengeButtonIconName;
+    ChallengePointScoreDefinition challengePointScoreDefinition;
+
     for (int i = 0; i < STORYMODE_TOTAL_PAGES; ++i)
     {
       for (int j = 0; j < STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE; ++j)
@@ -55,99 +84,42 @@ void ChallengeButtonPanel::onEnter()
         for (int k = 0; k < STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE; ++k)
         {
           newChallengeStatus = this->m_pGameContext->getChallengeInfo(index);
-          switch (newChallengeStatus)
+
+          if ( newChallengeStatus == 0 && lastChallengeStatus <= 0 )
           {
-          case 0: 
-            if (lastChallengeStatus > 0)
-            {
-              imageButton = ImageButton::create(this
-                , callfuncO_selector(ChallengeButtonPanel::startChallenge)
-                , NULL
-                , m_pGameContext
-                , "challengeButton_N"
-                , -1
-                , 0
-                , pressingFrames, 1
-                , releasingFrames, 1
-                , 0
-                , 0
-                , TOUCH_PRIORITY_NORMAL);
-              this->addChild(imageButton);
-            }
-            else
-            {
-              imageButton = ImageButton::create(this
-                , callfuncO_selector(ChallengeButtonPanel::startChallenge)
-                , NULL
-                , m_pGameContext
-                , "challengeButton_L"
-                , -1
-                , 0
-                , pressingFrames, 1
-                , releasingFrames, 1
-                , 0
-                , 0
-                , TOUCH_PRIORITY_NORMAL);
-              this->addChild(imageButton);
-            }
+            challengeButton = ChallengeButton::create(index, REACH_LEVEL, -1, m_pGameContext
+              , callfuncO_selector(ChallengeButtonPanel::startChallenge), this);
             lastChallengeStatus = 0;
-          break;
-          case 1: 
-              imageButton = ImageButton::create(this
-                , callfuncO_selector(ChallengeButtonPanel::startChallenge)
-                , NULL
-                , m_pGameContext
-                , "challengeButton_1"
-                , -1
-                , 0
-                , pressingFrames, 1
-                , releasingFrames, 1
-                , 0
-                , 0
-                , TOUCH_PRIORITY_NORMAL);
-              this->addChild(imageButton);
-          break;
-          case 2: 
-              imageButton = ImageButton::create(this
-                , callfuncO_selector(ChallengeButtonPanel::startChallenge)
-                , NULL
-                , m_pGameContext
-                , "challengeButton_2"
-                , -1
-                , 0
-                , pressingFrames, 1
-                , releasingFrames, 1
-                , 0
-                , 0
-                , TOUCH_PRIORITY_NORMAL);
-              this->addChild(imageButton);
-          break;
-          case 3: 
-              imageButton = ImageButton::create(this
-                , callfuncO_selector(ChallengeButtonPanel::startChallenge)
-                , NULL
-                , m_pGameContext
-                , "challengeButton_3"
-                , -1
-                , 0
-                , pressingFrames, 1
-                , releasingFrames, 1
-                , 0
-                , 0
-                , TOUCH_PRIORITY_NORMAL);
-              this->addChild(imageButton);
-          break;
+          }
+          else
+          {
+            challengePointScoreDefinition = this->m_pGameContext->getChallengePointScoreDefinition(index);
+            challengeButton = ChallengeButton::create(index, challengePointScoreDefinition.challengeSceneType
+              , newChallengeStatus
+              , m_pGameContext
+              , callfuncO_selector(ChallengeButtonPanel::startChallenge), this);
+            
+            if ( newChallengeStatus == 0 )
+              lastChallengeStatus = 0;
           }
 
-          imageButton->setVisible(false);
-          this->m_challengeButtons.push_back(imageButton);
+          this->addChild(challengeButton);
+
+          challengeButton->setVisible(false);
+          this->m_challengeButtons.push_back(challengeButton);
           index++;
         }
       }
     }
 
-    imageButton = NULL;
+    challengeButton = NULL;
         
+    m_nextLifeText_Left = CCLabelBMFont::create("( next life in ", m_pGameContext->getFontNormalPath().c_str());
+    this->addChild(m_nextLifeText_Left);
+    
+    m_nextLifeText_Right = CCLabelBMFont::create(" )", m_pGameContext->getFontNormalPath().c_str());
+    this->addChild(m_nextLifeText_Right);
+
     m_totalLifeLabel = CCLabelBMFont::create("NA", m_pGameContext->getFontNormalPath().c_str());
     this->addChild(m_totalLifeLabel);
     
@@ -192,10 +164,10 @@ void ChallengeButtonPanel::updateLifeDisplay(float dt)
 
 void ChallengeButtonPanel::startChallenge(CCObject* pSender)
 {
-  ImageButton* sender = (ImageButton*)pSender;
+  ChallengeButton* sender = (ChallengeButton*)pSender;
   
   int challengeIndex = 0;
-  std::vector<ImageButton*>::iterator it;
+  std::vector<ChallengeButton*>::iterator it;
   for(it=this->m_challengeButtons.begin();it!=this->m_challengeButtons.end();++it)
   {
     if (*it == sender)
@@ -223,27 +195,27 @@ void ChallengeButtonPanel::nextStoryModePage(CCObject* pSender)
   CCActionInterval* moveLeft = CCMoveBy::create(.3f, ccp(-(visibleRect.size.width),0));
   CCActionInterval* moveRight = CCMoveBy::create(.3f, ccp((visibleRect.size.width),0));
     
-  ImageButton* imageButton;
+  ChallengeButton* challengeButton;
   
   int startIndex = this->m_storyModePageIndex * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
   int endIndex = (this->m_storyModePageIndex + 1 ) * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
   for (int i = startIndex; i < endIndex; ++i)
   {
-    imageButton = (ImageButton*)this->m_challengeButtons.at(i);
-    imageButton->setVisible(true);
-    imageButton->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
+    challengeButton = (ChallengeButton*)this->m_challengeButtons.at(i);
+    challengeButton->setVisible(true);
+    challengeButton->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
   }
   startIndex = (this->m_storyModePageIndex + 1) * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
   endIndex = (this->m_storyModePageIndex + 2 ) * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
   for (int i = startIndex; i < endIndex; ++i)
   {
-    imageButton = (ImageButton*)this->m_challengeButtons.at(i);
-    imageButton->setVisible(true);
-    imageButton->setPositionX(imageButton->getPositionX() + visibleRect.size.width);
-    imageButton->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
+    challengeButton = (ChallengeButton*)this->m_challengeButtons.at(i);
+    challengeButton->setVisible(true);
+    challengeButton->setPositionX(challengeButton->getPositionX() + visibleRect.size.width);
+    challengeButton->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveLeft->copy()->autorelease()), easeRate), NULL));
   }
 
-  imageButton = NULL;
+  challengeButton = NULL;
 
   this->m_storyModePageIndex++;
 
@@ -264,27 +236,27 @@ void ChallengeButtonPanel::previousStoryModePage(CCObject* pSender)
     CCActionInterval* moveLeft = CCMoveBy::create(.3f, ccp(-(visibleRect.size.width),0));
     CCActionInterval* moveRight = CCMoveBy::create(.3f, ccp((visibleRect.size.width),0));
     
-    ImageButton* imageButton;
+    ChallengeButton* challengeButton;
   
     int startIndex = this->m_storyModePageIndex * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
     int endIndex = (this->m_storyModePageIndex + 1 ) * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
     for (int i = startIndex; i < endIndex; ++i)
     {
-      imageButton = (ImageButton*)this->m_challengeButtons.at(i);
-      imageButton->setVisible(true);
-      imageButton->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
+      challengeButton = (ChallengeButton*)this->m_challengeButtons.at(i);
+      challengeButton->setVisible(true);
+      challengeButton->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
     }
     startIndex = (this->m_storyModePageIndex - 1) * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
     endIndex = (this->m_storyModePageIndex ) * STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE;
     for (int i = startIndex; i < endIndex; ++i)
     {
-      imageButton = (ImageButton*)this->m_challengeButtons.at(i);
-      imageButton->setVisible(true);
-      imageButton->setPositionX(imageButton->getPositionX() - visibleRect.size.width);
-      imageButton->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
+      challengeButton = (ChallengeButton*)this->m_challengeButtons.at(i);
+      challengeButton->setVisible(true);
+      challengeButton->setPositionX(challengeButton->getPositionX() - visibleRect.size.width);
+      challengeButton->runAction(CCSequence::create(CCEaseIn::create((CCActionInterval*)(moveRight->copy()->autorelease()), easeRate), NULL));
     }
 
-    imageButton = NULL;
+    challengeButton = NULL;
 
     this->m_storyModePageIndex--;
 
@@ -300,36 +272,16 @@ void ChallengeButtonPanel::resetChallengeButtons(bool isVisible)
   
   CCPoint rightTop = VisibleRect::rightTop();
   CCPoint leftBottom = VisibleRect::leftBottom();
+  CCPoint leftTop = VisibleRect::leftTop();
 
-  float targetedSpacingToButtonRatio = 1.38f;
+  float targetedSpacingToButtonRatio = 1.08f;
 
-  CCSize size = this->m_storyModeNextPage->getSize();
-
-  // TODO (Roman): positioning
-  this->m_totalLifeLabel->setPosition( rightTop.x - 50 - position.x, rightTop.y - 50 - position.y );
-
-  float separatorWidth = m_deltaNextLifeIncreaseLabel_Separator->getContentSize().width;
-
-  m_deltaNextLifeIncreaseLabel_Separator->setPosition(leftBottom.x + m_pGameContext->getMaxDigitFontNormalWidth()*3 - position.x, rightTop.y - m_pGameContext->getFontHeightNormal() - m_pGameContext->getDefaultPadding() - position.y);
- 
-  m_deltaNextLifeIncreaseLabel_M1->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() - separatorWidth/2 - m_pGameContext->getDefaultPadding()*2 - m_pGameContext->getMaxDigitFontNormalWidth()*1.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
-  m_deltaNextLifeIncreaseLabel_M2->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() - separatorWidth/2 - m_pGameContext->getDefaultPadding() - m_pGameContext->getMaxDigitFontNormalWidth()*.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
-  m_deltaNextLifeIncreaseLabel_S2->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() + separatorWidth/2 + m_pGameContext->getDefaultPadding()*2 + m_pGameContext->getMaxDigitFontNormalWidth()*1.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
-  m_deltaNextLifeIncreaseLabel_S1->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() + separatorWidth/2 + m_pGameContext->getDefaultPadding() + m_pGameContext->getMaxDigitFontNormalWidth()*.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
-  this->updateLifeDisplay(.0f);
-
-  this->m_storyModeNextPage->setPosition(
-    rightTop.x - size.width/2 - size.height * .618 - position.x
-    , leftBottom.y + size.height/2 + size.height * .618 - position.y);
+  float posX, posY;
   
-  this->m_storyModePreviousPage->setPosition(
-    leftBottom.x + size.width/2 + size.height * .618 - position.x
-    , leftBottom.y + size.height/2 + size.height * .618 - position.y);
-
   if (this->m_challengeButtons.size() <= 0)
     return;
 
-  size = ((ImageButton*)(this->m_challengeButtons.at(0)))->getContentSize();
+  CCSize size = ((ChallengeButton*)(this->m_challengeButtons.at(0)))->getSize();
   
   float availableHeight = rightTop.y - leftBottom.y;
   float availableWidth = rightTop.x - leftBottom.x;
@@ -341,7 +293,6 @@ void ChallengeButtonPanel::resetChallengeButtons(bool isVisible)
     horizontalSpacing = (availableWidth - size.width*STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE) / STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE + size.width;
     overallWidth = horizontalSpacing * (STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE - 1) + size.width;
   }
-  float posX = round ( leftBottom.x + (availableWidth - overallWidth)/2 + size.width/2 ) - position.x;
   
   float verticalSpacing = round( size.height * targetedSpacingToButtonRatio );
   float overallHeight = verticalSpacing * (STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE - 1) + size.height; 
@@ -350,9 +301,22 @@ void ChallengeButtonPanel::resetChallengeButtons(bool isVisible)
     verticalSpacing = (availableHeight - size.height*STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE) / STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE + size.height;
     overallHeight = verticalSpacing * (STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE - 1) + size.height;
   }
-  float posY = round ( rightTop.y - (availableHeight - overallHeight)/2 - size.height/2 ) - position.y;
 
-  ImageButton* imageButton;
+  if ( horizontalSpacing > verticalSpacing )
+  {
+    horizontalSpacing = verticalSpacing;
+    overallWidth = horizontalSpacing * (STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE - 1) + size.width;
+  }
+  else
+  {
+    verticalSpacing = horizontalSpacing;
+    overallHeight = verticalSpacing * (STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE - 1) + size.height;
+  }
+  
+  posX = round ( leftBottom.x + (availableWidth - overallWidth)/2 + size.width/2 ) - position.x;
+  posY = round ( rightTop.y - (availableHeight - overallHeight)/2 - size.height/2 ) - position.y;
+  
+  ChallengeButton* challengeButton;
   int index = 0;
   float basePosX = posX;
   float basePosY = posY;
@@ -365,10 +329,10 @@ void ChallengeButtonPanel::resetChallengeButtons(bool isVisible)
     {        
       for (int k = 0; k < STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE; ++k)
       {
-        imageButton = (ImageButton*)(this->m_challengeButtons.at(index));
+        challengeButton = (ChallengeButton*)(this->m_challengeButtons.at(index));
           
-        imageButton->setPosition(ccp(posX, posY));
-        imageButton->setVisible(isVisible);
+        challengeButton->setPosition(ccp(posX, posY));
+        challengeButton->setVisible(isVisible);
 
         ++index;
         posX += horizontalSpacing;
@@ -377,7 +341,46 @@ void ChallengeButtonPanel::resetChallengeButtons(bool isVisible)
       posX = basePosX;
     }
   }
-  imageButton = NULL;
+  challengeButton = NULL;
+  
+  posX = leftBottom.x + (availableWidth - overallWidth)/2 - position.x;
+  size = this->m_storyModeNextPage->getSize();
+  this->m_storyModeNextPage->setPosition(    
+    posX + overallWidth - size.width/2 - m_pGameContext->getDefaultPadding()*2
+    , posY);
+  
+  this->m_storyModePreviousPage->setPosition(
+    posX + size.width/2 + m_pGameContext->getDefaultPadding()*2
+    , this->m_storyModeNextPage->getPositionY());
+  
+  posY = m_heart->getPositionY();
+  
+  this->m_totalLifeLabel->setPosition( 
+    posX + m_totalLifeLabel->getContentSize().width/2 + m_pGameContext->getDefaultPadding()*2
+    , posY);
+  m_heart->setPositionX(m_totalLifeLabel->getPositionX() + m_totalLifeLabel->getContentSize().width/2
+    + this->m_pGameContext->getDefaultPadding()*2 + m_heart->getContentSize().width/2 );
+
+  m_nextLifeText_Left->setPosition( m_heart->getPositionX() + m_heart->getContentSize().width/2
+    + this->m_pGameContext->getDefaultPadding()*2 + m_nextLifeText_Left->getContentSize().width/2
+    , posY);
+
+  float separatorWidth = m_deltaNextLifeIncreaseLabel_Separator->getContentSize().width;
+
+  m_deltaNextLifeIncreaseLabel_Separator->setPosition(m_nextLifeText_Left->getPositionX()
+    + m_nextLifeText_Left->getContentSize().width/2 + m_pGameContext->getMaxDigitFontNormalWidth()*3
+    , posY);
+ 
+  m_deltaNextLifeIncreaseLabel_M1->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() - separatorWidth/2 - m_pGameContext->getDefaultPadding()*2 - m_pGameContext->getMaxDigitFontNormalWidth()*1.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
+  m_deltaNextLifeIncreaseLabel_M2->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() - separatorWidth/2 - m_pGameContext->getDefaultPadding() - m_pGameContext->getMaxDigitFontNormalWidth()*.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
+  m_deltaNextLifeIncreaseLabel_S2->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() + separatorWidth/2 + m_pGameContext->getDefaultPadding()*2 + m_pGameContext->getMaxDigitFontNormalWidth()*1.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
+  m_deltaNextLifeIncreaseLabel_S1->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() + separatorWidth/2 + m_pGameContext->getDefaultPadding() + m_pGameContext->getMaxDigitFontNormalWidth()*.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
+  
+  m_nextLifeText_Right->setPosition( m_deltaNextLifeIncreaseLabel_S2->getPositionX() + m_deltaNextLifeIncreaseLabel_S2->getContentSize().width/2
+    + m_nextLifeText_Right->getContentSize().width/2
+    , posY);
+    
+  this->updateLifeDisplay(.0f);
 }
 
 void ChallengeButtonPanel::reset()
@@ -385,11 +388,17 @@ void ChallengeButtonPanel::reset()
   this->m_storyModePageIndex = 0;
   resetChallengeButtons(false);
 
-  ImageButton* imageButton;
+  ChallengeButton* challengeButton;
   for (int i = 0; i < STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE * STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE; i++)
   {
-    imageButton = (ImageButton*)this->m_challengeButtons.at(i);
-    imageButton->setVisible(true);
+    challengeButton = (ChallengeButton*)this->m_challengeButtons.at(i);
+    challengeButton->setVisible(true);
   }
-  imageButton = NULL;
+  challengeButton = NULL;
+}
+
+void ChallengeButtonPanel::draw()
+{     
+  ccDrawSolidRect(m_rectOrigin, m_rectDestination, m_rectColor);
+  ccDrawSolidRect(m_borderOrigin, m_borderDestination, m_borderColor);
 }

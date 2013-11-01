@@ -13,7 +13,7 @@ private:
 
   static cocos2d::CCScene* resetGameContextScene(SceneType sceneType, GameContext* gameContext, bool showSplashScreen);
   static cocos2d::CCScene* resetGameContextChallengeScene(int challengeIndex, GameContext* gameContext, bool showSplashScreen);
-
+  
 public:
 
   NavigationManager() { }

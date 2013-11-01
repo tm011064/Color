@@ -38,8 +38,14 @@ void WildcardPopup::onEnter()
     m_separatorTopRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightTop.y + m_borderThickness);
 
     // now we have the border thickness and padding, so we can set the boundaries 
-    float indentLeft = m_visibleRectLeftBottom.x + (visibleRect.size.width * .1);
-    float indentRight = m_visibleRectLeftBottom.x + (visibleRect.size.width * .9);
+    float indentLeft = round ( MIN( 
+        m_visibleRectLeftBottom.x + (m_visibleRectRightTop.x - m_visibleRectLeftBottom.x - m_pGameContext->getGuaranteedVisibleSize().width)/2
+      , m_visibleRectLeftBottom.x + (visibleRect.size.width * .15) ) );
+
+    float indentRight = round ( MAX( 
+        m_visibleRectRightTop.x - (m_visibleRectRightTop.x - m_visibleRectLeftBottom.x - m_pGameContext->getGuaranteedVisibleSize().width)/2
+      , m_visibleRectLeftBottom.x + (visibleRect.size.width * .85) ) );
+
     m_dialogRectInnerRightTop = ccp( indentRight - this->m_borderThickness, m_dialogRectRightTop.y - this->m_borderThickness );
 
     this->m_textIndentLeft = indentLeft + this->m_borderThickness + m_padding * 3;
@@ -55,8 +61,11 @@ void WildcardPopup::onEnter()
     this->addChild(m_coinsLabel);
     
     m_availableCoinsCoin = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("coin_small"));
-    m_availableCoinsCoin->setScale(this->m_pGameContext->getFontHeightNormal() / m_availableCoinsCoin->getContentSize().height * 1.5);
-    m_availableCoinsCoin->setPosition(ccpRounded(m_coinsLabel->getPositionX() - m_coinsLabel->getContentSize().width/2 - m_padding, posY));
+    m_availableCoinsCoin->setScale(this->m_pGameContext->getFontHeightNormal() / m_availableCoinsCoin->getContentSize().height * 1.2);
+    m_availableCoinsCoin->setPosition(ccpRounded(m_coinsLabel->getPositionX() 
+      - m_coinsLabel->getContentSize().width/2*m_availableCoinsCoin->getScale()
+      - m_padding*3
+      , posY));
     this->addChild(m_availableCoinsCoin);
     
 
@@ -171,8 +180,8 @@ void WildcardPopup::refresh()
   m_coinsLabel->setString(UtilityHelper::convertToString(m_pGameContext->getTotalCoins()).c_str());  
   m_coinsLabel->setPositionX(round(m_textIndentRight - m_padding*2 - m_coinsLabel->getContentSize().width/2));
   m_availableCoinsCoin->setPositionX(round(m_coinsLabel->getPositionX() - m_coinsLabel->getContentSize().width/2 
-                                                                        - m_padding
-                                                                        - m_availableCoinsCoin->getContentSize().width/2));
+                                                                        - m_padding * 2
+                                                                        - m_availableCoinsCoin->getContentSize().width/2*m_availableCoinsCoin->getScale()));
 }
 
 void WildcardPopup::draw()

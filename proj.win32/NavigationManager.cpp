@@ -125,14 +125,79 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
   // this could be written in a better way, so the cache is at the scene level, not game context level maybe???
   gameContext->getSpriteFrameCache()->init();  
   
-  float levelToReach, totalCorrectButtons, totalButtons;
+  //float levelToReach, totalCorrectButtons, totalButtons;
   ChallengePointScoreDefinition challengePointScoreDefinition;
   RhythmBlinkSequenceDefinition rhythmBlinkSequenceDefinition;
+    
+  challengePointScoreDefinition = gameContext->getChallengePointScoreDefinition(challengeIndex);
+  switch ( challengePointScoreDefinition.challengeSceneType )
+  {
+  case REACH_LEVEL:
+    reachLevelChallengeScene = ReachLevelChallengeScene::create(gameContext, showSplashScreen, challengeIndex
+      , challengePointScoreDefinition.totalButtons, challengePointScoreDefinition
+      , (int)challengePointScoreDefinition.levelToReach);
+    
+    pLayer = new BaseLayer(reachLevelChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
 
+    reachLevelChallengeScene->addChild(pLayer); 
+
+    return reachLevelChallengeScene;
+
+  case REPEAT_ONE_OFF:
+    repeatOneOffSequenceChallengeScene = RepeatOneOffSequenceChallengeScene::create(gameContext, showSplashScreen
+      , challengeIndex, challengePointScoreDefinition.totalButtons, challengePointScoreDefinition
+      , (int)challengePointScoreDefinition.levelToReach);
+        
+    pLayer = new BaseLayer(repeatOneOffSequenceChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
+
+    repeatOneOffSequenceChallengeScene->addChild(pLayer); 
+
+    return repeatOneOffSequenceChallengeScene;
+
+  case EXACT_LENGTH:
+    exactLengthChallengeScene = ExactLengthChallengeScene::create(gameContext, showSplashScreen, challengeIndex
+      , challengePointScoreDefinition.totalButtons
+      , 1.2f, 2.4f
+      , 1.0f, 1.0f
+      , challengePointScoreDefinition);
+    exactLengthChallengeScene->init();
+    
+    pLayer = new BaseLayer(exactLengthChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
+
+    exactLengthChallengeScene->addChild(pLayer); 
+
+    return exactLengthChallengeScene;
+
+  case RHYTHM:    
+    rhythmBlinkSequenceDefinition = RhythmChallengeScene::loadRhythmBlinkSequenceDefinition(CCFileUtils::sharedFileUtils()->fullPathForFilename(
+      std::string("rhythmChallenge_" + UtilityHelper::convertToString(challengeIndex) + ".txt").c_str()));
+        
+    challengePointScoreDefinition.minimumTotalTimePercentageForOneStar = .75f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForTwoStars = .85f;
+    challengePointScoreDefinition.minimumTotalTimePercentageForThreeStars = .93f;
+
+    rhythmChallengeScene = RhythmChallengeScene::create(gameContext, showSplashScreen, challengeIndex, rhythmBlinkSequenceDefinition, challengePointScoreDefinition);
+    rhythmChallengeScene->init();
+    
+    pLayer = new BaseLayer(rhythmChallengeScene, callfunc_selector( BaseScene::onBackKeyPressed ) );
+    pLayer->init(); 
+    pLayer->autorelease();
+
+    rhythmChallengeScene->addChild(pLayer); 
+
+    return rhythmChallengeScene;
+  }
+  /*
   switch (challengeIndex)
   {
   case 0:
-
+    
     levelToReach = 1;
     totalButtons = 2;
     totalCorrectButtons = (levelToReach / 2.0f) * ( 1.0f + levelToReach );
@@ -486,7 +551,7 @@ CCScene* NavigationManager::resetGameContextChallengeScene(int challengeIndex, G
 
     return repeatOneOffSequenceChallengeScene;
   }
-
+  */
   return NULL;
 }
 

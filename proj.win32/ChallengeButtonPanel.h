@@ -20,14 +20,27 @@ private:
   CCLabelBMFont* m_deltaNextLifeIncreaseLabel_Separator;
   CCLabelBMFont* m_deltaNextLifeIncreaseLabel_S1;
   CCLabelBMFont* m_deltaNextLifeIncreaseLabel_S2;
+
+  CCLabelBMFont* m_nextLifeText_Left;
+  CCLabelBMFont* m_nextLifeText_Right;
+
   float m_rightPosX_M1;
   float m_rightPosX_M2;
   float m_rightPosX_S1;
   float m_rightPosX_S2;
   
+  CCSprite* m_heart;
   TextButton* m_storyModeNextPage;
   TextButton* m_storyModePreviousPage;
-  std::vector<ImageButton*> m_challengeButtons;
+  std::vector<ChallengeButton*> m_challengeButtons;
+  
+  CCPoint m_rectOrigin;
+  CCPoint m_rectDestination;
+  CCPoint m_borderOrigin;
+  CCPoint m_borderDestination;
+
+  ccColor4F m_rectColor;
+  ccColor4F m_borderColor;
 
   int m_storyModePageIndex;
 
@@ -52,6 +65,7 @@ public:
   
   virtual void onEnter();
   virtual void reset();
+  virtual void draw();
 
 protected:
   ChallengeButtonPanel(GameContext* gameContext
@@ -69,6 +83,9 @@ protected:
     , m_deltaNextLifeIncreaseLabel_Separator(NULL)
     , m_deltaNextLifeIncreaseLabel_S1(NULL)
     , m_deltaNextLifeIncreaseLabel_S2(NULL)
+    , m_heart(NULL)
+    , m_nextLifeText_Left(NULL)
+    , m_nextLifeText_Right(NULL)
   { }
 
   virtual void startChallenge(CCObject* pSender);

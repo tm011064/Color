@@ -40,6 +40,7 @@ private:
   CCSize m_defaultButtonSize;
 
   CCSize m_frameSize;
+  CCSize m_guaranteedVisibleSize;
 
   int m_highscoreEasy;
   int m_highscoreNormal;
@@ -66,6 +67,9 @@ private:
   int m_totalLifes;
   long m_lastLifeIncreaseTime;
   
+  void createChallengePointScoreDefinitions();
+  ChallengePointScoreDefinition getBaseChallengePointScoreDefinition(int totalButtons);
+
 public:  
   GameContext();
   ~GameContext();
@@ -123,6 +127,9 @@ public:
   CCSize getFrameSize() { return this->m_frameSize; }
   void setFrameSize(float width, float height) { this->m_frameSize.setSize(width, height); }
   
+  CCSize getGuaranteedVisibleSize() { return this->m_guaranteedVisibleSize; }
+  void setGuaranteedVisibleSize(float width, float height) { this->m_guaranteedVisibleSize.setSize(width, height); }
+  
   bool getIsSoundOn() { return this->m_isSoundOn; }
   void setIsSoundOn(bool isSoundOn);
   
@@ -169,9 +176,9 @@ public:
 
   LifeInfo refreshTotalLifesCount();
 
-  ChallengePointScoreDefinition getChallengePointScoreDefinition(int totalButtons)
+  ChallengePointScoreDefinition getChallengePointScoreDefinition(int index)
   {
-    return m_challengePointScoreDefinitions[totalButtons];
+    return m_challengePointScoreDefinitions[index];
   }
 
   void registerSoundFile(std::string key, std::string filePath) 

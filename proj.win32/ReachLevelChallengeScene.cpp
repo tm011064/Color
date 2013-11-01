@@ -48,7 +48,7 @@ void ReachLevelChallengeScene::onPostInitialize()
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
   {
-    this->addChild((GameButton*)o);
+    LayoutController::AddConsoleButton(m_pGameContext, this, (GameButton*)o);
   }  
 }
 
@@ -74,20 +74,12 @@ void ReachLevelChallengeScene::onPreInitialize()
 
 void ReachLevelChallengeScene::onLoadDescriptionPopup()
 {  
-  ccColor4F bgColor = { .0f, .0f, .0f, 1.0f };
-  ccColor4F bgDialogColor = { 136.0f/255.0f, 151.0f/255.0f, 26.0f/255.0f, 1.0f };
-  ccColor4F bgDialogBorderColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-  
-  /********** DESCRIPTION POPUP **********/
+  /********** DESCRIPTION POPUP **********/  
   m_descriptionPopup = DescriptionPopup::create(
     this->m_pGameContext
     , callfuncO_selector(ReachLevelChallengeScene::newGameCallback)
     , this
-    , "Memory\nChallenge"
-    , "Target Score: " + UtilityHelper::convertToString(this->m_challengePointScoreDefinition.mininimumPointsForOneStar, 0) 
-      + " pts\n\nRepeat the button\nsequence.\nTry to get as many\nas blinks as\npossible." // TODO (Roman): text
-    , this->m_pGameContext->getImageMap()->getTile("iconMemory")
-    , bgColor, bgDialogColor, bgDialogBorderColor);
+    , this->m_challengePointScoreDefinition);
   m_descriptionPopup->setZOrder(SPLASH_ZORDER);
   this->addChild(m_descriptionPopup);
   /********** DESCRIPTION POPUP **********/

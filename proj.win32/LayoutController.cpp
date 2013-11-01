@@ -157,3 +157,65 @@ CCArray* LayoutController::createFourButtons(GameContext* gameContext, DebugDraw
     , buttonColor1, buttonColor2, buttonColor3, buttonColor4
     , 0);
 }
+
+void LayoutController::AddConsoleButton(GameContext* gameContext, CCNode* target, GameButton* gameButton)
+{  
+  CCSprite* shadow = CCSprite::createWithSpriteFrame(gameContext->getImageMap()->getTile("game_button_background"));
+  float offset = gameContext->getDefaultBorderThickness()*2.4;
+    
+  float rotation = (gameButton)->getRotation();
+  switch ((int)rotation)
+  {
+  case 90:
+    shadow->setPosition(ccp(
+      (gameButton)->getPositionX() - offset
+      , (gameButton)->getPositionY() - offset));
+    break;
+  case 180:
+    shadow->setPosition(ccp(
+      (gameButton)->getPositionX() - offset
+      , (gameButton)->getPositionY() + offset));
+    break;
+  case -90:
+    shadow->setPosition(ccp(
+      (gameButton)->getPositionX() + offset
+      , (gameButton)->getPositionY() + offset));
+    break;
+  case 0:
+    shadow->setPosition(ccp(
+      (gameButton)->getPositionX() + offset
+      , (gameButton)->getPositionY() - offset));
+    break;
+  }
+    
+  shadow->setScale((gameButton)->getScale());
+  shadow->setRotation(rotation);
+  target->addChild(shadow);
+  target->addChild(gameButton);
+}
+
+void LayoutController::AddBackground(GameContext* gameContext, CCNode* target, int zOrder)
+{  
+  CCPoint center = VisibleRect::center();
+  CCSpriteFrame* bgFrame = gameContext->getImageMap()->getTile("background");
+
+  CCSprite* bg = CCSprite::createWithSpriteFrame(bgFrame);
+  CCSize size = bg->getContentSize();
+  bg->setPosition(ccp(center.x - size.width/2, center.y + size.height/2));      
+  target->addChild(bg, zOrder);
+  bg = CCSprite::createWithSpriteFrame(bgFrame);
+  bg->setPosition(ccp(center.x + size.width/2, center.y + size.height/2));
+  bg->setFlipX(true);
+  target->addChild(bg, zOrder);
+
+  bg = CCSprite::createWithSpriteFrame(bgFrame);
+  bg->setPosition(ccp(center.x - size.width/2, center.y - size.height/2));      
+  bg->setFlipY(true);
+  target->addChild(bg, zOrder);
+
+  bg = CCSprite::createWithSpriteFrame(bgFrame);
+  bg->setPosition(ccp(center.x + size.width/2, center.y - size.height/2));
+  bg->setFlipX(true);
+  bg->setFlipY(true);
+  target->addChild(bg, zOrder);
+}

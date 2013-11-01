@@ -138,6 +138,7 @@
     <ClInclude Include="BaseScene.h" />
     <ClInclude Include="BaseSprite.h" />
     <ClInclude Include="BaseTileMap.h" />
+    <ClInclude Include="ChallengeButton.h" />
     <ClInclude Include="ChallengeButtonPanel.h" />
     <ClInclude Include="DescriptionPopup.h" />
     <ClInclude Include="ExactLengthChallengeScene.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="BaseScene.cpp" />
     <ClCompile Include="BaseSprite.cpp" />
     <ClCompile Include="BaseTileMap.cpp" />
+    <ClCompile Include="ChallengeButton.cpp" />
     <ClCompile Include="ChallengeButtonPanel.cpp" />
     <ClCompile Include="DescriptionPopup.cpp" />
     <ClCompile Include="ExactLengthChallengeScene.cpp" />

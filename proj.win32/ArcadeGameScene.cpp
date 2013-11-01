@@ -39,16 +39,8 @@ void ArcadeGameScene::initialize(float dt)
   CCRect visibleRect = VisibleRect::getVisibleRect();   
     
   float availableWidth = visibleRect.size.width / 2;         
-    
-  RepeatingSprite* bg = RepeatingSprite::create(
-    m_pGameContext
-    , m_pGameContext->getImageMap()->getTile("background")
-    , HORIZONTAL
-    , NORMAL
-    , visibleRect.size);    
-  bg->setPosition(center);
-  this->addChild(bg, 0);
-  bg = NULL;
+      
+  LayoutController::AddBackground(m_pGameContext, this, 0);
         
   /********** TOP BAR **********/
   m_topBar = new TopBar(m_pGameContext);
@@ -60,18 +52,29 @@ void ArcadeGameScene::initialize(float dt)
   /********** TOP BAR **********/
     
   /********** CONSOLE **********/    
-  m_consoleBackground = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("console"));
-  this->addChild(m_consoleBackground);    
+  CCSpriteFrame* consoleTile = m_pGameContext->getImageMap()->getTile("console");
+  CCSprite* consoleBackground_l = CCSprite::createWithSpriteFrame(consoleTile);
+  CCSprite* consoleBackground_lb = CCSprite::createWithSpriteFrame(consoleTile);
+  CCSprite* consoleBackground_r = CCSprite::createWithSpriteFrame(consoleTile);
+  CCSprite* consoleBackground_rb = CCSprite::createWithSpriteFrame(consoleTile);
+
+  this->addChild(consoleBackground_l);    
+  this->addChild(consoleBackground_lb);    
+  this->addChild(consoleBackground_r);    
+  this->addChild(consoleBackground_rb);    
     
-  CCSize consoleBackgroundSize = m_consoleBackground->getContentSize();
+  CCSize consoleBackgroundSize = CCSizeMake( consoleBackground_l->getContentSize().width*2, consoleBackground_l->getContentSize().height*2);
   float consoleBackgroundScale = availableWidth / (consoleBackgroundSize.width/2);
 
-  m_consoleBackground->setScale(consoleBackgroundScale);
-            
-  CCSprite* consoleButtonBackground = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("gameConsoleButtonBackground"));
-  consoleButtonBackground->setScale(consoleBackgroundScale);
-  this->addChild(consoleButtonBackground);    
-    
+  consoleBackground_l->setScale(consoleBackgroundScale);
+  consoleBackground_lb->setScale(consoleBackgroundScale);
+  consoleBackground_lb->setFlipY(true);
+  consoleBackground_r->setScale(consoleBackgroundScale);
+  consoleBackground_r->setFlipX(true);
+  consoleBackground_rb->setScale(consoleBackgroundScale);
+  consoleBackground_rb->setFlipY(true);
+  consoleBackground_rb->setFlipX(true);
+  
   int releasingFrames[] = { 0 };
   int pressingFrames[] = { 0 };
   m_consoleButton = ImageButton::create(this
@@ -89,21 +92,23 @@ void ArcadeGameScene::initialize(float dt)
   m_consoleButton->setScale(consoleBackgroundScale);
   this->addChild(m_consoleButton);
   CCRect topBarBoundingBox = m_topBar->getBoundingBox();
-  CCSize consoleSize = m_consoleBackground->getContentSize();
     
   // we have the top bar, so we can get the border...
   this->m_anchor = ccpRounded(
     center.x
     , (   topBarBoundingBox.origin.y 
-        - (consoleBackgroundScale * consoleSize.height)/2 
+        - (consoleBackgroundScale * consoleBackgroundSize.height)/2 
         - topBarBoundingBox.size.height/8.0f
       ));
     
   float consoleHeight = consoleBackgroundSize.height * consoleBackgroundScale;
   float availableHeight = topBarBoundingBox.origin.y - visibleRect.origin.y;
     
-  consoleButtonBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
-  m_consoleBackground->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
+  CCSize size = consoleBackground_l->getContentSize();
+  consoleBackground_l->setPosition(ccp(this->m_anchor.x - consoleBackgroundScale*size.width/2, this->m_anchor.y + consoleBackgroundScale*size.height/2));
+  consoleBackground_r->setPosition(ccp(this->m_anchor.x + consoleBackgroundScale*size.width/2, this->m_anchor.y + consoleBackgroundScale*size.height/2));
+  consoleBackground_lb->setPosition(ccp(this->m_anchor.x - consoleBackgroundScale*size.width/2, this->m_anchor.y - consoleBackgroundScale*size.height/2));
+  consoleBackground_rb->setPosition(ccp(this->m_anchor.x + consoleBackgroundScale*size.width/2, this->m_anchor.y - consoleBackgroundScale*size.height/2));
   m_consoleButton->setPosition(ccp(this->m_anchor.x, this->m_anchor.y));
 
   /********** CONSOLE **********/

@@ -21,9 +21,7 @@ void TopBar::onEnter()
     
     CCPoint leftTop = VisibleRect::leftTop();
     CCPoint rightTop = VisibleRect::rightTop();
-
-    // TODO (Roman): round all points
-
+    
     m_rectOrigin = ccpRounded (leftTop.x, leftTop.y - m_pGameContext->getFontHeightNormal() - padding * 3);
     m_rectDestination = ccpRounded (rightTop.x, rightTop.y);
     
