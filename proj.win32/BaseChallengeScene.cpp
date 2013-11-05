@@ -49,7 +49,7 @@ void BaseChallengeScene::initialize(float dt)
         
   CCRect visibleRect = VisibleRect::getVisibleRect();   
     
-  LayoutController::AddBackground(m_pGameContext, this, -1);
+  LayoutController::addBackground(m_pGameContext, this, -1);
 
   float availableWidth = visibleRect.size.width / 2;    
             

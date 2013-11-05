@@ -30,6 +30,10 @@ private:
   float m_defaultBorderThickness;
   float m_defaultPadding;
 
+  float m_fontScale;
+  float m_panelInnerWidthWide;
+  float m_panelInnerWidthNarrow;
+
   std::vector<std::string> m_digitsFontNormal;
   std::vector<std::string> m_digitsFontLarge;
   std::vector<int> m_digitFontNormalWidths;
@@ -40,7 +44,6 @@ private:
   CCSize m_defaultButtonSize;
 
   CCSize m_frameSize;
-  CCSize m_guaranteedVisibleSize;
 
   int m_highscoreEasy;
   int m_highscoreNormal;
@@ -82,6 +85,13 @@ public:
   ResourceDefinition getResourceDefinition() { return this->m_resourceDefinition; }
   void setResourceDefinition(ResourceDefinition resourceDefinition) { this->m_resourceDefinition = resourceDefinition; }
     
+  float getPanelInnerWidthWide() { return this->m_panelInnerWidthWide; }
+  void setPanelInnerWidthWide(float panelInnerWidthWide) { this->m_panelInnerWidthWide = panelInnerWidthWide; }
+  float getPanelInnerWidthNarrow() { return this->m_panelInnerWidthNarrow; }
+  void setPanelInnerWidthNarrow(float panelInnerWidthNarrow) { this->m_panelInnerWidthNarrow = panelInnerWidthNarrow; }
+  float getFontScale() { return this->m_fontScale; }
+  void setFontScale(float fontScale) { this->m_fontScale = fontScale; }
+   
   float getHorizontalScaleFactor() { return this->m_horizontalScaleFactor; }
   void setHorizontalScaleFactor(float horizontalScaleFactor) { this->m_horizontalScaleFactor = horizontalScaleFactor; }
   
@@ -112,6 +122,8 @@ public:
   float getDefaultPadding() { return this->m_defaultPadding; }
   void setDefaultPadding(float defaultPadding) { this->m_defaultPadding = defaultPadding; }
   
+  float getOuterPanelPadding() { return this->m_defaultPadding * 4; }
+
   float getFontHeightLarge() { return this->m_fontHeightLarge; }
   void setFontHeightLarge(float fontHeightLarge) { this->m_fontHeightLarge = fontHeightLarge; }
   
@@ -126,9 +138,6 @@ public:
   
   CCSize getFrameSize() { return this->m_frameSize; }
   void setFrameSize(float width, float height) { this->m_frameSize.setSize(width, height); }
-  
-  CCSize getGuaranteedVisibleSize() { return this->m_guaranteedVisibleSize; }
-  void setGuaranteedVisibleSize(float width, float height) { this->m_guaranteedVisibleSize.setSize(width, height); }
   
   bool getIsSoundOn() { return this->m_isSoundOn; }
   void setIsSoundOn(bool isSoundOn);

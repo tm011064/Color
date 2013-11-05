@@ -74,25 +74,25 @@ void ChallengeButton::onEnter()
         break;
       case 2:
         sprite = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("star_golden_small"));
-        sprite->setPosition(ccp(-sprite->getContentSize().width*.4, -m_size.height*.16));
+        sprite->setPosition(ccp(-sprite->getContentSize().width*.4, -m_size.height*.158));
         sprite->setRotation(-8.0f);
         this->addChild(sprite);
         sprite = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("star_golden_small"));
         sprite->setPosition(ccp(sprite->getContentSize().width*.4, -m_size.height*.17));
-        sprite->setRotation(8.0f);
+        sprite->setRotation(6.4f);
         this->addChild(sprite);
         break;
       case 3:
         sprite = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("star_golden_small"));
-        sprite->setPosition(ccp(-sprite->getContentSize().width*.8, -m_size.height*.17 - sprite->getContentSize().height*.13));
+        sprite->setPosition(ccp(-sprite->getContentSize().width*.8, -m_size.height*.17 - sprite->getContentSize().height*.12));
         sprite->setRotation(-22.0f);
         this->addChild(sprite);
         sprite = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("star_golden_small"));
         sprite->setPosition(ccp(0, -m_size.height*.17));
         this->addChild(sprite);
         sprite = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("star_golden_small"));
-        sprite->setPosition(ccp(sprite->getContentSize().width*.8, -m_size.height*.17 - sprite->getContentSize().height*.17));
-        sprite->setRotation(22.0f);
+        sprite->setPosition(ccp(sprite->getContentSize().width*.8, -m_size.height*.17 - sprite->getContentSize().height*.174));
+        sprite->setRotation(18.4f);
         this->addChild(sprite);
         break;
       }

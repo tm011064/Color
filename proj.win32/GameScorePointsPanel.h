@@ -41,7 +41,7 @@ private:
 public:
   static GameScorePointsPanel* create(GameContext* gameContext, float width, ccColor4F separatorColor);
   ~GameScorePointsPanel() { }
-  
+
   void refresh();
   void show();
   virtual void onEnter();

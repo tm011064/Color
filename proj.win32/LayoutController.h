@@ -13,8 +13,8 @@ public:
   LayoutController() { }
   ~LayoutController() { }
 
-  static void AddConsoleButton(GameContext* gameContext, CCNode* target, GameButton* gameButton);
-  static void AddBackground(GameContext* gameContext, CCNode* target, int zOrder);
+  static void addConsoleButton(GameContext* gameContext, CCNode* target, GameButton* gameButton);
+  static void addBackground(GameContext* gameContext, CCNode* target, int zOrder);
       
   static CCArray* createOneButton(GameContext* gameContext, DebugDraw* debugDraw, CCPoint anchor
     , CCNode *pTarget

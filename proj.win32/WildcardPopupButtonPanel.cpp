@@ -21,20 +21,25 @@ void WildcardPopupButtonPanel::onEnter()
     this->m_isLayoutInitialized = true;
 
     CCSize wildCardButtonSize = CCSizeMake(round( m_size.width )
-                                           , round( m_pGameContext->getFontHeightNormal() * 2 + m_pGameContext->getDefaultPadding()*4));
+                                           , round( m_pGameContext->getFontHeightNormal() * this->m_pGameContext->getFontScale() * 2 + m_pGameContext->getDefaultPadding()*4));
     
+    // TODO (Roman): do all the font scaling...
+
     ccColor4F fillColor = WILDCARD_BUTTON_COIN_BACKGROUND_COLOR_OFF; //{ .0f, .0f, .0f, 1.0f };
     ccColor4F borderColor = { 1.0f, 1.0f, 1.0f, 1.0f };
     m_scoreInfoRect.borderColor = borderColor;
     m_scoreInfoRect.fillColor = fillColor;
 
     m_scoreInfoLeftLabel = CCLabelBMFont::create("", m_pGameContext->getFontNormalPath().c_str());
+    m_scoreInfoLeftLabel->setScale(this->m_pGameContext->getFontScale());
     this->addChild(m_scoreInfoLeftLabel);
     
     m_scoreInfoRightLabel = CCLabelBMFont::create("", m_pGameContext->getFontNormalPath().c_str());
+    m_scoreInfoRightLabel->setScale(this->m_pGameContext->getFontScale());
     this->addChild(m_scoreInfoRightLabel);
 
     m_headerLabel = CCLabelBMFont::create("", m_pGameContext->getFontNormalPath().c_str());
+    m_headerLabel->setScale(this->m_pGameContext->getFontScale());
     this->addChild(m_headerLabel);
     
     std::vector<WildcardButtonDefinition>::iterator it;
@@ -63,23 +68,23 @@ void WildcardPopupButtonPanel::onEnter()
 CCSize WildcardPopupButtonPanel::updateLayout(bool showHeader, std::string headerText
     , bool showScoreInfo, std::string scoreInfoLeft, std::string scoreInfoRight )
 {
-  float verticalSpacingLarge = m_pGameContext->getFontHeightLarge() + m_pGameContext->getDefaultPadding()*3;
+  float verticalSpacingLarge = m_pGameContext->getFontHeightLarge()*this->m_pGameContext->getFontScale() + m_pGameContext->getDefaultPadding()*3;
   float buttonMargin = m_pGameContext->getDefaultPadding()*4;
   float posY = 0;
     
   CCSize wildCardButtonSize = CCSizeMake(round( m_size.width )
-                                         , round( m_pGameContext->getFontHeightNormal() * 2 + m_pGameContext->getDefaultPadding()*4));
+                                         , round( m_pGameContext->getFontHeightNormal() *this->m_pGameContext->getFontScale()* 2 + m_pGameContext->getDefaultPadding()*4));
   
   this->m_showScoreInfo = showScoreInfo;
   if ( showScoreInfo )
   {
     this->m_scoreInfoRect.rightTop = ccp( m_size.width/2, posY );
-    posY -= round( m_pGameContext->getFontHeightNormal()/2 + m_pGameContext->getDefaultPadding() );
+    posY -= round( m_pGameContext->getFontHeightNormal()/2*this->m_pGameContext->getFontScale() + m_pGameContext->getDefaultPadding() );
     m_scoreInfoLeftLabel->setString(scoreInfoLeft.c_str());
-    m_scoreInfoLeftLabel->setPosition(-m_size.width/2 + m_scoreInfoLeftLabel->getContentSize().width/2 + m_pGameContext->getDefaultPadding()*4, posY);
+    m_scoreInfoLeftLabel->setPosition(-m_size.width/2 + m_scoreInfoLeftLabel->getContentSize().width/2*this->m_pGameContext->getFontScale() + m_pGameContext->getDefaultPadding()*4, posY);
     m_scoreInfoRightLabel->setString(scoreInfoRight.c_str());
-    m_scoreInfoRightLabel->setPosition(m_size.width/2 - m_scoreInfoRightLabel->getContentSize().width/2 - m_pGameContext->getDefaultPadding()*4, posY);
-    posY -= round( m_pGameContext->getFontHeightNormal()/2 + m_pGameContext->getDefaultPadding() );
+    m_scoreInfoRightLabel->setPosition(m_size.width/2 - m_scoreInfoRightLabel->getContentSize().width/2*this->m_pGameContext->getFontScale() - m_pGameContext->getDefaultPadding()*4, posY);
+    posY -= round( m_pGameContext->getFontHeightNormal()/2*this->m_pGameContext->getFontScale() + m_pGameContext->getDefaultPadding() );
     this->m_scoreInfoRect.leftBottom = ccp( -m_size.width/2, posY );
   }
 
@@ -89,10 +94,10 @@ CCSize WildcardPopupButtonPanel::updateLayout(bool showHeader, std::string heade
     if ( showScoreInfo )
       posY -= round( buttonMargin*2 );
 
-    posY -= round( m_pGameContext->getFontHeightNormal()/2 );
+    posY -= round( m_pGameContext->getFontHeightNormal()/2*this->m_pGameContext->getFontScale() );
     m_headerLabel->setString(headerText.c_str());
     m_headerLabel->setPosition(0, posY);
-    posY -= round( m_pGameContext->getFontHeightNormal()/2 );
+    posY -= round( m_pGameContext->getFontHeightNormal()/2*this->m_pGameContext->getFontScale() );
   }
 
   if ( showScoreInfo || showHeader )

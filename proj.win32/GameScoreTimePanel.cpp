@@ -3,7 +3,8 @@
 GameScoreTimePanel* GameScoreTimePanel::create(GameContext* gameContext, float width
   , bool showAverageDuration, ccColor4F separatorColor) 
 { 
-  GameScoreTimePanel* gameScorePointsPanel = new GameScoreTimePanel(gameContext, width, showAverageDuration, separatorColor);
+  GameScoreTimePanel* gameScorePointsPanel = new GameScoreTimePanel(gameContext, width, showAverageDuration
+    , separatorColor);
   gameScorePointsPanel->autorelease();
   return gameScorePointsPanel;
 }
@@ -24,60 +25,71 @@ void GameScoreTimePanel::onEnter()
         
     this->m_padding = m_pGameContext->getDefaultPadding();
     this->m_borderThickness = m_pGameContext->getDefaultBorderThickness();
-
-    float verticalSpacing = m_pGameContext->getFontHeightNormal() + m_padding;
-    float verticalSpacingLarge = m_pGameContext->getFontHeightLarge() + m_padding*3;
+    
+    float verticalSpacing = (m_pGameContext->getFontHeightNormal() + m_padding)*this->m_pGameContext->getFontScale();
+    float verticalSpacingLarge = (m_pGameContext->getFontHeightLarge() + m_padding*3)*this->m_pGameContext->getFontScale();
     
     char str[256];        
 
-    float posY = 0;
+    float posY = -(this->m_pGameContext->getFontHeightNormal()/2 * this->m_pGameContext->getFontScale());
     
     m_pointsLabelDescription = CCLabelBMFont::create("Points", m_pGameContext->getFontNormalPath().c_str());
-    m_pointsLabelDescription->setPosition(this->m_textIndentLeft + m_pointsLabelDescription->getContentSize().width/2, posY);
+    m_pointsLabelDescription->setScale( this->m_pGameContext->getFontScale() );
+    m_pointsLabelDescription->setPosition(this->m_textIndentLeft + m_pointsLabelDescription->getContentSize().width/2*this->m_pGameContext->getFontScale(), posY);
     this->addChild(m_pointsLabelDescription);
     sprintf(str, "%i", (int)(gameScore.totalPoints));
     m_pointsLabel = CCLabelBMFont::create(str, m_pGameContext->getFontNormalPath().c_str());
-    m_pointsLabel->setPosition(this->m_textIndentRight - m_pointsLabel->getContentSize().width/2, posY);
+    m_pointsLabel->setScale( this->m_pGameContext->getFontScale() );
+    m_pointsLabel->setPosition(this->m_textIndentRight - m_pointsLabel->getContentSize().width/2*this->m_pGameContext->getFontScale(), posY);
     this->addChild(m_pointsLabel);
 
     posY -= verticalSpacing;
     m_timingLabelDescription = CCLabelBMFont::create("Avg Timing", m_pGameContext->getFontNormalPath().c_str());
-    m_timingLabelDescription->setPosition(this->m_textIndentLeft + m_timingLabelDescription->getContentSize().width/2, posY);
+    m_timingLabelDescription->setScale( this->m_pGameContext->getFontScale() );
+    m_timingLabelDescription->setPosition(this->m_textIndentLeft + m_timingLabelDescription->getContentSize().width/2*this->m_pGameContext->getFontScale(), posY);
     this->addChild(m_timingLabelDescription);
     sprintf(str, "%i", (int)(gameScore.totalPoints));
     m_timingLabel = CCLabelBMFont::create(str, m_pGameContext->getFontNormalPath().c_str());
-    m_timingLabel->setPosition(this->m_textIndentRight - m_timingLabel->getContentSize().width/2, posY);
+    m_timingLabel->setScale( this->m_pGameContext->getFontScale() );
+    m_timingLabel->setPosition(this->m_textIndentRight - m_timingLabel->getContentSize().width/2*this->m_pGameContext->getFontScale(), posY);
     this->addChild(m_timingLabel);
     
     if (m_showAverageDuration)
     {
       posY -= verticalSpacing;
       m_durationLabelDescription = CCLabelBMFont::create("Avg Duration", m_pGameContext->getFontNormalPath().c_str());
-      m_durationLabelDescription->setPosition(this->m_textIndentLeft + m_durationLabelDescription->getContentSize().width/2, posY);
+      m_durationLabelDescription->setScale( this->m_pGameContext->getFontScale() );
+      m_durationLabelDescription->setPosition(this->m_textIndentLeft + m_durationLabelDescription->getContentSize().width/2*this->m_pGameContext->getFontScale(), posY);
       this->addChild(m_durationLabelDescription);
       sprintf(str, "%i", (int)(gameScore.totalPoints));
       m_durationLabel = CCLabelBMFont::create(str, m_pGameContext->getFontNormalPath().c_str());
-      m_durationLabel->setPosition(this->m_textIndentRight - m_durationLabel->getContentSize().width/2, posY);
+      m_durationLabel->setScale( this->m_pGameContext->getFontScale() );
+      m_durationLabel->setPosition(this->m_textIndentRight - m_durationLabel->getContentSize().width/2*this->m_pGameContext->getFontScale(), posY);
       this->addChild(m_durationLabel);
     }   
 
     posY -= verticalSpacing;
     m_scoreLabelDescription = CCLabelBMFont::create("Score", m_pGameContext->getFontNormalPath().c_str());
-    m_scoreLabelDescription->setPosition(this->m_textIndentLeft + m_scoreLabelDescription->getContentSize().width/2, posY);
+    m_scoreLabelDescription->setScale( this->m_pGameContext->getFontScale() );
+    m_scoreLabelDescription->setPosition(this->m_textIndentLeft + m_scoreLabelDescription->getContentSize().width/2*this->m_pGameContext->getFontScale(), posY);
     this->addChild(m_scoreLabelDescription);
     sprintf(str, "%i", (int)(gameScore.totalPoints));
     m_scoreLabel = CCLabelBMFont::create(str, m_pGameContext->getFontNormalPath().c_str());
-    m_scoreLabel->setPosition(this->m_textIndentRight - m_scoreLabel->getContentSize().width/2, posY);
+    m_scoreLabel->setScale( this->m_pGameContext->getFontScale() );
+    m_scoreLabel->setPosition(this->m_textIndentRight - m_scoreLabel->getContentSize().width/2*this->m_pGameContext->getFontScale(), posY);
     this->addChild(m_scoreLabel);
     
     posY -= verticalSpacing;
     CCLabelBMFont* label = CCLabelBMFont::create("Coins earned", m_pGameContext->getFontNormalPath().c_str());
-    label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2, posY);
+    label->setScale( this->m_pGameContext->getFontScale() );
+    label->setPosition(this->m_textIndentLeft + label->getContentSize().width/2*this->m_pGameContext->getFontScale(), posY);
     this->addChild(label);
     m_coinsEarnedLabel = CCLabelBMFont::create("0", m_pGameContext->getFontNormalPath().c_str());
-    m_coinsEarnedLabel->setPosition(this->m_textIndentRight - m_coinsEarnedLabel->getContentSize().width/2, posY);
+    m_coinsEarnedLabel->setScale( this->m_pGameContext->getFontScale() );
+    m_coinsEarnedLabel->setPosition(this->m_textIndentRight - m_coinsEarnedLabel->getContentSize().width/2*this->m_pGameContext->getFontScale(), posY);
     this->addChild(m_coinsEarnedLabel);
         
+    posY -= this->m_pGameContext->getFontHeightNormal()/2 * this->m_pGameContext->getFontScale();
     this->setContentSize(CCSizeMake( this->m_textIndentRight - this->m_textIndentLeft, -posY ));
     CCArray *pChildren = this->getChildren();
     if (pChildren && pChildren->count() > 0)
@@ -102,7 +114,7 @@ void GameScoreTimePanel::refresh()
   
   sprintf(str, "%i", (int)gameScore.totalPoints);
   m_pointsLabel->setString(str);
-  m_pointsLabel->setPositionX(this->m_textIndentRight - m_pointsLabel->getContentSize().width/2);
+  m_pointsLabel->setPositionX(this->m_textIndentRight - m_pointsLabel->getContentSize().width/2*this->m_pGameContext->getFontScale());
   m_pointsLabel->setVisible(false);
   
   if (gameScore.averageButtonBlinkStartOffset >= 0)
@@ -110,7 +122,7 @@ void GameScoreTimePanel::refresh()
   else
     sprintf(str, "NA");
   m_timingLabel->setString(str);
-  m_timingLabel->setPositionX(this->m_textIndentRight - m_timingLabel->getContentSize().width/2);
+  m_timingLabel->setPositionX(this->m_textIndentRight - m_timingLabel->getContentSize().width/2*this->m_pGameContext->getFontScale());
   m_timingLabel->setVisible(false);
   
   if (m_showAverageDuration)
@@ -120,7 +132,7 @@ void GameScoreTimePanel::refresh()
     else
       sprintf(str, "NA");
     m_durationLabel->setString(str);
-    m_durationLabel->setPositionX(this->m_textIndentRight - m_durationLabel->getContentSize().width/2);
+    m_durationLabel->setPositionX(this->m_textIndentRight - m_durationLabel->getContentSize().width/2*this->m_pGameContext->getFontScale());
     m_durationLabel->setVisible(false);
   }
 
@@ -129,11 +141,11 @@ void GameScoreTimePanel::refresh()
   else
     sprintf(str, "NA");
   m_scoreLabel->setString(str);
-  m_scoreLabel->setPositionX(this->m_textIndentRight - m_scoreLabel->getContentSize().width/2);
+  m_scoreLabel->setPositionX(this->m_textIndentRight - m_scoreLabel->getContentSize().width/2*this->m_pGameContext->getFontScale());
   m_scoreLabel->setVisible(false);
 
   m_coinsEarnedLabel->setString("0");
-  m_coinsEarnedLabel->setPositionX(this->m_textIndentRight - m_coinsEarnedLabel->getContentSize().width/2);
+  m_coinsEarnedLabel->setPositionX(this->m_textIndentRight - m_coinsEarnedLabel->getContentSize().width/2*this->m_pGameContext->getFontScale());
   m_coinsEarnedLabel->setVisible(false);
 
   m_pointsLabelDescription->setVisible(false);
@@ -182,7 +194,7 @@ void GameScoreTimePanel::updateCoinsDisplay(float dt)
   char str[256];
   sprintf(str, "%d", (int)(val));
   m_coinsEarnedLabel->setString(str);
-  m_coinsEarnedLabel->setPositionX(this->m_textIndentRight - m_coinsEarnedLabel->getContentSize().width/2);  
+  m_coinsEarnedLabel->setPositionX(this->m_textIndentRight - m_coinsEarnedLabel->getContentSize().width/2*this->m_pGameContext->getFontScale());  
 }
 
 void GameScoreTimePanel::updatePointsDisplay(float dt)

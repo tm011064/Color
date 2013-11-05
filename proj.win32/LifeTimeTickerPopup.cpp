@@ -21,6 +21,8 @@ void LifeTimeTickerPopup::onEnter()
     m_visibleRectLeftBottom = VisibleRect::leftBottom();
     m_visibleRectRightTop = VisibleRect::rightTop();
         
+    float scale = 1.0f;
+
     GameScore gameScore = m_pGameContext->getGameScore();
         
     this->m_padding = m_pGameContext->getDefaultPadding();
@@ -38,19 +40,12 @@ void LifeTimeTickerPopup::onEnter()
     m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightBottom.y - m_borderThickness);
       
     // now we have the border thickness and padding, so we can set the boundaries 
-    float indentLeft = round ( MIN( 
-        m_visibleRectLeftBottom.x + (m_visibleRectRightTop.x - m_visibleRectLeftBottom.x - m_pGameContext->getGuaranteedVisibleSize().width)/2
-      , m_visibleRectLeftBottom.x + (visibleRect.size.width * .15) ) );
+    float indentLeft = (visibleRect.size.width - this->m_pGameContext->getPanelInnerWidthWide())/2;
+    float indentRight = indentLeft + this->m_pGameContext->getPanelInnerWidthWide();
 
-    float indentRight = round ( MAX( 
-        m_visibleRectRightTop.x - (m_visibleRectRightTop.x - m_visibleRectLeftBottom.x - m_pGameContext->getGuaranteedVisibleSize().width)/2
-      , m_visibleRectLeftBottom.x + (visibleRect.size.width * .85) ) );
-
-    m_dialogRectInnerLeftBottom = ccp( indentLeft + this->m_borderThickness, m_dialogRectLeftBottom.y + this->m_borderThickness );
-    m_dialogRectInnerRightTop = ccp( indentRight - this->m_borderThickness, m_dialogRectRightTop.y - this->m_borderThickness );
-
-    this->m_textIndentLeft = m_dialogRectInnerLeftBottom.x + m_padding * 3;
-    this->m_textIndentRight = m_dialogRectInnerRightTop.x - m_padding * 3;
+    // TODO (Roman): fix this
+    this->m_textIndentLeft = m_dialogRectLeftBottom.x + m_padding * 3;
+    this->m_textIndentRight = m_dialogRectRightTop.x - m_padding * 3;
             
     m_playButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
@@ -61,7 +56,7 @@ void LifeTimeTickerPopup::onEnter()
       , this->m_pGameContext
       , callfuncO_selector(LifeTimeTickerPopup::playCallback)
       , this);    
-    float menuButtonPosYTop = m_dialogRectInnerLeftBottom.y + this->m_padding * 5 + m_playButton->getSize().height/2;
+    float menuButtonPosYTop = m_dialogRectLeftBottom.y + this->m_padding * 5 + m_playButton->getScaledSize().height/2;
     m_playButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
     m_playButton->setPosition(center.x, menuButtonPosYTop);
     this->addChild(m_playButton);

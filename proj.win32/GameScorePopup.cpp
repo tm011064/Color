@@ -26,6 +26,7 @@ void GameScorePopup::onEnter()
     CCPoint center = VisibleRect::center();
         
     CCRect visibleRect = VisibleRect::getVisibleRect();
+        
     m_visibleRectLeftBottom = VisibleRect::leftBottom();
     m_visibleRectRightTop = VisibleRect::rightTop();
         
@@ -34,106 +35,62 @@ void GameScorePopup::onEnter()
     this->m_padding = m_pGameContext->getDefaultPadding();
     this->m_borderThickness = m_pGameContext->getDefaultBorderThickness();
 
-    float verticalSpacing = m_pGameContext->getFontHeightNormal() + m_padding;
-    float verticalSpacingLarge = m_pGameContext->getFontHeightLarge() + m_padding*3;
+    float verticalSpacing = m_pGameContext->getFontHeightNormal()*this->m_pGameContext->getFontScale() + m_padding*this->m_pGameContext->getFontScale();
+    float verticalSpacingLarge = m_pGameContext->getFontHeightLarge()*this->m_pGameContext->getFontScale() + m_padding*3*this->m_pGameContext->getFontScale();
             
+    m_separatorColor.a = 1; 
+    m_separatorColor.r = 1; 
+    m_separatorColor.g = 1; 
+    m_separatorColor.b = 1; 
+
     m_dialogRectLeftTop = ccpRounded ( 0, m_visibleRectRightTop.y * .825);
-    m_dialogRectLeftBottom = ccpRounded ( 0, m_visibleRectRightTop.y * .26 );
     m_dialogRectRightTop = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftTop.y);
-    m_dialogRectRightBottom = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftBottom.y);
 
     m_separatorTopRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightTop.y + m_borderThickness);
-    m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightBottom.y - m_borderThickness);
       
     // now we have the border thickness and padding, so we can set the boundaries 
-    float indentLeft = round ( MIN( 
-        m_visibleRectLeftBottom.x + (m_visibleRectRightTop.x - m_visibleRectLeftBottom.x - m_pGameContext->getGuaranteedVisibleSize().width)/2
-      , m_visibleRectLeftBottom.x + (visibleRect.size.width * .15) ) );
-
-    float indentRight = round ( MAX( 
-        m_visibleRectRightTop.x - (m_visibleRectRightTop.x - m_visibleRectLeftBottom.x - m_pGameContext->getGuaranteedVisibleSize().width)/2
-      , m_visibleRectLeftBottom.x + (visibleRect.size.width * .85) ) );
-
-    m_dialogRectInnerLeftBottom = ccp( indentLeft + this->m_borderThickness, m_dialogRectLeftBottom.y + this->m_borderThickness );
-    m_dialogRectInnerRightTop = ccp( indentRight - this->m_borderThickness, m_dialogRectRightTop.y - this->m_borderThickness );
-
-    this->m_textIndentLeft = m_dialogRectInnerLeftBottom.x + m_padding * 3;
-    this->m_textIndentRight = m_dialogRectInnerRightTop.x - m_padding * 3;
-    
-    
-    float posY = round( m_dialogRectInnerRightTop.y + verticalSpacing/2 + m_padding*2 );
+    m_textIndentLeft = (visibleRect.size.width - this->m_pGameContext->getPanelInnerWidthWide())/2;
+    m_textIndentRight = m_textIndentLeft + this->m_pGameContext->getPanelInnerWidthWide();
+        
+    float posY = round( m_dialogRectRightTop.y + verticalSpacing/2 + m_padding*2 );
     m_coinsLabelDescription = CCLabelBMFont::create("coins available", m_pGameContext->getFontNormalPath().c_str());
-    m_coinsLabelDescription->setPosition(this->m_textIndentLeft + m_coinsLabelDescription->getContentSize().width/2, posY );
+    m_coinsLabelDescription->setScale( this->m_pGameContext->getFontScale() );
+    m_coinsLabelDescription->setPosition(this->m_textIndentLeft 
+      + m_coinsLabelDescription->getContentSize().width/2*this->m_pGameContext->getFontScale(), posY );
     this->addChild(m_coinsLabelDescription);
        
     m_coinsLabel = CCLabelBMFont::create("NA", m_pGameContext->getFontNormalPath().c_str());
-    m_coinsLabel->setPosition(ccp(this->m_textIndentRight - m_coinsLabel->getContentSize().width/2, posY));
+    m_coinsLabel->setScale( this->m_pGameContext->getFontScale() );
+    m_coinsLabel->setPosition(ccp(this->m_textIndentRight - m_coinsLabel->getContentSize().width/2*this->m_pGameContext->getFontScale(), posY));
     this->addChild(m_coinsLabel);
     
     m_availableCoinsCoin = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("coin_small"));
-    m_availableCoinsCoin->setScale(this->m_pGameContext->getFontHeightNormal() / m_availableCoinsCoin->getContentSize().height * 1.2);
-    m_availableCoinsCoin->setPosition(ccpRounded(m_coinsLabel->getPositionX() 
-      - m_coinsLabel->getContentSize().width/2*m_availableCoinsCoin->getScale()
+    m_availableCoinsCoin->setScale(this->m_pGameContext->getFontHeightNormal() 
+                                   / m_availableCoinsCoin->getContentSize().height*this->m_pGameContext->getFontScale()*1.2);
+    m_availableCoinsCoin->setPosition(
+      ccpRounded(m_coinsLabel->getPositionX() 
+      - m_coinsLabel->getContentSize().width/2*this->m_pGameContext->getFontScale()*m_availableCoinsCoin->getScale()
       - m_padding*3
       , posY));
     this->addChild(m_availableCoinsCoin);
     
-    posY = m_dialogRectInnerRightTop.y - verticalSpacingLarge/2 - this->m_padding * 4;
+    posY = m_dialogRectRightTop.y - verticalSpacingLarge/2 - this->m_padding * 4;
     m_headerTextLabel = CCLabelBMFont::create(m_headerText.c_str(), m_pGameContext->getFontLargePath().c_str());
+    m_headerTextLabel->setScale( this->m_pGameContext->getFontScale() );
     m_headerTextLabel->setPosition(center.x, posY );
     this->addChild(m_headerTextLabel);
-    posY -= m_pGameContext->getFontHeightLarge()/2;
+    posY -= m_pGameContext->getFontHeightLarge()/2*this->m_pGameContext->getFontScale();
         
     int headerTextBottomEdgePosY = posY;
 
     CCSize size;
-    TextButton* textButton;
-    int menuButtonPosYTop, menuButtonPosYBottom, menuButtonPosYTopEdge;
-    switch (m_gameScorePopupMode)
+
+    float panelTopY = posY;
+    if ( m_gameScorePopupMode == GSPMODE_CHALLENGE )
     {
-    case GSPMODE_ARCADE:      
-
-      textButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
-        , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
-        , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
-        , "menu"
-        , m_pGameContext->getDefaultButtonSize()
-        , this->m_borderThickness
-        , this->m_pGameContext
-        , callfuncO_selector(GameScorePopup::mainMenuCallback)
-        , this);
-      textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-
-      menuButtonPosYTop = m_dialogRectInnerLeftBottom.y + this->m_padding * 5 + textButton->getSize().height/2;
-      menuButtonPosYBottom = m_dialogRectInnerLeftBottom.y - this->m_padding * 5 - textButton->getSize().height/2;
-      menuButtonPosYTopEdge = menuButtonPosYTop + textButton->getSize().height/2;
-
-      textButton->setPosition(this->m_textIndentLeft + textButton->getSize().width/2
-        , menuButtonPosYTop);
-      this->addChild(textButton);
-          
-      textButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
-        , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
-        , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
-        , "retry"
-        , m_pGameContext->getDefaultButtonSize()
-        , this->m_borderThickness
-        , this->m_pGameContext
-        , callfuncO_selector(GameScorePopup::playAgainCallback)
-        , this);
-      textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-      textButton->setPosition(this->m_textIndentRight - textButton->getSize().width/2
-        , menuButtonPosYTop);
-      this->addChild(textButton);
-
-      break;
-
-      
-    case GSPMODE_CHALLENGE:
-
       m_goldStar1 = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("star_golden_large"));
       size = m_goldStar1->getContentSize();
-      float starScale = ((m_dialogRectInnerRightTop.y - m_dialogRectInnerLeftBottom.y)*.18f) / size.height;
+      float starScale = this->m_pGameContext->getFontHeightLarge()*this->m_pGameContext->getFontScale()*2 / size.height;
       size.setSize(size.width*starScale, size.height*starScale);
       posY -= size.height/2 + this->m_padding*2;
 
@@ -168,24 +125,71 @@ void GameScorePopup::onEnter()
       this->addChild(m_goldStar3);
 
       posY -= size.height/2 + this->m_padding*2;
+    }
+    
+    switch (this->m_gameScorePopupType)
+    {
+    case GSPTYPE_POINTS:
+      m_gameScorePanel = GameScorePointsPanel::create(this->m_pGameContext, round((this->m_pGameContext->getPanelInnerWidthWide() - m_pGameContext->getOuterPanelPadding()*2)*.775), m_separatorColor);
+      break;
+
+    case GSPTYPE_TIME_INTERVALS:
+      m_gameScorePanel = GameScoreTimePanel::create(this->m_pGameContext, round((this->m_pGameContext->getPanelInnerWidthWide() - m_pGameContext->getOuterPanelPadding()*2)*.775), true, m_separatorColor);
+      break;
+
+    case GSPTYPE_RHYTHM:
+      m_gameScorePanel = GameScoreTimePanel::create(this->m_pGameContext, round((this->m_pGameContext->getPanelInnerWidthWide() - m_pGameContext->getOuterPanelPadding()*2)*.775), false, m_separatorColor);
+      break;
+    }
+    this->addChild(m_gameScorePanel);
+    posY -= ( m_gameScorePanel->getContentSize().height )/2;
+    this->m_gameScorePanel->setPosition( center.x, posY );
+    posY -= ( m_gameScorePanel->getContentSize().height )/2;
+
+    float panelBottomY = posY;
+    
+    TextButton* textButton;
+        
+    TextButton* menuButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
+      , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
+      , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
+      , "menu"
+      , m_pGameContext->getDefaultButtonSize()
+      , this->m_borderThickness
+      , this->m_pGameContext
+      , callfuncO_selector(GameScorePopup::mainMenuCallback)
+      , this);
+    menuButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
+    this->addChild(menuButton);
+
+    posY -= this->m_padding * 5 + menuButton->getScaledSize().height/2;
+    
+    switch (m_gameScorePopupMode)
+    {
+    case GSPMODE_ARCADE:      
+          
+      menuButton->setPosition(this->m_textIndentLeft + menuButton->getScaledSize().width/2, posY);
 
       textButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
         , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
         , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
-        , "menu"
+        , "retry"
         , m_pGameContext->getDefaultButtonSize()
         , this->m_borderThickness
         , this->m_pGameContext
-        , callfuncO_selector(GameScorePopup::mainMenuCallback)
+        , callfuncO_selector(GameScorePopup::playAgainCallback)
         , this);
       textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-    
-      menuButtonPosYTop = m_dialogRectInnerLeftBottom.y + this->m_padding * 5 + textButton->getSize().height/2;
-      menuButtonPosYBottom = m_dialogRectInnerLeftBottom.y - this->m_padding * 5 - textButton->getSize().height/2;
-      menuButtonPosYTopEdge = menuButtonPosYTop + textButton->getSize().height/2;
-    
-      textButton->setPosition(center.x, menuButtonPosYBottom);
+      textButton->setPosition(this->m_textIndentRight - textButton->getScaledSize().width/2
+        , posY);
       this->addChild(textButton);
+
+      break;
+
+      
+    case GSPMODE_CHALLENGE:
+      
+      menuButton->setPosition(center.x, posY - this->m_padding * 10 - menuButton->getScaledSize().height);
 
       m_retryButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
         , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
@@ -195,9 +199,10 @@ void GameScorePopup::onEnter()
         , this->m_borderThickness
         , this->m_pGameContext
         , callfuncO_selector(GameScorePopup::playAgainCallback)
-        , this);
+        , this
+        );
       m_retryButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-      m_retryButton->setPosition(this->m_textIndentRight - m_retryButton->getSize().width/2, menuButtonPosYTop);
+      m_retryButton->setPosition(this->m_textIndentRight - m_retryButton->getScaledSize().width/2, posY);
       this->addChild(m_retryButton);
       
       m_moreCoinsTextButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
@@ -208,10 +213,11 @@ void GameScorePopup::onEnter()
         , this->m_borderThickness
         , this->m_pGameContext
         , callfuncO_selector(GameScorePopup::moreCoinsCallback)
-        , this);
+        , this
+        );
       m_moreCoinsTextButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-      m_moreCoinsTextButton->setPosition(this->m_textIndentLeft + m_moreCoinsTextButton->getSize().width/2
-        , menuButtonPosYTop);
+      m_moreCoinsTextButton->setPosition(this->m_textIndentLeft + m_moreCoinsTextButton->getScaledSize().width/2
+        , posY);
       this->addChild(m_moreCoinsTextButton);
       
       m_moreCoinsBackTextButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
@@ -222,10 +228,11 @@ void GameScorePopup::onEnter()
         , this->m_borderThickness
         , this->m_pGameContext
         , callfuncO_selector(GameScorePopup::gameScoreInfoPanelCallback)
-        , this);
+        , this
+        );
       m_moreCoinsBackTextButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-      m_moreCoinsBackTextButton->setPosition(this->m_textIndentLeft + m_moreCoinsBackTextButton->getSize().width/2
-        , menuButtonPosYTop);
+      m_moreCoinsBackTextButton->setPosition(this->m_textIndentLeft + m_moreCoinsBackTextButton->getScaledSize().width/2
+        , posY);
       this->addChild(m_moreCoinsBackTextButton);      
 
       m_replayButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
@@ -236,10 +243,11 @@ void GameScorePopup::onEnter()
         , this->m_borderThickness
         , this->m_pGameContext
         , callfuncO_selector(GameScorePopup::playAgainCallback)
-        , this);
+        , this
+        );
       m_replayButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-      m_replayButton->setPosition(this->m_textIndentLeft + m_replayButton->getSize().width/2
-        , menuButtonPosYTop);
+      m_replayButton->setPosition(this->m_textIndentLeft + m_replayButton->getScaledSize().width/2
+        , posY);
       this->addChild(m_replayButton);
     
       m_nextButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
@@ -250,61 +258,35 @@ void GameScorePopup::onEnter()
         , this->m_borderThickness
         , this->m_pGameContext
         , callfuncO_selector(GameScorePopup::nextChallengeCallback)
-        , this);
+        , this
+        );
       m_nextButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-      m_nextButton->setPosition(this->m_textIndentRight - m_nextButton->getSize().width/2
-        , menuButtonPosYTop);
+      m_nextButton->setPosition(this->m_textIndentRight - m_nextButton->getScaledSize().width/2
+        , posY);
       this->addChild(m_nextButton);
       
       break;
     }
     
-    m_separatorColor.a = 1; 
-    m_separatorColor.r = 1; 
-    m_separatorColor.g = 1; 
-    m_separatorColor.b = 1; 
+    posY -= this->m_padding * 5 + menuButton->getScaledSize().height/2;
+    // now we have the bottom border y position
     
-    switch (this->m_gameScorePopupType)
-    {
-    case GSPTYPE_POINTS:
-      m_gameScorePanel = GameScorePointsPanel::create(this->m_pGameContext
-        , this->m_textIndentRight - this->m_textIndentLeft, m_separatorColor);
-      this->m_gameScorePanel->setPosition(center.x, posY - ( posY - menuButtonPosYTopEdge )/2);
-      this->addChild(m_gameScorePanel);
-
-      break;
-
-    case GSPTYPE_TIME_INTERVALS:
-      m_gameScorePanel = GameScoreTimePanel::create(this->m_pGameContext
-        , this->m_textIndentRight - this->m_textIndentLeft, true, m_separatorColor);
-      this->m_gameScorePanel->setPosition(center.x, posY - ( posY - menuButtonPosYTopEdge )/2);
-      this->addChild(m_gameScorePanel);
-      break;
-
-    case GSPTYPE_RHYTHM:
-      m_gameScorePanel = GameScoreTimePanel::create(this->m_pGameContext
-        , this->m_textIndentRight - this->m_textIndentLeft, false, m_separatorColor);
-      this->m_gameScorePanel->setPosition(center.x, posY - ( posY - menuButtonPosYTopEdge )/2);
-      this->addChild(m_gameScorePanel);
-
-      break;
-    }
-
-    m_innerWildcardRectPanel = CCRectMake( this->m_textIndentLeft, menuButtonPosYTopEdge
-      , this->m_textIndentRight - this->m_textIndentLeft, headerTextBottomEdgePosY - menuButtonPosYTopEdge );
-
+    m_dialogRectLeftBottom = ccpRounded ( 0, posY );
+    m_dialogRectRightBottom = ccp ( m_visibleRectRightTop.x, m_dialogRectLeftBottom.y);
+    m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightBottom.y - m_borderThickness);
+        
     m_wildcardPopupButtonPanel = WildcardPopupButtonPanel::create(m_pGameContext
-      , CCSizeMake(this->m_textIndentRight - this->m_textIndentLeft, 0)
+      , CCSizeMake(this->m_pGameContext->getPanelInnerWidthNarrow(), 0)
       , m_wildcardButtonDefinitions);
-    m_wildcardPopupButtonPanel->setPosition(center.x, m_innerWildcardRectPanel.getMidY() );
+    m_wildcardPopupButtonPanel->setPosition(center.x, round(panelTopY - (panelTopY - panelBottomY)/2 ));
     this->addChild(m_wildcardPopupButtonPanel);
     
     this->m_wildcardPopupBuyCoinsPanel = WildcardPopupBuyCoinsPanel::create(
       this->m_pGameContext
-      , CCSizeMake( this->m_textIndentRight - this->m_textIndentLeft, 0 )
+      , CCSizeMake( this->m_pGameContext->getPanelInnerWidthNarrow(), 0 )
       , callfuncO_selector(GameScorePopup::gameScoreInfoPanelCallback)
       , this);
-    m_wildcardPopupBuyCoinsPanel->setPosition(center.x, m_innerWildcardRectPanel.getMidY() );
+    m_wildcardPopupBuyCoinsPanel->setPosition(center.x, round(panelTopY - (panelTopY - panelBottomY)/2 ));
     this->addChild(this->m_wildcardPopupBuyCoinsPanel);
 
     m_bgLight.a = .6f; 

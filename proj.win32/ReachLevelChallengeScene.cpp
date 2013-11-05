@@ -48,7 +48,7 @@ void ReachLevelChallengeScene::onPostInitialize()
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
   {
-    LayoutController::AddConsoleButton(m_pGameContext, this, (GameButton*)o);
+    LayoutController::addConsoleButton(m_pGameContext, this, (GameButton*)o);
   }  
 }
 
@@ -213,7 +213,7 @@ void ReachLevelChallengeScene::onCorrectButtonPressed()
   m_gameScore.level = m_buttonSequence.size();
 
   if (m_buttonSequenceIndex >= m_gameScore.level)
-  {// correct, new animation
+  {// correct, new animation   
     
     deltaTime = updateTimeVal(this->m_firstUserSequencePressedTime);
     float levelTimeThreshold = this->m_challengePointScoreDefinition.clickTimeThreshold * m_gameScore.level;
@@ -247,7 +247,8 @@ void ReachLevelChallengeScene::onCorrectButtonPressed()
     if (m_buttonSequenceIndex == m_levelToReach)
     {
       this->m_sceneState = RUNNING_END_OF_GAME_ANIMATION;
-
+      this->m_buttonSequenceIndex = 0;
+  
       this->m_gameScore.coinsEarned = round( (float)m_gameScore.level * m_challengePointScoreDefinition.coinsEarnedMultiplier );
       this->m_pGameContext->setTotalCoins(this->m_pGameContext->getTotalCoins() + m_gameScore.coinsEarned);           
             
@@ -265,6 +266,13 @@ void ReachLevelChallengeScene::onCorrectButtonPressed()
     }     
     else
     {
+      // we have the button index and scene state check on the buttonCallback method which is used to
+      // determine whether we should start a new animation or input session. We have to set the state
+      // and sequence index here so this method doesn't get confused with rapid multi touch events
+      // happening between timer callbacks.
+      this->m_sceneState = RUNNING_SEQUENCE_ANIMATION;
+      this->m_buttonSequenceIndex = 0;
+
       m_topBar->setLevel(m_gameScore.level + 1);      
       this->scheduleOnce(schedule_selector(ReachLevelChallengeScene::runSequenceAnimationTimerCallback), .32f);
     }

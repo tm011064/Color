@@ -58,7 +58,6 @@ private:
   void startNewGame();
   void preLoadCallback(float dt);
 
-
 protected:
   
   unsigned int m_totalVisibleButtons;

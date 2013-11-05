@@ -36,8 +36,6 @@ private:
   GameScorePopupMode m_gameScorePopupMode;
   GameScorePopupPlayOnPanel m_activeGameScorePopupPlayOnPanel;
   GameContext* m_pGameContext; 
-
-  CCRect m_innerWildcardRectPanel;
     
   std::vector<WildcardButtonDefinition> m_wildcardButtonDefinitions;
 

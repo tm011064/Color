@@ -41,8 +41,7 @@ void ChallengeButtonPanel::onEnter()
     m_borderColor.g = .5;
     m_borderColor.b = .5;
     m_borderColor.a = 1;
-
-
+    
     m_storyModeNextPage = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
       , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF
@@ -274,47 +273,82 @@ void ChallengeButtonPanel::resetChallengeButtons(bool isVisible)
   CCPoint leftBottom = VisibleRect::leftBottom();
   CCPoint leftTop = VisibleRect::leftTop();
 
-  float targetedSpacingToButtonRatio = 1.08f;
-
-  float posX, posY;
-  
+    
   if (this->m_challengeButtons.size() <= 0)
     return;
 
+  // 1) define a targeted spacing ratio
+  // 2) define a minimum spacing ration
+  // 3) try to fulfill targeted spacing ratio
+  //     -> if not possible, try minimum spacing ratio
+  //     -> if still too big, scale buttons so minimum ratio can be fulfilled
+
   CCSize size = ((ChallengeButton*)(this->m_challengeButtons.at(0)))->getSize();
   
-  float availableHeight = rightTop.y - leftBottom.y;
-  float availableWidth = rightTop.x - leftBottom.x;
-    
+  float targetedSpacingToButtonRatio = 1.08f;
+  float minimumSpacingToButtonRatio = 1.02f;
+  
+  float availableHeight = rightTop.y - leftBottom.y - m_pGameContext->getDefaultPadding()*2;
+  float availableWidth = rightTop.x - leftBottom.x - m_pGameContext->getDefaultPadding()*2;
+  
+  float horizontalScale = 1.0f;
+  float verticalScale = 1.0f;
   float horizontalSpacing = round( size.width * targetedSpacingToButtonRatio );
   float overallWidth = horizontalSpacing * (STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE - 1) + size.width; 
   if (overallWidth > availableWidth)
   {
-    horizontalSpacing = (availableWidth - size.width*STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE) / STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE + size.width;
-    overallWidth = horizontalSpacing * (STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE - 1) + size.width;
+    horizontalSpacing = round( size.width * minimumSpacingToButtonRatio );
+    overallWidth = horizontalSpacing * (STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE - 1) + size.width; 
+  
+    if (overallWidth > availableWidth)
+    {
+      horizontalScale = availableWidth / overallWidth;
+    }
   }
   
   float verticalSpacing = round( size.height * targetedSpacingToButtonRatio );
   float overallHeight = verticalSpacing * (STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE - 1) + size.height; 
   if (overallHeight > availableHeight)
   {
-    verticalSpacing = (availableHeight - size.height*STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE) / STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE + size.height;
-    overallHeight = verticalSpacing * (STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE - 1) + size.height;
+    verticalSpacing = round( size.height * minimumSpacingToButtonRatio );
+    overallHeight = verticalSpacing * (STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE - 1) + size.height; 
+ 
+    if (overallHeight > availableHeight)
+    {
+      verticalScale = availableHeight / overallHeight;
+    }
   }
 
-  if ( horizontalSpacing > verticalSpacing )
+  float scale = 1.0f;
+  if ( horizontalScale != 1.0f || verticalScale != 1.0f )
   {
-    horizontalSpacing = verticalSpacing;
-    overallWidth = horizontalSpacing * (STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE - 1) + size.width;
+    scale = MIN(horizontalScale, verticalScale);
+
+    horizontalSpacing = (int)(scale * horizontalSpacing);
+    overallWidth = (int)(scale * overallWidth);
+    verticalSpacing = (int)(scale * verticalSpacing);
+    overallHeight = (int)(scale * overallHeight);
+
+    size.setSize(size.width*scale, size.height*scale);
   }
-  else
+
+  if ( horizontalSpacing != verticalSpacing )
   {
-    verticalSpacing = horizontalSpacing;
-    overallHeight = verticalSpacing * (STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE - 1) + size.height;
+    if ( horizontalSpacing > verticalSpacing )
+    {
+      horizontalSpacing = verticalSpacing;
+      overallWidth = horizontalSpacing * (STORYMODE_TOTAL_CHALLENGE_COLUMNS_PER_PAGE - 1) + size.width;
+    }
+    else
+    {
+      verticalSpacing = horizontalSpacing;
+      overallHeight = verticalSpacing * (STORYMODE_TOTAL_CHALLENGE_ROWS_PER_PAGE - 1) + size.height;
+    }
   }
   
-  posX = round ( leftBottom.x + (availableWidth - overallWidth)/2 + size.width/2 ) - position.x;
-  posY = round ( rightTop.y - (availableHeight - overallHeight)/2 - size.height/2 ) - position.y;
+  float posX, posY;
+  posX = round ( leftBottom.x + (availableWidth - overallWidth)/2 + size.width/2 ) - position.x + m_pGameContext->getDefaultPadding();
+  posY = round ( rightTop.y - (availableHeight - overallHeight)/2 - size.height/2 ) - position.y - m_pGameContext->getDefaultPadding();
   
   ChallengeButton* challengeButton;
   int index = 0;
@@ -333,6 +367,7 @@ void ChallengeButtonPanel::resetChallengeButtons(bool isVisible)
           
         challengeButton->setPosition(ccp(posX, posY));
         challengeButton->setVisible(isVisible);
+        challengeButton->setScale(scale);
 
         ++index;
         posX += horizontalSpacing;
@@ -344,7 +379,7 @@ void ChallengeButtonPanel::resetChallengeButtons(bool isVisible)
   challengeButton = NULL;
   
   posX = leftBottom.x + (availableWidth - overallWidth)/2 - position.x;
-  size = this->m_storyModeNextPage->getSize();
+  size = this->m_storyModeNextPage->getScaledSize();
   this->m_storyModeNextPage->setPosition(    
     posX + overallWidth - size.width/2 - m_pGameContext->getDefaultPadding()*2
     , posY);

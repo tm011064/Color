@@ -152,7 +152,7 @@ void RhythmChallengeScene::onPostInitialize()
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
   {
-    LayoutController::AddConsoleButton(m_pGameContext, this, (GameButton*)o);
+    LayoutController::addConsoleButton(m_pGameContext, this, (GameButton*)o);
 
     if (((GameButton*)o)->getIsEnabled())
       enabledButtons.push_back((GameButton*)o);

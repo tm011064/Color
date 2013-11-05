@@ -42,34 +42,41 @@ void WildcardButton::onEnter()
     this->m_isLayoutInitialized = true;
     this->m_isEnabled = true;
 
+    m_textLabel = CCLabelBMFont::create(m_text.c_str(), m_pGameContext->getFontNormalPath().c_str());
+    m_textLabel->setScale(this->m_pGameContext->getFontScale());
+    m_textLabel->setPosition(-m_size.width/2 + m_pGameContext->getDefaultPadding()*4 
+                                             + m_textLabel->getContentSize().width/2*this->m_pGameContext->getFontScale(), 0);
+    this->addChild(m_textLabel);
+
+    m_totalCoinsLabel = CCLabelBMFont::create(m_totalCoinsText.c_str(), m_pGameContext->getFontNormalPath().c_str());
+    m_totalCoinsLabel->setScale(this->m_pGameContext->getFontScale());
+    m_totalCoinsLabel->setPosition(ccpRounded(m_size.width/2 - m_pGameContext->getDefaultPadding()*4
+                                                             - m_totalCoinsLabel->getContentSize().width/2*this->m_pGameContext->getFontScale(), 0));
+    this->addChild(m_totalCoinsLabel);
+        
+    CCSprite* coin = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("coin_small"));
+    coin->setScale(this->m_pGameContext->getFontHeightNormal()*this->m_pGameContext->getFontScale() / coin->getContentSize().height * 1.5);
+    coin->setPosition(ccpRounded(
+      m_size.width/2 - m_pGameContext->getDefaultPadding()*4
+      - m_pGameContext->getMaxDigitFontNormalWidth() * 3 * this->m_pGameContext->getFontScale()
+      - m_pGameContext->getDefaultPadding()*2
+      - coin->getContentSize().width/2, 0));
+    this->addChild(coin);
+    
     this->m_borderOrigin.setPoint(round(-this->m_size.width/2), round(-this->m_size.height/2)); 
     this->m_borderDestination.setPoint(round(this->m_size.width/2), round(this->m_size.height/2));
-  
-    float leftWidth = m_size.width * .7;
-  
+    
     this->m_backgroundOrigin.setPoint(round(this->m_borderOrigin.x + this->m_borderWidth), round(this->m_borderOrigin.y + this->m_borderWidth)); 
     this->m_backgroundDestination.setPoint(round(this->m_borderDestination.x - this->m_borderWidth), round(this->m_borderDestination.y - this->m_borderWidth));
   
-    this->m_coinBorderOrigin.setPoint(round(this->m_borderOrigin.x + (m_size.width * .65)), round(this->m_backgroundOrigin.y));
+    this->m_coinBorderOrigin.setPoint(
+      round(coin->getPositionX() - coin->getContentSize().width/2 - m_pGameContext->getDefaultPadding()*3)
+      , round(this->m_backgroundOrigin.y));
     this->m_coinBorderDestination.setPoint(round(this->m_coinBorderOrigin.x + this->m_borderWidth), round(this->m_backgroundDestination.y));
   
     this->m_coinBackgroundOrigin.setPoint(round(this->m_coinBorderDestination.x + this->m_borderWidth), round(m_backgroundOrigin.y));
     
-    m_textLabel = CCLabelBMFont::create(m_text.c_str(), m_pGameContext->getFontNormalPath().c_str());
-    m_textLabel->setPosition(-m_size.width/2 + m_pGameContext->getDefaultPadding()*4 
-                                             + m_textLabel->getContentSize().width/2, 0);
-    this->addChild(m_textLabel);
 
-    m_totalCoinsLabel = CCLabelBMFont::create(m_totalCoinsText.c_str(), m_pGameContext->getFontNormalPath().c_str());
-    m_totalCoinsLabel->setPosition(ccpRounded(m_size.width/2 - m_pGameContext->getDefaultPadding()*4
-                                                             - m_totalCoinsLabel->getContentSize().width/2, 0));
-    this->addChild(m_totalCoinsLabel);
-        
-    CCSprite* coin = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("coin_small"));
-    coin->setScale(this->m_pGameContext->getFontHeightNormal() / coin->getContentSize().height * 1.5);
-    coin->setPosition(ccpRounded(m_coinBorderDestination.x + m_pGameContext->getDefaultPadding()*4 + coin->getContentSize().width/2, 0));
-    this->addChild(coin);
-    
     this->setButtonState(UNGRABBED);
   }
 }

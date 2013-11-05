@@ -16,7 +16,7 @@ void OptionsScene::onEnter()
     m_visibleRectLeftBottom = VisibleRect::leftBottom();
     m_visibleRectRightTop = VisibleRect::rightTop();
       
-    LayoutController::AddBackground(m_pGameContext, this, -1);
+    LayoutController::addBackground(m_pGameContext, this, -1);
             
     float padding = m_pGameContext->getDefaultPadding();
     float borderThickness = m_pGameContext->getDefaultBorderThickness();
@@ -33,14 +33,9 @@ void OptionsScene::onEnter()
     m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_panelRectRightBottom.y - borderThickness);
 
     // now we have the border thickness and padding, so we can set the boundaries 
-    float indentLeft = round ( MIN( 
-        m_visibleRectLeftBottom.x + (m_visibleRectRightTop.x - m_visibleRectLeftBottom.x - m_pGameContext->getGuaranteedVisibleSize().width)/2
-      , m_visibleRectLeftBottom.x + (visibleRect.size.width * .15) ) );
-
-    float indentRight = round ( MAX( 
-        m_visibleRectRightTop.x - (m_visibleRectRightTop.x - m_visibleRectLeftBottom.x - m_pGameContext->getGuaranteedVisibleSize().width)/2
-      , m_visibleRectLeftBottom.x + (visibleRect.size.width * .85) ) );
-
+    float indentLeft = (visibleRect.size.width - this->m_pGameContext->getPanelInnerWidthWide())/2;
+    float indentRight = indentLeft + this->m_pGameContext->getPanelInnerWidthWide();
+    
     m_panelRectInnerLeftBottom = ccp( indentLeft + borderThickness, m_panelRectLeftBottom.y + borderThickness );
     m_panelRectInnerRightTop = ccp( indentRight - borderThickness, m_panelRectRightTop.y - borderThickness );
 
@@ -90,6 +85,7 @@ void OptionsScene::onEnter()
     label->setPosition(this->m_soundToggleButtonOn->getPositionX() - padding*8 - size.width/2 - label->getContentSize().width/2, posY);
     this->addChild(label);
     
+#if VIBRATE
     posY -= verticalSpacing * 2;    
     this->m_vibrateToggleButtonOff = TextToggleButton::create(toggleColorBorder, toggleColorBorder, toggleColorBackgroundOn
       , toggleColorBackgroundOff, toggleColorTextOn, toggleColorTextOff
@@ -112,7 +108,7 @@ void OptionsScene::onEnter()
     label = CCLabelBMFont::create("Vibrate", m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(this->m_vibrateToggleButtonOn->getPositionX() - padding*8 - size.width/2 - label->getContentSize().width/2, posY);
     this->addChild(label);
-        
+#endif
     
     TextButton* textButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
@@ -124,7 +120,7 @@ void OptionsScene::onEnter()
       , callfuncO_selector(OptionsScene::showMenuCallback)
       , this);
     textButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
-    size = textButton->getSize();
+    size = textButton->getScaledSize();
     textButton->setPosition(center.x, size.height/2 + padding * 4);
     this->addChild(textButton);
 

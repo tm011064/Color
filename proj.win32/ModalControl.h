@@ -13,10 +13,7 @@ protected:
 
   CCPoint m_dialogRectLeftBottom;
   CCPoint m_dialogRectRightTop;
-
-  CCPoint m_dialogRectInnerLeftBottom;
-  CCPoint m_dialogRectInnerRightTop;
-
+  
   CCPoint m_visibleRectLeftBottom;
   CCPoint m_visibleRectRightTop;
   

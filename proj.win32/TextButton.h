@@ -29,6 +29,7 @@ private:
   ccColor3B m_textColorOff;
     
   CCSize m_size;
+  CCSize m_scaledSize;
 
   CCNode* m_pTarget;
   bool m_isEnabled;
@@ -61,7 +62,7 @@ public:
   }
   
   void setEnabled(bool isEnabled) { this->m_isEnabled = isEnabled; }
-  CCSize getSize() { return this->m_size; }    
+  CCSize getScaledSize() { return m_scaledSize; }    
 
   virtual bool ccTouchBegan(CCTouch* touch, CCEvent* event);
   virtual void ccTouchMoved(CCTouch* touch, CCEvent* event);
@@ -96,8 +97,10 @@ protected:
   , m_text(text)
   , m_size(size)
   , m_borderWidth(borderWidth)
+  , m_scaledSize(size)
  {
-
+    this->m_scaledSize = CCSizeMake( this->m_size.width*this->m_pGameContext->getFontScale()
+      , this->m_size.height*this->m_pGameContext->getFontScale() );
  }
 
 };

@@ -26,7 +26,7 @@ void ArcadeHardGameScene::onPostInitialize()
   CCObject* o;
   CCARRAY_FOREACH(this->m_buttons, o)
   {
-    LayoutController::AddConsoleButton(m_pGameContext, this, (GameButton*)o);
+    LayoutController::addConsoleButton(m_pGameContext, this, (GameButton*)o);
   }      
 }
 void ArcadeHardGameScene::onGameOver()

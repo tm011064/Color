@@ -23,19 +23,21 @@ void WildcardPopupBuyCoinsPanel::onEnter()
 
     this->m_padding = m_pGameContext->getDefaultPadding();
     this->m_borderThickness = m_pGameContext->getDefaultBorderThickness();
-
-    float verticalSpacing = m_pGameContext->getFontHeightNormal() + m_padding;
-    float verticalSpacingLarge = m_pGameContext->getFontHeightLarge() + m_padding*3;
-
+    
+    float verticalSpacing = (m_pGameContext->getFontHeightNormal() + m_padding)*this->m_pGameContext->getFontScale();
+    float verticalSpacingLarge = (m_pGameContext->getFontHeightLarge() + m_padding*3)*this->m_pGameContext->getFontScale();
+    
     float posY = 0;
 
-    CCLabelBMFont* label = CCLabelBMFont::create("need more coins? get them here...", m_pGameContext->getFontNormalPath().c_str());
-    posY = this->m_padding + label->getContentSize().height/2;
+    CCLabelBMFont* label = CCLabelBMFont::create("need more coins?\nGet them here...", m_pGameContext->getFontNormalPath().c_str());
+    label->setScale(this->m_pGameContext->getFontScale());
+    posY = this->m_padding + label->getContentSize().height/2*this->m_pGameContext->getFontScale();
     label->setPosition(0, posY );
     this->addChild(label);
 
     label = CCLabelBMFont::create("coming soon :)", m_pGameContext->getFontNormalPath().c_str());
-    posY = - this->m_padding - label->getContentSize().height/2;
+    label->setScale(this->m_pGameContext->getFontScale());
+    posY = - this->m_padding - label->getContentSize().height/2*this->m_pGameContext->getFontScale();
     label->setPosition(0, posY );
     this->addChild(label);
     

@@ -40,7 +40,7 @@ void ArcadeGameScene::initialize(float dt)
     
   float availableWidth = visibleRect.size.width / 2;         
       
-  LayoutController::AddBackground(m_pGameContext, this, 0);
+  LayoutController::addBackground(m_pGameContext, this, 0);
         
   /********** TOP BAR **********/
   m_topBar = new TopBar(m_pGameContext);
@@ -257,6 +257,9 @@ void ArcadeGameScene::buttonBlinkCallback(CCObject* pSender)
 
     // animation has finished, now we allow input again
     this->m_buttonSequenceIndex = this->m_lastStartIndex;
+
+    // TODO (Roman): here is the problem!!! we only want to set this on sequence finished callbacks. Somehow blinks can
+    // end while when just starting the animation :(
     this->m_sceneState = AWAITING_INPUT;
   }
 }
@@ -274,8 +277,11 @@ float ArcadeGameScene::updateTimeVal(cc_timeval* time)
 
 void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
 {  
-  if (m_buttonSequenceIndex >= m_buttonSequence.size())
+  if (m_buttonSequenceIndex >= m_buttonSequence.size()
+    || this->m_sceneState != AWAITING_INPUT)
+  {
     return; // this could happen on rapid clicks where the last click was not fully processed yet - like a lock...
+  }
 
   m_lastButtonPressed = ((GameButton*)pSender);
   m_nextSequenceButton = m_buttonSequence.at(m_buttonSequenceIndex);
@@ -312,6 +318,13 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
 
     if (m_buttonSequenceIndex >= m_gameScore.level)
     {// correct, new animation
+    
+      // we have the button index and scene state check on the buttonCallback method which is used to
+      // determine whether we should start a new animation or input session. We have to set the state
+      // and sequence index here so this method doesn't get confused with rapid multi touch events
+      // happening between timer callbacks.
+      this->m_sceneState = RUNNING_SEQUENCE_ANIMATION;
+      this->m_buttonSequenceIndex = 0;
 
       deltaTime = updateTimeVal(this->m_firstUserSequencePressedTime);
       float levelTimeThreshold = this->m_challengePointScoreDefinition.clickTimeThreshold * m_gameScore.level;
@@ -378,6 +391,7 @@ void ArcadeGameScene::buttonTouchEndedCallback(CCObject* pSender)
         CCScaleTo::create(1.2f, 1.1f)
         , NULL));
 
+      CCLOG("Initialized run sequence callback...");
       this->scheduleOnce(schedule_selector(ArcadeGameScene::runSequenceAnimationTimerCallback), .32f);
     }      
   }

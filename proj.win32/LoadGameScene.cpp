@@ -93,8 +93,11 @@ void LoadGameScene::loadGame(float dt)
   }
   
   std::vector<int>::iterator itInt;
-  int targetNormalFontSize = (int)round(m_pGameContext->getFrameSize().height * .0375);
-  int targetLargeFontSize = (int)round(m_pGameContext->getFrameSize().height * .0625);
+  //int targetNormalFontSize = (int)round(m_pGameContext->getFrameSize().height * .0375);
+  //int targetLargeFontSize = (int)round(m_pGameContext->getFrameSize().height * .0625);
+  int targetNormalFontSize = (int)round(m_pGameContext->getResourceDefinition().size.height * .0375);
+  int targetLargeFontSize = (int)round(m_pGameContext->getResourceDefinition().size.height * .0625);
+  
   int actualNormalFontSize, actualLargeFontSize, delta;
   int closestNormalFontSizeDistance = INT_MAX;
   int closestLargeFontSizeDistance = INT_MAX;
@@ -134,13 +137,8 @@ void LoadGameScene::loadGame(float dt)
   m_pGameContext->setFontHeightNormal(letterSize.height);
   m_pGameContext->setDefaultButtonSize(round(letterSize.width * 1.5), round(letterSize.height * 1.5));
   
-  m_pGameContext->setDefaultPadding(round(letterSize.height * .1));
-  if (m_pGameContext->getDefaultPadding() < 2.0f)
-    m_pGameContext->setDefaultPadding(2.0f);
-
-  m_pGameContext->setDefaultBorderThickness(round(m_pGameContext->getDefaultPadding() * .25));
-  if (m_pGameContext->getDefaultBorderThickness() < 1.0f)
-    m_pGameContext->setDefaultBorderThickness(1.0f);
+  m_pGameContext->setDefaultPadding(MAX(2.0f, round(letterSize.height * .1)));
+  m_pGameContext->setDefaultBorderThickness(MAX(1.0f, round(m_pGameContext->getDefaultPadding() * .25)));
   
   std::string s;
   for (int i = 0; i < 10; ++i)
@@ -163,6 +161,25 @@ void LoadGameScene::loadGame(float dt)
     m_pGameContext->registerDigitFontLarge(i, label->getContentSize().width, s );
   }
 
+  CCRect visibleRect = VisibleRect::getVisibleRect();
+  float padding = m_pGameContext->getOuterPanelPadding();
+  float availableWidth = visibleRect.size.width - padding * 2;
+  m_pGameContext->setFontScale(1.0f);
+
+  label = CCLabelBMFont::create("LEVEL COMPLETED", largePath.c_str()); 
+  m_pGameContext->setPanelInnerWidthWide(round( label->getContentSize().width + padding*2 ));
+  if ( availableWidth - m_pGameContext->getPanelInnerWidthWide() < 0 )
+  {
+    m_pGameContext->setFontScale(availableWidth / (m_pGameContext->getPanelInnerWidthWide() + padding * 2));
+    m_pGameContext->setPanelInnerWidthWide(availableWidth);
+  }
+
+  label = CCLabelBMFont::create("LEVEL FAILED", largePath.c_str()); 
+  m_pGameContext->setPanelInnerWidthNarrow(round( 
+    label->getContentSize().width*m_pGameContext->getFontScale() + padding*2 ));    
+  if ( availableWidth - m_pGameContext->getPanelInnerWidthNarrow() < 0 )
+    m_pGameContext->setPanelInnerWidthNarrow(availableWidth);
+  
   label->release();  
 
   NavigationManager::showMainMenu(m_pGameContext, NEW, true, HOME);

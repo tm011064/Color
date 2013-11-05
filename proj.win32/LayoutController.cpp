@@ -158,7 +158,7 @@ CCArray* LayoutController::createFourButtons(GameContext* gameContext, DebugDraw
     , 0);
 }
 
-void LayoutController::AddConsoleButton(GameContext* gameContext, CCNode* target, GameButton* gameButton)
+void LayoutController::addConsoleButton(GameContext* gameContext, CCNode* target, GameButton* gameButton)
 {  
   CCSprite* shadow = CCSprite::createWithSpriteFrame(gameContext->getImageMap()->getTile("game_button_background"));
   float offset = gameContext->getDefaultBorderThickness()*2.4;
@@ -194,7 +194,7 @@ void LayoutController::AddConsoleButton(GameContext* gameContext, CCNode* target
   target->addChild(gameButton);
 }
 
-void LayoutController::AddBackground(GameContext* gameContext, CCNode* target, int zOrder)
+void LayoutController::addBackground(GameContext* gameContext, CCNode* target, int zOrder)
 {  
   CCPoint center = VisibleRect::center();
   CCSpriteFrame* bgFrame = gameContext->getImageMap()->getTile("background");

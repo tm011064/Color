@@ -41,7 +41,8 @@ private:
   void updateCoinsDisplay(float dt);
 
 public:
-  static GameScoreTimePanel* create(GameContext* gameContext, float width, bool showAverageDuration, ccColor4F separatorColor);
+  static GameScoreTimePanel* create(GameContext* gameContext, float width, bool showAverageDuration
+    , ccColor4F separatorColor);
   ~GameScoreTimePanel() { }
   
   void refresh();

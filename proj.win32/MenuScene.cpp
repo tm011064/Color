@@ -9,7 +9,7 @@ void MenuScene::initialize(float dt)
   CCPoint leftBottom = VisibleRect::leftBottom();
   CCRect visibleRect = VisibleRect::getVisibleRect();
             
-  LayoutController::AddBackground(m_pGameContext, this, -1);
+  LayoutController::addBackground(m_pGameContext, this, -1);
 
   m_header = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("header"));
   CCSize size = m_header->getContentSize();
@@ -116,7 +116,8 @@ void MenuScene::initialize(float dt)
     , this->m_pGameContext->getDefaultBorderThickness()
     , this->m_pGameContext
     , callfuncO_selector(MenuScene::showBaseMenu)
-    , this);
+    , this
+      , 1.0f);
   m_arcadeBack->setPosition(center.x + visibleRect.size.width, posY);
   this->addChild(m_arcadeBack);
 #endif

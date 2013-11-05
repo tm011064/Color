@@ -39,6 +39,7 @@ void TextButton::onEnter()
     this->m_isEnabled = true;
 
     m_textLabel = CCLabelBMFont::create(m_text.c_str(), m_pGameContext->getFontNormalPath().c_str());
+    m_textLabel->setScale(this->m_pGameContext->getFontScale());
     this->addChild(m_textLabel);
 
     refresh();
@@ -57,11 +58,11 @@ void TextButton::refresh()
 {
   this->m_textLabel->setString(this->m_text.c_str());
 
-  this->m_borderOrigin.setPoint(-this->m_size.width/2,-this->m_size.height/2); 
-  this->m_borderDestination.setPoint(this->m_size.width/2,this->m_size.height/2);
+  this->m_borderOrigin.setPoint(-this->m_size.width/2*this->m_pGameContext->getFontScale(),-this->m_size.height/2*this->m_pGameContext->getFontScale()); 
+  this->m_borderDestination.setPoint(this->m_size.width/2*this->m_pGameContext->getFontScale(),this->m_size.height/2*this->m_pGameContext->getFontScale());
         
-  this->m_backgroundOrigin.setPoint(-this->m_size.width/2 + this->m_borderWidth,-this->m_size.height/2 + this->m_borderWidth); 
-  this->m_backgroundDestination.setPoint(this->m_size.width/2 - this->m_borderWidth,this->m_size.height/2 - this->m_borderWidth);
+  this->m_backgroundOrigin.setPoint(-this->m_size.width/2*this->m_pGameContext->getFontScale() + this->m_borderWidth,-this->m_size.height/2*this->m_pGameContext->getFontScale() + this->m_borderWidth); 
+  this->m_backgroundDestination.setPoint(this->m_size.width/2*this->m_pGameContext->getFontScale() - this->m_borderWidth,this->m_size.height/2*this->m_pGameContext->getFontScale() - this->m_borderWidth);
 }
 
 void TextButton::draw()

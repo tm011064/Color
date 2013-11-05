@@ -22,20 +22,54 @@ void DescriptionPopup::onEnter()
     CCPoint center = VisibleRect::center();
     CCRect visibleRect = VisibleRect::getVisibleRect();
     
-    CCSize guaranteedVisibleSize = m_pGameContext->getGuaranteedVisibleSize();
-    CCRect guaranteedVisibleRect = CCRectMake(
-      visibleRect.origin.x + (visibleRect.size.width - guaranteedVisibleSize.width)/2
-      , visibleRect.origin.y + (visibleRect.size.height - guaranteedVisibleSize.height)/2
-      , guaranteedVisibleSize.width
-      , guaranteedVisibleSize.height);
+    // 1) get the largest width of any text
+    // 2) add some padding to the width
+    // 3) check whether the width fits into the visible rect
+    // 4) if not, create scale factors
+    // 5) set the height, this should be on a 3:4 ratio
+
+    float padding = m_pGameContext->getOuterPanelPadding();
+
+    CCLabelBMFont* label = CCLabelBMFont::create("The quicker you are, the", m_pGameContext->getFontNormalPath().c_str()); 
+    float descriptionTextWidth = round( label->getContentSize().width + padding * 2 );
+    float descriptionTextHeight = round( descriptionTextWidth * 4.0f / 3.0f );
+
+    float availableWidth = visibleRect.size.width - padding * 2;
+    float availableHeight = visibleRect.size.height - padding * 2;
+
+    float scale = 1.0f;
+    float overlayX = availableWidth - descriptionTextWidth;
+    float overlayY = availableHeight - descriptionTextHeight;
+    if (overlayX < 0 || overlayY < 0)
+    {
+      if ( overlayX < overlayY )
+      {
+        scale = availableWidth / (descriptionTextWidth + padding * 2);
+        descriptionTextWidth = availableWidth;
+        descriptionTextHeight = round( descriptionTextWidth * 4.0f / 3.0f );
+      }
+      else
+      {
+        scale = availableHeight / (descriptionTextHeight + padding * 2);
+        descriptionTextHeight = availableHeight;
+        descriptionTextWidth = round( descriptionTextHeight * 3.0f / 4.0f );
+      }
+    }
+    
+    CCSize actualVisibleSize = CCSizeMake( descriptionTextWidth, descriptionTextHeight );
+    CCRect actualVisibleRect = CCRectMake(
+      visibleRect.origin.x + (visibleRect.size.width - actualVisibleSize.width)/2
+      , visibleRect.origin.y + (visibleRect.size.height - actualVisibleSize.height)/2
+      , actualVisibleSize.width
+      , actualVisibleSize.height);
     
     m_descriptionBoxLeftBottom.setPoint(
-      guaranteedVisibleRect.origin.x + m_pGameContext->getDefaultPadding()
-      , guaranteedVisibleRect.origin.y + m_pGameContext->getDefaultPadding());
+      actualVisibleRect.origin.x + m_pGameContext->getDefaultPadding()
+      , actualVisibleRect.origin.y + m_pGameContext->getDefaultPadding());
     
     m_headerBoxRightTop.setPoint(
-      guaranteedVisibleRect.getMaxX() - m_pGameContext->getDefaultPadding()
-      , guaranteedVisibleRect.getMaxY() - m_pGameContext->getDefaultPadding());
+      actualVisibleRect.getMaxX() - m_pGameContext->getDefaultPadding()
+      , actualVisibleRect.getMaxY() - m_pGameContext->getDefaultPadding());
 
     CCSize descriptionBoxSize = CCSizeMake( 
       m_headerBoxRightTop.x - m_descriptionBoxLeftBottom.x
@@ -141,12 +175,13 @@ void DescriptionPopup::onEnter()
         break;
     }
     
-    LayoutController::AddBackground(m_pGameContext, this, -1);
+    LayoutController::addBackground(m_pGameContext, this, -1);
         
-    CCLabelBMFont* label = CCLabelBMFont::create(headerText.c_str(), m_pGameContext->getFontLargePath().c_str());
+    label = CCLabelBMFont::create(headerText.c_str(), m_pGameContext->getFontLargePath().c_str());
     label->setPosition(ccpRounded(
       m_borderRightLeftBottom.x - m_pGameContext->getDefaultPadding()*6 - label->getContentSize().width/2
       , m_headerBoxLeftBottom.y + (m_headerBoxRightTop.y - m_headerBoxLeftBottom.y)/2));
+    label->setScale(scale);
     this->addChild(label);
     
     CCSprite* sprite = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile(loadingIconFrameName));
@@ -158,20 +193,23 @@ void DescriptionPopup::onEnter()
 
     label = CCLabelBMFont::create("Target:", m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(
-      m_borderLeftRightTop.x + m_pGameContext->getDefaultPadding()*4 + label->getContentSize().width/2
+      m_borderLeftRightTop.x + padding + label->getContentSize().width/2*scale
       , m_lowerSeparatorRightTop.y + (m_headerBoxLeftBottom.y - m_lowerSeparatorRightTop.y)/2);
+    label->setScale(scale);
     this->addChild(label);
     
     label = CCLabelBMFont::create(targetScoreText.c_str(), m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(
-      m_borderRightLeftBottom.x - m_pGameContext->getDefaultPadding()*4 - label->getContentSize().width/2
+      m_borderRightLeftBottom.x - padding - label->getContentSize().width/2*scale
       , m_lowerSeparatorRightTop.y + (m_headerBoxLeftBottom.y - m_lowerSeparatorRightTop.y)/2);
+    label->setScale(scale);
     this->addChild(label);
     
     label = CCLabelBMFont::create(descriptionText.c_str(), m_pGameContext->getFontNormalPath().c_str());
     label->setPosition(
-      m_borderLeftRightTop.x + m_pGameContext->getDefaultPadding()*4 + label->getContentSize().width/2
-      , m_scoreBoxLeftBottom.y - m_pGameContext->getDefaultPadding()*2 - label->getContentSize().height/2);
+      m_borderLeftRightTop.x + padding + label->getContentSize().width/2*scale
+      , m_scoreBoxLeftBottom.y - padding - label->getContentSize().height/2*scale);
+    label->setScale(scale);
     this->addChild(label);
         
     m_playButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
@@ -185,22 +223,9 @@ void DescriptionPopup::onEnter()
     , this);
     m_playButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);    
     m_playButton->setPosition(center.x, m_descriptionBoxLeftBottom.y 
-      + m_playButton->getSize().height);
+      + m_playButton->getScaledSize().height);
     m_playButton->setVisible(false);
     this->addChild(m_playButton);
-    /*
-    float innerTopY = header->getPositionY() - header->getContentSize().height/2;
-    float innerBottomY = m_playButton->getPositionY() + m_playButton->getSize().height/2;
-            
-    CCLabelBMFont* body = CCLabelBMFont::create(m_text.c_str(), m_pGameContext->getFontNormalPath().c_str());
-    body->setPosition(ccpRounded(
-      m_dialogRectInnerLeftBottom.x + padding + body->getContentSize().width/2
-      , innerTopY - (innerTopY - innerBottomY)/2
-      ));
-    this->addChild(body);*/
-    /*
-    m_visibleRectLeftBottom = VisibleRect::leftBottom();
-    m_visibleRectRightTop = VisibleRect::rightTop();*/
   }
 }
 
