@@ -338,6 +338,10 @@ void ExactLengthChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
       this->m_wildcardScoreInfoRight = str;
     }
 
+    // Highscore
+    if ((int)round(m_gameScore.averageButtonBlinkPercentage*100) > m_pGameContext->getHighscoreBalance())
+      this->m_pGameContext->setHighscoreBalance((int)round(m_gameScore.averageButtonBlinkPercentage*100));
+
     this->playBlinkButtonsAnimation(2, .25f, .8f);
     this->scheduleOnce(schedule_selector(ExactLengthChallengeScene::showGameScorePopupCallback), 2.0f);
   }

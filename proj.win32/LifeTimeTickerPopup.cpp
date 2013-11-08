@@ -40,12 +40,12 @@ void LifeTimeTickerPopup::onEnter()
     m_separatorBottomRight = ccp ( m_visibleRectRightTop.x, m_dialogRectRightBottom.y - m_borderThickness);
       
     // now we have the border thickness and padding, so we can set the boundaries 
-    float indentLeft = (visibleRect.size.width - this->m_pGameContext->getPanelInnerWidthWide())/2;
-    float indentRight = indentLeft + this->m_pGameContext->getPanelInnerWidthWide();
+    //float indentLeft = (visibleRect.size.width - this->m_pGameContext->getPanelInnerWidthWide())/2;
+    //float indentRight = indentLeft + this->m_pGameContext->getPanelInnerWidthWide();
 
-    // TODO (Roman): fix this
-    this->m_textIndentLeft = m_dialogRectLeftBottom.x + m_padding * 3;
-    this->m_textIndentRight = m_dialogRectRightTop.x - m_padding * 3;
+    //// TODO (Roman): fix this
+    //this->m_textIndentLeft = m_dialogRectLeftBottom.x + m_padding * 3;
+    //this->m_textIndentRight = m_dialogRectRightTop.x - m_padding * 3;
             
     m_playButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
       , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
@@ -73,8 +73,11 @@ void LifeTimeTickerPopup::onEnter()
     m_getLifesButton->setTouchPriority(TOUCH_PRIORITY_MODAL_ITEM);
     m_getLifesButton->setPosition(center.x, menuButtonPosYTop);
     this->addChild(m_getLifesButton);
+        
+    CCSprite* sprite = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("heart_large"));
+    sprite->setPosition(ccp(center.x, center.y+ m_pGameContext->getFontHeightLarge()));
+    this->addChild(sprite);
 
-    // TODO (Roman): do this properly, make four labels and put the numbers into the middle
     m_totalLifeLabel = CCLabelBMFont::create("NA", m_pGameContext->getFontLargePath().c_str());
     m_totalLifeLabel->setPosition(center.x, center.y + m_pGameContext->getFontHeightLarge());
     this->addChild(m_totalLifeLabel);

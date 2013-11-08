@@ -167,6 +167,7 @@
     <ClInclude Include="RhythmChallengeScene.h" />
     <ClInclude Include="SpriteFrameCache.h" />
     <ClInclude Include="Stopwatch.h" />
+    <ClInclude Include="Table.h" />
     <ClInclude Include="TextButton.h" />
     <ClInclude Include="TextToggleButton.h" />
     <ClInclude Include="TopBar.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="RhythmChallengeScene.cpp" />
     <ClCompile Include="SpriteFrameCache.cpp" />
     <ClCompile Include="Stopwatch.cpp" />
+    <ClCompile Include="Table.cpp" />
     <ClCompile Include="TextButton.cpp" />
     <ClCompile Include="TextToggleButton.cpp" />
     <ClCompile Include="TopBar.cpp" />

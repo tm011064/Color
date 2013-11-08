@@ -259,6 +259,29 @@ void ReachLevelChallengeScene::onCorrectButtonPressed()
       {
         this->m_pGameContext->setTotalLifes(this->m_pGameContext->getTotalLifes() + 1);      
         this->m_showWildcardScoreInfo = false;
+      
+        // Highscore
+        switch (this->m_totalEnabledButtons)
+        {
+        case 2:
+          if (m_gameScore.totalPoints > m_pGameContext->getHighscoreMemory2b())
+            this->m_pGameContext->setHighscoreMemory2b(m_gameScore.totalPoints);
+          if (m_gameScore.level > m_pGameContext->getHighscoreMemory2bTotal())
+            this->m_pGameContext->setHighscoreMemory2bTotal(m_gameScore.level);
+          break;
+        case 3:
+          if (m_gameScore.totalPoints > m_pGameContext->getHighscoreMemory3b())
+            this->m_pGameContext->setHighscoreMemory3b(m_gameScore.totalPoints);
+          if (m_gameScore.level > m_pGameContext->getHighscoreMemory3bTotal())
+            this->m_pGameContext->setHighscoreMemory3bTotal(m_gameScore.level);
+          break;
+        case 4:
+          if (m_gameScore.totalPoints > m_pGameContext->getHighscoreMemory4b())
+            this->m_pGameContext->setHighscoreMemory4b(m_gameScore.totalPoints);
+          if (m_gameScore.level > m_pGameContext->getHighscoreMemory4bTotal())
+            this->m_pGameContext->setHighscoreMemory4bTotal(m_gameScore.level);
+          break;
+        }
       }
 
       this->playBlinkButtonsAnimation(2, .25f, .8f);

@@ -264,7 +264,8 @@ float BaseChallengeScene::updateTimeVal(cc_timeval* time)
 
 void BaseChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
 {
-  if (m_buttonSequenceIndex >= m_buttonSequence.size())
+  if (m_buttonSequenceIndex >= m_buttonSequence.size()
+    || this->m_sceneState != AWAITING_INPUT)
     return; // this could happen on rapid clicks where the last click was not fully processed yet - like a lock...
   
   m_lastButtonPressed = ((GameButton*)pSender);

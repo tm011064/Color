@@ -407,6 +407,10 @@ void RhythmChallengeScene::buttonTouchEndedCallback(CCObject* pSender)
             sprintf(str, "NA");
           this->m_wildcardScoreInfoRight = str;
         }
+        
+        // Highscore
+        if ((int)round(m_gameScore.averageButtonBlinkPercentage*100) > m_pGameContext->getHighscoreRhythm())
+          this->m_pGameContext->setHighscoreRhythm((int)round(m_gameScore.averageButtonBlinkPercentage*100));
 
         this->playBlinkButtonsAnimation(2, .25f, .8f);       
 

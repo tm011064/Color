@@ -124,9 +124,13 @@ void GameScorePopup::onEnter()
       this->addChild(m_goldStar2);
       this->addChild(m_goldStar3);
 
-      posY -= size.height/2 + this->m_padding*2;
+      posY -= size.height/2 + this->m_padding*7;
     }
-    
+    else
+    {
+      posY -= this->m_padding*7;
+    }
+
     switch (this->m_gameScorePopupType)
     {
     case GSPTYPE_POINTS:
@@ -144,7 +148,7 @@ void GameScorePopup::onEnter()
     this->addChild(m_gameScorePanel);
     posY -= ( m_gameScorePanel->getContentSize().height )/2;
     this->m_gameScorePanel->setPosition( center.x, posY );
-    posY -= ( m_gameScorePanel->getContentSize().height )/2;
+    posY -= ( m_gameScorePanel->getContentSize().height )/2 + this->m_padding*2;
 
     float panelBottomY = posY;
     
@@ -288,8 +292,29 @@ void GameScorePopup::onEnter()
       , this);
     m_wildcardPopupBuyCoinsPanel->setPosition(center.x, round(panelTopY - (panelTopY - panelBottomY)/2 ));
     this->addChild(this->m_wildcardPopupBuyCoinsPanel);
+    
+    float overallHeight = m_dialogRectRightTop.y - m_dialogRectLeftBottom.y;
+    float topY = visibleRect.size.height - (visibleRect.size.height - overallHeight)/2;
+    float delta = topY - m_dialogRectRightTop.y;
+    CCArray *pChildren = this->getChildren();
+    if (pChildren && pChildren->count() > 0)
+    {
+      CCObject* pObject = NULL;
+      CCNode* pNode;
+      CCARRAY_FOREACH(pChildren, pObject)
+      {
+        pNode = (CCNode*) pObject;
+        pNode->setPositionY(round( pNode->getPositionY() + delta ));
+      }
+    }
+    m_dialogRectLeftTop.y += delta;
+    m_dialogRectRightTop.y += delta;
+    m_separatorTopRight.y += delta;
+    m_dialogRectLeftBottom.y += delta;
+    m_dialogRectRightBottom.y += delta;
+    m_separatorBottomRight.y += delta;
 
-    m_bgLight.a = .6f; 
+    m_bgLight.a = .65f; 
     m_bgLight.r = 0; 
     m_bgLight.g = 0; 
     m_bgLight.b = 0;

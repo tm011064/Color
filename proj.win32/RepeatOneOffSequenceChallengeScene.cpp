@@ -237,7 +237,32 @@ void RepeatOneOffSequenceChallengeScene::onCorrectButtonPressed()
     m_pGameContext->setGameScore( m_gameScore );
       
     if ( m_gameScore.starsEarned > 0)
+    {
       this->m_pGameContext->setTotalLifes(this->m_pGameContext->getTotalLifes() + 1);
+    
+      // Highscore
+      switch (this->m_totalEnabledButtons)
+      {
+      case 2:
+        if (m_gameScore.totalPoints > m_pGameContext->getHighscoreSpeed2b())
+          this->m_pGameContext->setHighscoreSpeed2b(m_gameScore.totalPoints);
+        if (m_gameScore.level > m_pGameContext->getHighscoreSpeed2bTotal())
+          this->m_pGameContext->setHighscoreSpeed2bTotal(m_gameScore.level);
+        break;
+      case 3:
+        if (m_gameScore.totalPoints > m_pGameContext->getHighscoreSpeed3b())
+          this->m_pGameContext->setHighscoreSpeed3b(m_gameScore.totalPoints);
+        if (m_gameScore.level > m_pGameContext->getHighscoreSpeed3bTotal())
+          this->m_pGameContext->setHighscoreSpeed3bTotal(m_gameScore.level);
+        break;
+      case 4:
+        if (m_gameScore.totalPoints > m_pGameContext->getHighscoreSpeed4b())
+          this->m_pGameContext->setHighscoreSpeed4b(m_gameScore.totalPoints);
+        if (m_gameScore.level > m_pGameContext->getHighscoreSpeed4bTotal())
+          this->m_pGameContext->setHighscoreSpeed4bTotal(m_gameScore.level);
+        break;
+      }
+    }
 
     this->playBlinkButtonsAnimation(2, .25f, .8f);
     this->scheduleOnce(schedule_selector(RepeatOneOffSequenceChallengeScene::showGameScorePopupCallback), 2.0f);

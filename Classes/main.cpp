@@ -66,8 +66,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     // eglView->setFrameSize(735, 980);   // Ratio = 3:4    -> 0.75
     // eglView->setFrameSize(551, 980);   // Ratio = 9:16   -> 0.5625
     // eglView->setFrameSize(613, 980);   // Ratio = 5:8    -> 0.625
-     eglView->setFrameSize(588, 980);   // Ratio = 3:5    -> 0.6
-    // eglView->setFrameSize(653, 980);   // Ratio = 2:3    -> 0.66
+    // eglView->setFrameSize(588, 980);   // Ratio = 3:5    -> 0.6
+     eglView->setFrameSize(653, 980);   // Ratio = 2:3    -> 0.66
      
     // 960 x 1280, middle
     // ----------------------------------------------------------

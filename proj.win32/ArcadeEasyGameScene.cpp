@@ -31,6 +31,8 @@ void ArcadeEasyGameScene::onPostInitialize()
 }
 void ArcadeEasyGameScene::onGameOver()
 {  
-  if ((int)m_gameScore.totalPoints > m_pGameContext->getHighscoreEasy())
-    m_pGameContext->setHighscoreEasy((int)m_gameScore.totalPoints);
+  if (m_gameScore.totalPoints > m_pGameContext->getHighscoreMemory2b())
+    this->m_pGameContext->setHighscoreMemory2b(m_gameScore.totalPoints);
+  if (m_gameScore.level > m_pGameContext->getHighscoreMemory2bTotal())
+    this->m_pGameContext->setHighscoreMemory2bTotal(m_gameScore.level);
 }

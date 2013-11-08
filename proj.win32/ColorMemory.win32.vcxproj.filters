@@ -189,6 +189,9 @@
     <ClInclude Include="ChallengeButton.h">
       <Filter>include\Controls\Buttons</Filter>
     </ClInclude>
+    <ClInclude Include="Table.h">
+      <Filter>include\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseScene.cpp">
@@ -334,6 +337,9 @@
     </ClCompile>
     <ClCompile Include="ChallengeButton.cpp">
       <Filter>include\Controls\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="Table.cpp">
+      <Filter>include\Controls</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

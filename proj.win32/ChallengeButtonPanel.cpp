@@ -22,15 +22,18 @@ void ChallengeButtonPanel::onEnter()
     CCPoint position = this->getPosition();
     
     m_rectOrigin = ccpRounded (leftTop.x - position.x
-      , leftTop.y - m_pGameContext->getFontHeightNormal() - m_pGameContext->getDefaultPadding() * 3 - position.y);
+      , leftTop.y - m_pGameContext->getFontHeightNormal()*m_pGameContext->getFontScale() - m_pGameContext->getDefaultPadding()*m_pGameContext->getFontScale()*3 - position.y);
     m_rectDestination = ccpRounded (rightTop.x - position.x, rightTop.y - position.y);
     
     m_borderOrigin = ccp (m_rectOrigin.x, m_rectOrigin.y - m_pGameContext->getDefaultBorderThickness());
     m_borderDestination = ccp (m_rectDestination.x, m_rectOrigin.y);
     
     m_heart = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("heart_small"));
-    m_heart->setPosition(ccp(m_rectDestination.x - m_pGameContext->getDefaultPadding() * 3 - m_heart->getContentSize().width/2
-      , m_rectDestination.y - m_pGameContext->getDefaultPadding() * 2 - m_pGameContext->getFontHeightNormal()/2));
+    m_heart->setScale( m_pGameContext->getFontScale() );
+    m_heart->setPosition(ccp(
+      0
+      , m_rectDestination.y - m_pGameContext->getDefaultPadding()*m_pGameContext->getFontScale()*2 
+        - m_pGameContext->getFontHeightNormal()/2*m_pGameContext->getFontScale()));
     this->addChild(m_heart);
 
     m_rectColor.r = 0;
@@ -114,27 +117,35 @@ void ChallengeButtonPanel::onEnter()
     challengeButton = NULL;
         
     m_nextLifeText_Left = CCLabelBMFont::create("( next life in ", m_pGameContext->getFontNormalPath().c_str());
+    m_nextLifeText_Left->setScale( m_pGameContext->getFontScale() );
     this->addChild(m_nextLifeText_Left);
     
     m_nextLifeText_Right = CCLabelBMFont::create(" )", m_pGameContext->getFontNormalPath().c_str());
+    m_nextLifeText_Right->setScale( m_pGameContext->getFontScale() );
     this->addChild(m_nextLifeText_Right);
 
     m_totalLifeLabel = CCLabelBMFont::create("NA", m_pGameContext->getFontNormalPath().c_str());
+    m_totalLifeLabel->setScale( m_pGameContext->getFontScale() );
     this->addChild(m_totalLifeLabel);
     
     m_deltaNextLifeIncreaseLabel_Separator = CCLabelBMFont::create(":", m_pGameContext->getFontNormalPath().c_str());
+    m_deltaNextLifeIncreaseLabel_Separator->setScale( m_pGameContext->getFontScale() );
     this->addChild(m_deltaNextLifeIncreaseLabel_Separator);
 
     m_deltaNextLifeIncreaseLabel_M1 = CCLabelBMFont::create("0", m_pGameContext->getFontNormalPath().c_str());
+    m_deltaNextLifeIncreaseLabel_M1->setScale( m_pGameContext->getFontScale() );
     this->addChild(m_deltaNextLifeIncreaseLabel_M1);
     
     m_deltaNextLifeIncreaseLabel_M2 = CCLabelBMFont::create("0", m_pGameContext->getFontNormalPath().c_str());
+    m_deltaNextLifeIncreaseLabel_M2->setScale( m_pGameContext->getFontScale() );
     this->addChild(m_deltaNextLifeIncreaseLabel_M2);
 
     m_deltaNextLifeIncreaseLabel_S2 = CCLabelBMFont::create("0", m_pGameContext->getFontNormalPath().c_str());
+    m_deltaNextLifeIncreaseLabel_S2->setScale( m_pGameContext->getFontScale() );
     this->addChild(m_deltaNextLifeIncreaseLabel_S2);
     
     m_deltaNextLifeIncreaseLabel_S1 = CCLabelBMFont::create("0", m_pGameContext->getFontNormalPath().c_str());
+    m_deltaNextLifeIncreaseLabel_S1->setScale( m_pGameContext->getFontScale() );
     this->addChild(m_deltaNextLifeIncreaseLabel_S1);
 
     updateLifeDisplay(.0f);
@@ -378,6 +389,7 @@ void ChallengeButtonPanel::resetChallengeButtons(bool isVisible)
   }
   challengeButton = NULL;
   
+  posY += verticalSpacing - size.height/2 - m_pGameContext->getDefaultPadding()*4 - this->m_storyModeNextPage->getScaledSize().height/2;
   posX = leftBottom.x + (availableWidth - overallWidth)/2 - position.x;
   size = this->m_storyModeNextPage->getScaledSize();
   this->m_storyModeNextPage->setPosition(    
@@ -391,28 +403,28 @@ void ChallengeButtonPanel::resetChallengeButtons(bool isVisible)
   posY = m_heart->getPositionY();
   
   this->m_totalLifeLabel->setPosition( 
-    posX + m_totalLifeLabel->getContentSize().width/2 + m_pGameContext->getDefaultPadding()*2
+    posX + m_totalLifeLabel->getContentSize().width/2*m_pGameContext->getFontScale() + m_pGameContext->getDefaultPadding()*m_pGameContext->getFontScale()*2
     , posY);
-  m_heart->setPositionX(m_totalLifeLabel->getPositionX() + m_totalLifeLabel->getContentSize().width/2
-    + this->m_pGameContext->getDefaultPadding()*2 + m_heart->getContentSize().width/2 );
+  m_heart->setPositionX(m_totalLifeLabel->getPositionX() + m_totalLifeLabel->getContentSize().width/2*m_pGameContext->getFontScale()
+    + this->m_pGameContext->getDefaultPadding()*m_pGameContext->getFontScale()*2 + m_heart->getContentSize().width/2*m_pGameContext->getFontScale() );
 
-  m_nextLifeText_Left->setPosition( m_heart->getPositionX() + m_heart->getContentSize().width/2
-    + this->m_pGameContext->getDefaultPadding()*2 + m_nextLifeText_Left->getContentSize().width/2
+  m_nextLifeText_Left->setPosition( m_heart->getPositionX() + m_heart->getContentSize().width/2*m_pGameContext->getFontScale()
+    + this->m_pGameContext->getDefaultPadding()*m_pGameContext->getFontScale()*2 + m_nextLifeText_Left->getContentSize().width/2*m_pGameContext->getFontScale()
     , posY);
 
-  float separatorWidth = m_deltaNextLifeIncreaseLabel_Separator->getContentSize().width;
+  float separatorWidth = m_deltaNextLifeIncreaseLabel_Separator->getContentSize().width*m_pGameContext->getFontScale();
 
   m_deltaNextLifeIncreaseLabel_Separator->setPosition(m_nextLifeText_Left->getPositionX()
-    + m_nextLifeText_Left->getContentSize().width/2 + m_pGameContext->getMaxDigitFontNormalWidth()*3
+    + m_nextLifeText_Left->getContentSize().width/2*m_pGameContext->getFontScale() + m_pGameContext->getMaxDigitFontNormalWidth()*m_pGameContext->getFontScale()*3
     , posY);
  
-  m_deltaNextLifeIncreaseLabel_M1->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() - separatorWidth/2 - m_pGameContext->getDefaultPadding()*2 - m_pGameContext->getMaxDigitFontNormalWidth()*1.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
-  m_deltaNextLifeIncreaseLabel_M2->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() - separatorWidth/2 - m_pGameContext->getDefaultPadding() - m_pGameContext->getMaxDigitFontNormalWidth()*.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
-  m_deltaNextLifeIncreaseLabel_S2->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() + separatorWidth/2 + m_pGameContext->getDefaultPadding()*2 + m_pGameContext->getMaxDigitFontNormalWidth()*1.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
-  m_deltaNextLifeIncreaseLabel_S1->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() + separatorWidth/2 + m_pGameContext->getDefaultPadding() + m_pGameContext->getMaxDigitFontNormalWidth()*.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
+  m_deltaNextLifeIncreaseLabel_M1->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() - separatorWidth/2 - m_pGameContext->getDefaultPadding()*m_pGameContext->getFontScale()*2 - m_pGameContext->getMaxDigitFontNormalWidth()*m_pGameContext->getFontScale()*1.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
+  m_deltaNextLifeIncreaseLabel_M2->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() - separatorWidth/2 - m_pGameContext->getDefaultPadding()*m_pGameContext->getFontScale() - m_pGameContext->getMaxDigitFontNormalWidth()*m_pGameContext->getFontScale()*.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
+  m_deltaNextLifeIncreaseLabel_S2->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() + separatorWidth/2 + m_pGameContext->getDefaultPadding()*m_pGameContext->getFontScale()*2 + m_pGameContext->getMaxDigitFontNormalWidth()*m_pGameContext->getFontScale()*1.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
+  m_deltaNextLifeIncreaseLabel_S1->setPosition(m_deltaNextLifeIncreaseLabel_Separator->getPositionX() + separatorWidth/2 + m_pGameContext->getDefaultPadding()*m_pGameContext->getFontScale() + m_pGameContext->getMaxDigitFontNormalWidth()*m_pGameContext->getFontScale()*.5, m_deltaNextLifeIncreaseLabel_Separator->getPositionY());
   
-  m_nextLifeText_Right->setPosition( m_deltaNextLifeIncreaseLabel_S2->getPositionX() + m_deltaNextLifeIncreaseLabel_S2->getContentSize().width/2
-    + m_nextLifeText_Right->getContentSize().width/2
+  m_nextLifeText_Right->setPosition( m_deltaNextLifeIncreaseLabel_S2->getPositionX() + m_deltaNextLifeIncreaseLabel_S2->getContentSize().width/2*m_pGameContext->getFontScale()
+    + m_nextLifeText_Right->getContentSize().width/2*m_pGameContext->getFontScale()
     , posY);
     
   this->updateLifeDisplay(.0f);

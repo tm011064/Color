@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "GameEngineIncludes.h"
 #include "BaseScene.h"
+#include "Table.h"
 
 class HighscoreScene : public BaseScene
 {
@@ -11,8 +12,7 @@ private:
 
   bool m_isLayoutInitialized;
   float m_padding;
-
-  
+    
   CCPoint m_panelRectLeftBottom;
   CCPoint m_panelRectRightTop;
 

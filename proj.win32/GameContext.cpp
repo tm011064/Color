@@ -25,10 +25,26 @@ void GameContext::init(int totalChallenges)
   CCUserDefault* userDefault = CCUserDefault::sharedUserDefault();
 
   this->m_totalCoins = userDefault->getIntegerForKey("totalCoins", 0);
-  this->m_highscoreEasy = userDefault->getIntegerForKey("highscoreEasy", 0);
-  this->m_highscoreNormal = userDefault->getIntegerForKey("highscoreNormal", 0);
-  this->m_highscoreHard = userDefault->getIntegerForKey("highscoreHard", 0);
-    
+      
+  this->m_highscoreMemory2b = userDefault->getIntegerForKey("hsMemory2b", 0);
+  this->m_highscoreMemory3b = userDefault->getIntegerForKey("hsMemory3b", 0);
+  this->m_highscoreMemory4b = userDefault->getIntegerForKey("hsMemory4b", 0);
+
+  this->m_highscoreMemory2bTotal = userDefault->getIntegerForKey("hsMemory2bTotal", 0);
+  this->m_highscoreMemory3bTotal = userDefault->getIntegerForKey("hsMemory3bTotal", 0);
+  this->m_highscoreMemory4bTotal = userDefault->getIntegerForKey("hsMemory4bTotal", 0);
+  
+  this->m_highscoreSpeed2b = userDefault->getIntegerForKey("hsSpeed2b", 0);
+  this->m_highscoreSpeed3b = userDefault->getIntegerForKey("hsSpeed3b", 0);
+  this->m_highscoreSpeed4b = userDefault->getIntegerForKey("hsSpeed4b", 0);
+
+  this->m_highscoreSpeed2bTotal = userDefault->getIntegerForKey("hsSpeed2bTotal", 0);
+  this->m_highscoreSpeed3bTotal = userDefault->getIntegerForKey("hsSpeed3bTotal", 0);
+  this->m_highscoreSpeed4bTotal = userDefault->getIntegerForKey("hsSpeed4bTotal", 0);
+
+  this->m_highscoreRhythm = userDefault->getIntegerForKey("hsRhythm", 0);
+  this->m_highscoreBalance = userDefault->getIntegerForKey("hsBalance", 0);
+  
   this->m_totalLifes = userDefault->getIntegerForKey("totalLifes", MAX_LIFES);  
   struct cc_timeval now;
   CCTime::gettimeofdayCocos2d(&now, NULL);
@@ -408,20 +424,79 @@ void GameContext::setIsVibrateOn(bool isVibrateOn)
   this->m_isVibrateOn = isVibrateOn;
 }
 
-void GameContext::setHighscoreEasy(int totalPoints)
+void GameContext::setHighscoreMemory2b(int totalPoints)
 {  
-  CCUserDefault::sharedUserDefault()->setIntegerForKey("highscoreEasy", totalPoints);
-  this->m_highscoreEasy = totalPoints;
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsMemory2b", totalPoints);
+  this->m_highscoreMemory2b = totalPoints;
 }
-void GameContext::setHighscoreNormal(int totalPoints)
+void GameContext::setHighscoreMemory3b(int totalPoints)
 {  
-  CCUserDefault::sharedUserDefault()->setIntegerForKey("highscoreNormal", totalPoints);
-  this->m_highscoreNormal = totalPoints;
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsMemory3b", totalPoints);
+  this->m_highscoreMemory3b = totalPoints;
 }
-void GameContext::setHighscoreHard(int totalPoints)
+void GameContext::setHighscoreMemory4b(int totalPoints)
 {  
-  CCUserDefault::sharedUserDefault()->setIntegerForKey("highscoreHard", totalPoints);
-  this->m_highscoreHard = totalPoints;
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsMemory4b", totalPoints);
+  this->m_highscoreMemory4b = totalPoints;
+}
+
+void GameContext::setHighscoreMemory2bTotal(int totalPoints)
+{  
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsMemory2bTotal", totalPoints);
+  this->m_highscoreMemory2bTotal = totalPoints;
+}
+void GameContext::setHighscoreMemory3bTotal(int totalPoints)
+{  
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsMemory3bTotal", totalPoints);
+  this->m_highscoreMemory3bTotal = totalPoints;
+}
+void GameContext::setHighscoreMemory4bTotal(int totalPoints)
+{  
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsMemory4bTotal", totalPoints);
+  this->m_highscoreMemory4bTotal = totalPoints;
+}
+
+void GameContext::setHighscoreSpeed2b(int totalPoints)
+{  
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsSpeed2b", totalPoints);
+  this->m_highscoreSpeed2b = totalPoints;
+}
+void GameContext::setHighscoreSpeed3b(int totalPoints)
+{  
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsSpeed3b", totalPoints);
+  this->m_highscoreSpeed3b = totalPoints;
+}
+void GameContext::setHighscoreSpeed4b(int totalPoints)
+{  
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsSpeed4b", totalPoints);
+  this->m_highscoreSpeed4b = totalPoints;
+}
+
+void GameContext::setHighscoreSpeed2bTotal(int totalPoints)
+{  
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsSpeed2bTotal", totalPoints);
+  this->m_highscoreSpeed2bTotal = totalPoints;
+}
+void GameContext::setHighscoreSpeed3bTotal(int totalPoints)
+{  
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsSpeed3bTotal", totalPoints);
+  this->m_highscoreSpeed3bTotal = totalPoints;
+}
+void GameContext::setHighscoreSpeed4bTotal(int totalPoints)
+{  
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsSpeed4bTotal", totalPoints);
+  this->m_highscoreSpeed4bTotal = totalPoints;
+}
+
+void GameContext::setHighscoreRhythm(int totalPoints)
+{  
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsRhythm", totalPoints);
+  this->m_highscoreRhythm = totalPoints;
+}
+void GameContext::setHighscoreBalance(int totalPoints)
+{  
+  CCUserDefault::sharedUserDefault()->setIntegerForKey("hsBalance", totalPoints);
+  this->m_highscoreBalance = totalPoints;
 }
 
 void GameContext::setChallengeInfo(unsigned int index, int status)

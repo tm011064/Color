@@ -161,8 +161,8 @@ CCArray* LayoutController::createFourButtons(GameContext* gameContext, DebugDraw
 void LayoutController::addConsoleButton(GameContext* gameContext, CCNode* target, GameButton* gameButton)
 {  
   CCSprite* shadow = CCSprite::createWithSpriteFrame(gameContext->getImageMap()->getTile("game_button_background"));
-  float offset = gameContext->getDefaultBorderThickness()*2.4;
-    
+  float offset = gameButton->getContentSize().width*gameButton->getScale()*.0083;
+
   float rotation = (gameButton)->getRotation();
   switch ((int)rotation)
   {

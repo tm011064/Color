@@ -45,9 +45,24 @@ private:
 
   CCSize m_frameSize;
 
-  int m_highscoreEasy;
-  int m_highscoreNormal;
-  int m_highscoreHard;
+  int m_highscoreMemory2b;
+  int m_highscoreMemory3b;
+  int m_highscoreMemory4b;
+
+  int m_highscoreMemory2bTotal;
+  int m_highscoreMemory3bTotal;
+  int m_highscoreMemory4bTotal;
+  
+  int m_highscoreSpeed2b;
+  int m_highscoreSpeed3b;
+  int m_highscoreSpeed4b;
+  
+  int m_highscoreSpeed2bTotal;
+  int m_highscoreSpeed3bTotal;
+  int m_highscoreSpeed4bTotal;
+
+  int m_highscoreRhythm;
+  int m_highscoreBalance;
 
   BaseTileMap* m_imageMap;  
   SpriteFrameCache* m_spriteFrameCache;
@@ -144,16 +159,40 @@ public:
   
   bool getIsVibrateOn() { return this->m_isVibrateOn; }
   void setIsVibrateOn(bool isVibrateOn);
-  
-  int getHighscoreEasy() { return this->m_highscoreEasy; }
-  void setHighscoreEasy(int totalPoints);
-  
-  int getHighscoreNormal() { return this->m_highscoreNormal; }
-  void setHighscoreNormal(int totalPoints);
-  
-  int getHighscoreHard() { return this->m_highscoreHard; }
-  void setHighscoreHard(int totalPoints);
+    
+  int getHighscoreMemory2b() { return this->m_highscoreMemory2b; }
+  void setHighscoreMemory2b(int totalPoints);
+  int getHighscoreMemory3b() { return this->m_highscoreMemory3b; }
+  void setHighscoreMemory3b(int totalPoints);
+  int getHighscoreMemory4b() { return this->m_highscoreMemory4b; }
+  void setHighscoreMemory4b(int totalPoints);
 
+  int getHighscoreMemory2bTotal() { return this->m_highscoreMemory2bTotal; }
+  void setHighscoreMemory2bTotal(int totalPoints);
+  int getHighscoreMemory3bTotal() { return this->m_highscoreMemory3bTotal; }
+  void setHighscoreMemory3bTotal(int totalPoints);
+  int getHighscoreMemory4bTotal() { return this->m_highscoreMemory4bTotal; }
+  void setHighscoreMemory4bTotal(int totalPoints);
+  
+  int getHighscoreSpeed2b() { return this->m_highscoreSpeed2b; }
+  void setHighscoreSpeed2b(int totalPoints);
+  int getHighscoreSpeed3b() { return this->m_highscoreSpeed3b; }
+  void setHighscoreSpeed3b(int totalPoints);
+  int getHighscoreSpeed4b() { return this->m_highscoreSpeed4b; }
+  void setHighscoreSpeed4b(int totalPoints);
+  
+  int getHighscoreSpeed2bTotal() { return this->m_highscoreSpeed2bTotal; }
+  void setHighscoreSpeed2bTotal(int totalPoints);
+  int getHighscoreSpeed3bTotal() { return this->m_highscoreSpeed3bTotal; }
+  void setHighscoreSpeed3bTotal(int totalPoints);
+  int getHighscoreSpeed4bTotal() { return this->m_highscoreSpeed4bTotal; }
+  void setHighscoreSpeed4bTotal(int totalPoints);
+
+  int getHighscoreRhythm() { return this->m_highscoreRhythm; }
+  void setHighscoreRhythm(int totalPoints);
+  int getHighscoreBalance() { return this->m_highscoreBalance; }
+  void setHighscoreBalance(int totalPoints);
+  
   void registerImageFile(const char *filePath, const char *key);
   void registerImageMapFile(const char *pList, const char *textureFileName);
   BaseTileMap* getImageMap(){ return this->m_imageMap; }
