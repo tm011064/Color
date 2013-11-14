@@ -179,7 +179,7 @@ void DescriptionPopup::onEnter()
         
     label = CCLabelBMFont::create(headerText.c_str(), m_pGameContext->getFontLargePath().c_str());
     label->setPosition(ccpRounded(
-      m_borderRightLeftBottom.x - m_pGameContext->getDefaultPadding()*6 - label->getContentSize().width/2
+      m_borderRightLeftBottom.x - m_pGameContext->getDefaultPadding()*6 - label->getContentSize().width/2*scale
       , m_headerBoxLeftBottom.y + (m_headerBoxRightTop.y - m_headerBoxLeftBottom.y)/2));
     label->setScale(scale);
     this->addChild(label);

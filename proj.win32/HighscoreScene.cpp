@@ -67,11 +67,12 @@ void HighscoreScene::onEnter()
         
     TableColumn col1, col2, col3, col23;
 
+    float factorThreshold = .0418f;
     float factor = m_pGameContext->getFontHeightNormal()*m_pGameContext->getFontScale() / visibleRect.size.height;
-    if ( factor > .0438f )
+    if ( factor > factorThreshold )
     {
       factor = m_pGameContext->getFontScale();
-      m_pGameContext->setFontScale(.0438f * visibleRect.size.height/m_pGameContext->getFontHeightNormal());
+      m_pGameContext->setFontScale(factorThreshold * visibleRect.size.height/m_pGameContext->getFontHeightNormal());
     }
     else
     {

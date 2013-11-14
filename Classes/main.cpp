@@ -36,6 +36,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         240  x  320: Various (3:4)
     */
         
+    
+    // 240 x 320, large
+    // ----------------------------------------------------------
+    // eglView->setFrameSize(240, 320);   // Ratio = 3:4
+     
+    // 1536 x 2048, large
+    // ----------------------------------------------------------
+     eglView->setFrameSize(1536, 2048);   // Ratio = 3:4
+    
     // 360 x 480, small
     // ----------------------------------------------------------
     // eglView->setFrameSize(243, 324);   // Ratio = 3:4
@@ -61,13 +70,48 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     // eglView->setFrameSize(320, 480);   // Ratio = 2:3
 
 
+
+    
+    // 720 x 960, small
+    // ----------------------------------------------------------
+    // eglView->setFrameSize(375, 500);   // Ratio = 3:4
+    // eglView->setFrameSize(281, 500);   // Ratio = 9:16
+    // eglView->setFrameSize(312, 500);   // Ratio = 5:8
+    // eglView->setFrameSize(300, 500);   // Ratio = 3:5
+    // eglView->setFrameSize(333, 500);   // Ratio = 2:3
+    
+    // 720 x 960, medium
+    // ----------------------------------------------------------
+    // eglView->setFrameSize(600, 800);   // Ratio = 3:4
+    // eglView->setFrameSize(450, 800);   // Ratio = 9:16
+    // eglView->setFrameSize(500, 800);   // Ratio = 5:8
+    // eglView->setFrameSize(480, 800);   // Ratio = 3:5
+    // eglView->setFrameSize(533, 800);   // Ratio = 2:3
+        
+    // 720 x 960, large
+    // ----------------------------------------------------------
+    // eglView->setFrameSize(720, 960);   // Ratio = 3:4
+    // eglView->setFrameSize(540, 960);   // Ratio = 9:16
+    // eglView->setFrameSize(600, 960);   // Ratio = 5:8
+    // eglView->setFrameSize(576, 960);   // Ratio = 3:5
+    // eglView->setFrameSize(640, 960);   // Ratio = 2:3
+
+    
+
+
+
+
+
+
+
+
     // 960 x 1280, small
     // ----------------------------------------------------------
     // eglView->setFrameSize(735, 980);   // Ratio = 3:4    -> 0.75
     // eglView->setFrameSize(551, 980);   // Ratio = 9:16   -> 0.5625
     // eglView->setFrameSize(613, 980);   // Ratio = 5:8    -> 0.625
     // eglView->setFrameSize(588, 980);   // Ratio = 3:5    -> 0.6
-     eglView->setFrameSize(653, 980);   // Ratio = 2:3    -> 0.66
+    // eglView->setFrameSize(653, 980);   // Ratio = 2:3    -> 0.66
      
     // 960 x 1280, middle
     // ----------------------------------------------------------

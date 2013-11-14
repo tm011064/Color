@@ -12,10 +12,10 @@ void MenuScene::initialize(float dt)
   LayoutController::addBackground(m_pGameContext, this, -1);
 
   m_header = CCSprite::createWithSpriteFrame(m_pGameContext->getImageMap()->getTile("header"));
-  CCSize size = m_header->getContentSize();
-  m_header->setScale(visibleRect.size.width / size.height); 
+  CCSize size = CCSizeMake( m_header->getContentSize().height, m_header->getContentSize().width);
+  m_header->setScale(visibleRect.size.width / size.width); 
   m_header->setRotation(-90);
-  m_header->setPosition(ccp(center.x, rightTop.y - (size.width / 2) * m_header->getScale()));
+  m_header->setPosition(ccp(center.x, rightTop.y - (size.height / 2) * m_header->getScale()));
   this->addChild(m_header);
 
   float buttonWidth = visibleRect.size.width * .75;
@@ -29,8 +29,8 @@ void MenuScene::initialize(float dt)
     , "CHALLENGES", m_pGameContext, menu_selector(MenuScene::showStoryModeMenu), this);
   this->addChild(m_homeStoryMode);
         
-  float topY = round( rightTop.y - size.width*m_header->getScale());
-  float availableHeight = round( topY - leftBottom.y );
+  float topY = round( rightTop.y - size.height*m_header->getScale());
+  float availableHeight = round( topY - leftBottom.y - m_pGameContext->getOuterPanelPadding() );
     
   CCSize buttonSize = this->m_homeStoryMode->getContentSize();
   float posY, spacing;
@@ -38,12 +38,18 @@ void MenuScene::initialize(float dt)
 
   CalculateButtonLayoutCoordinates(topY, buttonSize.height, targetedSpacingToButtonHeightRatio, availableHeight, 4, posY, spacing);
     
+  float buttonFillToShadowRatio = .7f; // .7 -> because top and bottom shadow of sprite are about 25% of overall height 
+  if (spacing < buttonSize.height*buttonFillToShadowRatio)
+  {
+    // in that case we push the header up
+    availableHeight = buttonSize.height + buttonSize.height * (4 - 1) * buttonFillToShadowRatio; 
+    topY = availableHeight + m_pGameContext->getOuterPanelPadding();
+    m_header->setPositionY( topY + size.height/2* m_header->getScale());
+    CalculateButtonLayoutCoordinates(topY, buttonSize.height, targetedSpacingToButtonHeightRatio, availableHeight, 4, posY, spacing);
+  }
+
   m_homeStoryMode->setPosition(center.x, posY);
-
-#if GAME_VERSION < 2
-  m_homeStoryMode->setVisible(false);
-#endif
-
+  
   posY -= spacing;
   m_homeArcade = MenuButton::create(
     m_pGameContext->getImageMap()->getTile("menubutton_off_left"), m_pGameContext->getImageMap()->getTile("menubutton_off_center"), m_pGameContext->getImageMap()->getTile("menubutton_off_right")
@@ -134,7 +140,8 @@ void MenuScene::initialize(float dt)
   hideSplashScreen();
 }
 
-void MenuScene::CalculateButtonLayoutCoordinates(float topY, float buttonHeight, float targetedSpacingToButtonHeightRatio, float availableHeight
+void MenuScene::CalculateButtonLayoutCoordinates(float topY, float buttonHeight
+  , float targetedSpacingToButtonHeightRatio, float availableHeight
   , int totalButtons, float& startPosY, float& spacing)
 {
   spacing = round( buttonHeight * targetedSpacingToButtonHeightRatio );
@@ -150,9 +157,7 @@ void MenuScene::CalculateButtonLayoutCoordinates(float topY, float buttonHeight,
 
 void MenuScene::resetHomeButtons(bool isVisible)
 {  
-#if GAME_VERSION > 1
   m_homeStoryMode->setVisible(isVisible);
-#endif
   m_homeArcade->setVisible(isVisible);
   m_homeOptions->setVisible(isVisible);
   m_homeHighscore->setVisible(isVisible);
@@ -170,11 +175,12 @@ void MenuScene::resetArcadeButtons(bool isVisible)
 
 void MenuScene::showView(MenuViewType menuViewType)
 {
-  CCActionInterval* moveLeft = CCMoveBy::create(.3f, ccp(-(VisibleRect::getVisibleRect().size.width),0));
-  CCActionInterval* moveRight = CCMoveBy::create(.3f, ccp((VisibleRect::getVisibleRect().size.width),0));
+  CCRect visibleRect = VisibleRect::getVisibleRect();
+
+  CCActionInterval* moveLeft = CCMoveBy::create(.3f, ccp(-(visibleRect.size.width),0));
+  CCActionInterval* moveRight = CCMoveBy::create(.3f, ccp((visibleRect.size.width),0));
   
   CCPoint center = VisibleRect::center();
-  CCRect visibleRect = VisibleRect::getVisibleRect();
   float easeRate = .5f;
   float posLeft = center.x - visibleRect.size.width;
   float posRight = center.x + visibleRect.size.width;

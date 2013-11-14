@@ -195,6 +195,12 @@ void GameScorePopup::onEnter()
       
       menuButton->setPosition(center.x, posY - this->m_padding * 10 - menuButton->getScaledSize().height);
 
+      if (menuButton->getPositionY() - menuButton->getScaledSize().height/2 <= .0f)
+      {
+        // menu button is off the screen, set it to be at the center between the separator and screen bottom
+        menuButton->setPositionY((posY - this->m_padding * 10 - menuButton->getScaledSize().height)/2);
+      }
+
       m_retryButton = TextButton::create(TEXT_BUTTON_BORDER_COLOR_ON, TEXT_BUTTON_BORDER_COLOR_OFF
         , TEXT_BUTTON_BACKGROUND_COLOR_ON, TEXT_BUTTON_BACKGROUND_COLOR_OFF
         , TEXT_BUTTON_CONTENT_COLOR_ON, TEXT_BUTTON_CONTENT_COLOR_OFF

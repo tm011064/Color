@@ -69,11 +69,10 @@ static inline float floor_float(float f)
 #define ccpRounded(__X__,__Y__) cocos2d::CCPointMake( floor_float( (float)(__X__) + .5f), floor_float((float)(__Y__) + .5f))
 #define round(__X__) floor_float( (float)(__X__) + .5f)
 
-#define GAME_VERSION 2
 #define IS_DEBUG 1
 
 #define MAX_LIFES 6
-#define LIFE_INCREASE_INTERVAL_SEC 120
+#define LIFE_INCREASE_INTERVAL_SEC 1200
 
 #define TOUCH_PRIORITY_MODAL_PANEL   -2147483646 
 #define TOUCH_PRIORITY_MODAL_ITEM    -2147483647
